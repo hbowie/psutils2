@@ -1,0 +1,215 @@
+/*
+ * Copyright 1999 - 2017 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.powersurgepub.psutils2.logging;
+
+  import java.io.*;
+  import java.util.*;
+
+/**
+   A log destination that writes log records 
+   to a disk file.<p>
+  
+   @author Herb Bowie 
+
+ */
+
+public class LogOutputDisk 
+    extends LogOutput {
+
+  public    static final String   USER_DIR = "user.dir";
+
+  /** Default disk file name if another is not specified. */
+
+  public    static final String   DEFAULT_FILE_NAME = "log.txt";
+
+  /** String that will be appended to a program ID that is passed. */
+
+  public    static final String   FILE_SUFFIX = "_log.txt";
+
+  private    Properties     systemProperties;
+
+  private    String         userDirString;
+
+  private    File           userDirFile;
+
+  private    String         logFileName;
+
+  private    File           logFile;
+
+  private    FileWriter     logFileWriter;
+
+  private    BufferedWriter logFileBufWriter;
+
+  private    int            logFileLineNumber;
+
+  private    String         logFileLine;
+
+  private    int            logFileLineLength;
+
+  /**
+     The "noarg" constructor. This produces a fully functioning object
+     with a default file name. 
+   */
+
+  public LogOutputDisk () {
+
+    logFileName = DEFAULT_FILE_NAME;
+
+  } // end LogOutputDisk "noarg" constructor
+
+  
+
+/**
+
+   The constructor for a specific program ID. The file name
+
+   will be constructed by appending the default file suffix
+
+   to the passed program ID.
+
+  
+
+   @param programID the name of the program being executed. 
+
+*/
+
+  public LogOutputDisk (String programID) {
+
+    logFileName = programID + FILE_SUFFIX;
+
+  } // end LogOutputDisk constructor
+
+  
+
+  /**
+
+     Writes a line of output to the log disk file.
+
+     If the log file is not yet open, then it will be opened automatically
+
+     on the first write.
+
+    
+
+     @param line  line of data to be written to the log file.
+
+   */  
+
+  public void writeLine (String line) {
+
+    if ((isLogOk()) && (! isLogOpen())) {
+
+      open ();
+
+    }
+
+    if (isLogOk()) {
+
+      try { 
+
+        logFileBufWriter.write(line, 0, line.length());
+
+        logFileBufWriter.newLine();
+
+      } catch (IOException e) {
+
+        System.err.println (this.toString() + " suffered an I/O Exception on write.");
+
+        setLogOk (false);
+
+      }
+
+    }
+
+  } // end writeLine method
+
+  
+
+  public void open () {
+
+    systemProperties = System.getProperties();
+
+    userDirString = systemProperties.getProperty (USER_DIR);
+
+    logFile = new File (userDirString, logFileName);
+
+    if (logFile.isDirectory () ) {
+
+      System.err.println (logFile.toString() + " is a directory.");
+
+      setLogOk (false);;
+
+    }
+
+    if (isLogOk()) {
+
+      try {
+
+        logFileWriter = new FileWriter (logFile);
+
+        logFileBufWriter = new BufferedWriter (logFileWriter);
+
+      } catch (IOException e) {
+
+        System.err.println (logFile.toString() + " suffered an I/O exception during open.");
+
+        setLogOk (false);
+
+      }
+
+    }
+
+    super.open();
+
+  } // end open method
+
+  
+
+  public void close () {
+
+    if (isLogOk() && isLogOpen()) {
+
+      try {
+
+        logFileBufWriter.close();
+
+      } catch (IOException e) {
+
+        System.err.println (this.toString() + " suffered an I/O Exception on close.");
+
+        setLogOk (false);
+
+      }
+
+    }
+
+    super.close();
+
+  } // end close method
+
+  
+
+  public String toString () {
+
+    return "LogOutputDisk";
+
+  } // end toString method
+
+
+
+} // end LogOutputDisk class
+
