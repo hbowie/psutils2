@@ -350,6 +350,10 @@ public class PSField {
     if (oplc.startsWith("equal")) {
       oplc = "equals";
     }
+    else
+    if (oplc.startsWith("not equal")) {
+      oplc = "not equal to";
+    }
     boolean opFound = false;
     for (opIndex = 0; 
         ((opIndex < NUMBER_OF_LOGICAL_OPERANDS) && (! opFound));

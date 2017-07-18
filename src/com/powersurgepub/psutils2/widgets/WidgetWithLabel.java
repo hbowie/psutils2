@@ -16,6 +16,7 @@
 
 package com.powersurgepub.psutils2.widgets;
 
+  import javafx.scene.*;
   import javafx.scene.control.*;
 
 /**
@@ -25,7 +26,7 @@ package com.powersurgepub.psutils2.widgets;
  */
 public class WidgetWithLabel {
   
-  private Label      label = null;
+  private Node       label = null;
   private DataWidget widget = null;
 
   /**
@@ -35,11 +36,11 @@ public class WidgetWithLabel {
     
   }
   
-  public void setLabel(Label label) {
+  public void setLabel(Node label) {
     this.label = label;
   }
   
-  public Label getLabel() {
+  public Node getLabel() {
     return label;
   }
   

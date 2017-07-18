@@ -16,52 +16,29 @@
 
 package com.powersurgepub.psutils2.widgets;
 
-  import java.awt.*;
-  import javax.swing.*;
+  import javafx.scene.control.*;
+  import javafx.scene.layout.*;
 
 /**
  
  @author Herb Bowie
  */
 public class LinkWidget
-    extends JScrollPane 
+    extends TextArea 
       implements
         DataWidget {
-  
-  private JTextArea textArea = new JTextArea();
 
   /**
    Default constructor with no 
   */
   public LinkWidget() {
-    textArea.setColumns(60);
-    textArea.setRows(3);
-    textArea.setLineWrap(true);
-    textArea.setWrapStyleWord(false);
-    textArea.setTabSize(0);
-    setViewportView(textArea);
-    Dimension min = this.getMinimumSize();
-    int minW = min.width;
-    min.setSize(minW, 60);
-    this.setMinimumSize(min);
-    
-    Dimension pref = this.getPreferredSize();
-    int prefW = pref.width;
-    pref.setSize(prefW, 80);
-    this.setPreferredSize(pref);
+    this.setPrefColumnCount(60);
+    this.setPrefRowCount(3);
+    this.setWrapText(true);
   }
   
-  public void setText(String t) {
-    textArea.setText(t);
-    textArea.setCaretPosition(0);
-  }
-  
-  public String getText() {
-    return textArea.getText();
-  }
-  
-  public JTextArea getTextArea() {
-    return textArea;
+  public TextArea getTextArea() {
+    return this;
   }
 
 }

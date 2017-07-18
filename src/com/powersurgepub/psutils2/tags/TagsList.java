@@ -22,10 +22,8 @@ package com.powersurgepub.psutils2.tags;
 /**
    A collection of values that are used as tags or categories.
    New values are added to the list. The
-   list is maintained in alphabetical order. A JComboBox is maintained
-   and kept synchronized with the list.<p>
-  
-   This code is copyright (c) 2003-2009 by Herb Bowie.
+   list is maintained in alphabetical order. A ComboBox is maintained
+   and kept synchronized with the list.
   
    @author Herb Bowie (<a href="mailto:herb@powersurgepub.com">
            herb@powersurgepub.com</a>)<br>

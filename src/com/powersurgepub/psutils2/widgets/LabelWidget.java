@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 - 2015 Herb Bowie
+ * Copyright 2014 - 2017 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.powersurgepub.psutils2.widgets;
 
-  import javax.swing.*;
+  import javafx.scene.control.*;
 
 /**
  A label widget that can display data, but does not allow any data entry. 
@@ -24,7 +24,7 @@ package com.powersurgepub.psutils2.widgets;
  @author Herb Bowie
  */
 public class LabelWidget 
-    extends JLabel 
+    extends Label 
       implements
         DataWidget{
 

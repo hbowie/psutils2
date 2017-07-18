@@ -16,7 +16,7 @@
 
 package com.powersurgepub.psutils2.widgets;
 
-  import javax.swing.*;
+  import javafx.scene.control.*;
 
 /**
  A data widget representing one line of text data. 
@@ -24,7 +24,7 @@ package com.powersurgepub.psutils2.widgets;
  @author Herb Bowie
  */
 public class OneLiner 
-    extends JTextField 
+    extends TextField 
       implements
         DataWidget {
   

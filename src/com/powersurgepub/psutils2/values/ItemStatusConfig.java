@@ -17,7 +17,9 @@
 package com.powersurgepub.psutils2.values;
 
   import com.powersurgepub.psutils2.basic.*;
-  import javax.swing.*;
+
+  import javafx.collections.*;
+  import javafx.scene.control.*;
 
 /**
  Definition of an Item State field, as configured for a particular use case. 
@@ -36,7 +38,7 @@ public class ItemStatusConfig {
   
   private static ItemStatusConfig sharedConfig = null;
   
-  private ItemStatusValue[] values = new ItemStatusValue[10];
+  private ObservableList<ItemStatusValue> values;
   
   private int statusLow = 0;
   private int statusHigh = 9;
@@ -55,16 +57,37 @@ public class ItemStatusConfig {
   
   public ItemStatusConfig() {
     // Populate the values array with the standard, default configuration. 
-    values[0] = new ItemStatusValue("Suggested");
-    values[1] = new ItemStatusValue("Proposed");
-    values[2] = new ItemStatusValue("Approved");
-    values[3] = new ItemStatusValue("Planned");
-    values[4] = new ItemStatusValue("Active");
-    values[5] = new ItemStatusValue("Held");
-    values[6] = new ItemStatusValue("Completed");
-    values[7] = new ItemStatusValue("Pending Recurs");
-    values[8] = new ItemStatusValue("Canceled");
-    values[9] = new ItemStatusValue("Closed");
+    values = FXCollections.observableArrayList();
+    
+    ItemStatusValue suggestedValue = new ItemStatusValue("Suggested");
+    values.add(suggestedValue);
+    
+    ItemStatusValue proposedValue = new ItemStatusValue("Proposed");
+    values.add(proposedValue);
+    
+    ItemStatusValue approvedValue = new ItemStatusValue("Approved");
+    values.add(approvedValue);
+    
+    ItemStatusValue plannedValue = new ItemStatusValue("Planned");
+    values.add(plannedValue);
+    
+    ItemStatusValue activeValue = new ItemStatusValue("Active");
+    values.add(activeValue);
+    
+    ItemStatusValue heldValue = new ItemStatusValue("Held");
+    values.add(heldValue);
+    
+    ItemStatusValue completedValue = new ItemStatusValue("Completed");
+    values.add(completedValue);
+    
+    ItemStatusValue pendingValue = new ItemStatusValue("Pending Recurs");
+    values.add(pendingValue);
+    
+    ItemStatusValue canceledValue = new ItemStatusValue("Canceled");
+    values.add(canceledValue);
+    
+    ItemStatusValue closedValue = new ItemStatusValue("Closed");
+    values.add(closedValue);
   }
   
   /**
@@ -143,7 +166,7 @@ public class ItemStatusConfig {
                 statusValues.substring(startNum, endNum) + 
                 " is not in the range 0 - 9");
           } else {
-            values[num] = new ItemStatusValue(val);
+            values.set(num, new ItemStatusValue(val));
           }
         } catch (NumberFormatException ex) {
           System.out.println (
@@ -173,8 +196,8 @@ public class ItemStatusConfig {
     if (label.length() > 1) {
       String lookFor = label.substring(0, 2).toLowerCase();
       while (index <= statusHigh && (! matched)) {
-        if (values[index].isAvailable() 
-            && lookFor.equals(values[index].getFirstTwo())) {
+        if (values.get(index).isAvailable() 
+            && lookFor.equals(values.get(index).getFirstTwo())) {
           matched = true;
         } else {
           index++;
@@ -208,29 +231,12 @@ public class ItemStatusConfig {
     }
   }
   
-  public ComboBoxModel getComboBoxModel() {
-    DefaultComboBoxModel cbm = new DefaultComboBoxModel();
-    return populateComboBoxModel(cbm);
+  public ObservableList<ItemStatusValue> getComboBoxModel() {
+    return values;
   }
   
-  public ComboBoxModel populateComboBoxModel(MutableComboBoxModel cbm) {
-    for (int i = statusLow; i <= statusHigh; i++) {
-      if (statusValid(i)) {
-        ItemStatus status = new ItemStatus(this, i);
-        cbm.addElement(status.toString());
-      }
-    }
-    return cbm;
-  }
-  
-  public void populateComboBox(JComboBox box) {
-    box.removeAllItems();
-    for (int i = statusLow; i <= statusHigh; i++) {
-      if (statusValid(i)) {
-        ItemStatus status = new ItemStatus(this, i);
-        box.addItem(status.toString());
-      }
-    }
+  public void populateComboBox(ComboBox box) {
+    box.setItems(values);
   }
   
   /**
@@ -242,7 +248,7 @@ public class ItemStatusConfig {
   */
   public String getLabel(int status) {
     if (statusValid(status)) {
-      return values[status].getLabel();
+      return values.get(status).getLabel();
     } else {
       return "";
     }
@@ -258,7 +264,7 @@ public class ItemStatusConfig {
   public boolean statusValid(int status) {
     if (status >= statusLow
         && status <= statusHigh
-        && values[status].isAvailable()) {
+        && values.get(status).isAvailable()) {
       return true;
     } else {
       return false;
@@ -278,9 +284,9 @@ public class ItemStatusConfig {
     for (int i = statusLow; i <= statusHigh; i++) {
       str.append(String.valueOf(i));
       str.append(" - ");
-      str.append(values[i].getLabel());
+      str.append(values.get(i).getLabel());
       str.append(" - Available? ");
-      str.append(String.valueOf(values[i].isAvailable()));
+      str.append(String.valueOf(values.get(i).isAvailable()));
       str.append(GlobalConstants.LINE_FEED);
     }
     return str.toString();
@@ -293,7 +299,7 @@ public class ItemStatusConfig {
   */
   public String getClosedString() {
     int closed = statusHigh;
-    while (closed > 0 && (! values[closed].isAvailable())) {
+    while (closed > 0 && (! values.get(closed).isAvailable())) {
       closed--;
     }
     StringBuilder str = new StringBuilder();
@@ -304,7 +310,7 @@ public class ItemStatusConfig {
       str.append('0');
     }
     str.append(" - ");
-    str.append(values[closed].toString());
+    str.append(values.get(closed).toString());
     return str.toString();
   }
 

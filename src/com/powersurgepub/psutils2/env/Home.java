@@ -38,6 +38,9 @@ package com.powersurgepub.psutils2.env;
  */
 public class Home {
   
+  private     static  final String OS 
+      = System.getProperty("os.name").toLowerCase();
+  
   private     static  final double   DEFAULT_WIDTH = 780;
   private     static  final double   DEFAULT_HEIGHT = 540;
   
@@ -829,6 +832,22 @@ public class Home {
   public void log (int severity, String message, boolean dataRelated) {
     Logger.getShared().recordEvent (severity, message, dataRelated);
   }
+
+	public static boolean runningOnWindows() {
+		return (OS.contains("win"));
+	}
+
+	public static boolean runningOnMac() {
+		return (OS.contains("mac"));
+	}
+
+	public static boolean runningOnUnix() {
+		return (OS.contains("nix") || OS.contains("nux") || OS.contains("aix"));
+  }
+
+	public static boolean runningOnSolaris() {
+		return (OS.indexOf("sunos") >= 0);
+	}
   
 } // end class
 
