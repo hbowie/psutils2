@@ -23,6 +23,8 @@ package com.powersurgepub.psutils2.records;
 
   import java.io.*;
   import java.util.*;
+
+  import javafx.collections.*;
   
 /**
    A set, or collection, of DataRecord objects, capable of being sorted. <p>
@@ -47,7 +49,7 @@ public class DataSet
   private    RecordDefinition   recDef;
   
   /** Collection of all records in the data set. */
-  private    ArrayList<DataRecord>          records;
+  private    ObservableList<DataRecord> records;
   
   /** Index used to cycle through the records in the data set. */
   private    int                recordNumber;
@@ -304,7 +306,7 @@ public class DataSet
    */
   private void initialize () {
     dict = recDef.getDict();
-    records = new ArrayList ();
+    records = FXCollections.observableArrayList();
     startWithFirstRecord();
     dataSetNumber++;
     fileId = "DataSet" + String.valueOf (dataSetNumber);
@@ -894,6 +896,16 @@ public class DataSet
   
   public int size() {
     return records.size();
+  }
+  
+  /**
+   Returns the list of records, as an Observable Array List. 
+  
+   @return The complete list of Data Records, stored as a JavaFX
+           Observable Array List. 
+  */
+  public ObservableList<DataRecord> getList() {
+    return records;
   }
   
 } // end class DataSet

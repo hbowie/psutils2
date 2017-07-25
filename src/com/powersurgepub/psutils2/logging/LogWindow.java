@@ -50,10 +50,10 @@ public class LogWindow
     logTextArea.setWrapText(true);
     logTextArea.setEditable(false);
     
-    StackPane root = new StackPane();
-    root.getChildren().add(logTextArea);
+    StackPane logPane = new StackPane();
+    logPane.getChildren().add(logTextArea);
     
-    Scene logScene = new Scene(root, 300, 250);
+    Scene logScene = new Scene(logPane, 300, 250);
     
     logStage.setScene(logScene);
   }

@@ -24,6 +24,10 @@ package com.powersurgepub.psutils2.list;
   import java.io.*;
   import java.util.*;
 
+  import javafx.beans.property.*;
+  import javafx.collections.*;
+  import javafx.scene.control.*;
+
 /**
  A list of data records that can be sorted and filtered. 
 
@@ -492,10 +496,32 @@ public class DataRecList
    @return The field name for the column. 
   */
   public String getColumnName (int columnIndex) {
-    if (recDef == null) {
+    DataFieldDefinition def = getColumnDef(columnIndex);
+    if (def == null) {
       return "";
     } else {
-      return recDef.getDef(columnIndex).getProperName();
+      return def.getProperName();
+    }
+  }
+  
+  /**
+   Get the definition of this column. 
+  
+   @param columnIndex The column index. 
+  
+   @return Null if no record definition available, or if the index is outside
+           the valid range of columns; otherwise, the desired data field 
+           definition. 
+  */
+  public DataFieldDefinition getColumnDef (int columnIndex) {
+    if (recDef == null) {
+      return null;
+    }
+    else
+    if (columnIndex < 0 || columnIndex >= recDef.getNumberOfFields()) {
+      return null;
+    } else {
+      return recDef.getDef(columnIndex);
     }
   }
   
@@ -543,5 +569,39 @@ public class DataRecList
       return recDef.getNumberOfFields();
     }
   }
+  
+  /**
+   Returns the sorted and filtered list of records, as an Observable Array List. 
+  
+   @return The sored and filtered list of Data Records, stored as a JavaFX
+           Observable Array List. 
+  */
+  public ObservableList<DataRecord> getList() {
+    return filteredDataSet.getList();
+  }
+  
+  /**
+   Construct a JavaFX TableColumn for the indicated column number. 
+  
+   @param columnIndex With zero indicating the first column. 
+  
+   @return A TableColumn object ready to be added to a TableView. 
+  */
+  public TableColumn<DataRecord, String> getTableColumn(int columnIndex) {
+    DataFieldDefinition def = getColumnDef(columnIndex);
+    if (def == null) {
+      return null;
+    } else {
+      TableColumn<DataRecord, String> tableColumn 
+          = new TableColumn(getColumnName(columnIndex));
+      tableColumn.setCellValueFactory(cellData -> {
+        DataRecord dataRec = cellData.getValue();
+        DataField field = dataRec.getField(columnIndex);
+        String data = field.getData();
+        return new ReadOnlyStringWrapper(data);
+      });
+      return tableColumn;
+    }
+  } // end method getTableColumn
 
 }

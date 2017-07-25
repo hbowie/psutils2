@@ -24,7 +24,9 @@ package com.powersurgepub.psutils2.textmerge;
 public interface TextMergeController {
   
   /**
-   Indicate whether or not a list has been loaded. 
+   Indicate whether or not a list has been loaded. This method should be
+   called each time a new list is loaded and/or each time the list is created
+   anew. 
   
    @param listAvailable True if a list has been loaded, false if the list
                         is not available. 

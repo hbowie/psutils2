@@ -33,6 +33,7 @@ package com.powersurgepub.psutils2.textmerge;
 
  	import javafx.collections.*;
  	import javafx.event.*;
+  import javafx.geometry.*;
  	import javafx.scene.control.*;
  	import javafx.scene.control.Alert.*;
   import javafx.scene.input.*;
@@ -51,13 +52,13 @@ public class TextMergeInput {
   // Maximum value for normalization Type
   private		static	final int			NORMALTYPE_MAX = 1;
   
-  private     Window              ownerWindow;
-  
-  private     PSList              psList = null;
+  private     Window              ownerWindow = null;
   private     DataRecList         dataRecList = null;
   
   private     TextMergeController textMergeController = null;
   private     TextMergeScript     textMergeScript = null;
+  
+  private     FXUtils             fxUtils;
   
   private     File                appFolder;
   private     URL                 pageURL;
@@ -99,9 +100,7 @@ public class TextMergeInput {
   private     MenuItem              fileEpub;
   
   // Fields used for the User Interface
-  private     Border                raisedBevel;
-  private     Border                etched;
-  private     GridBagger            gb = new GridBagger();
+   
   
   private     Tab                   inputTab;
   
@@ -145,9 +144,6 @@ public class TextMergeInput {
   private     ObservableList<String> inputNormalTypes 
       = FXCollections.<String>observableArrayList(INPUT_NORMAL0, INPUT_NORMAL1);
   private     ComboBox            inputNormalBox  = new ComboBox (inputNormalTypes);
-    
-  // Text Area (filler)
-  private     TextArea            inputText;
   
   private     String              possibleFileName = "";
   
@@ -199,13 +195,12 @@ public class TextMergeInput {
     
   public TextMergeInput (
       Window ownerWindow,
-      PSList psList, 
+      DataRecList dataRecList, 
       TextMergeController textMergeController, 
       TextMergeScript textMergeScript) {
     
     this.ownerWindow = ownerWindow;
-    
-    this.psList = psList;
+    this.dataRecList = dataRecList;
     
     setListOptions();
     
@@ -267,18 +262,21 @@ public class TextMergeInput {
     }
   }
 
-  public void setPSList (PSList psList) {
-    this.psList = psList;
+  public void setList (DataRecList dataRecList) {
+    this.dataRecList = dataRecList;
     setListOptions();
+    textMergeController.setListAvailable(dataRecList != null);
   }
   
   private void setListOptions() {
+    /*
     if (psList instanceof DataRecList) {
       dataRecList = (DataRecList)psList;
     } else {
       dataRecList = null;
       throw new IllegalArgumentException("List must be a DataRecList");
     }
+    */
   }
   
   public void setMenus(MenuBar menus) {
@@ -328,17 +326,30 @@ public class TextMergeInput {
     } // end if file menu found
   } // end method setMenus
   
+  /**
+   Build the input tab and add it to the tabpane that is being passed. 
+  
+   @param tabs The tabpane to receive the new tab. 
+  */
   public void setTabs(TabPane tabs) {
     quietMode = false;
     tabSet = true;
     
     this.tabs = tabs;
     
+    fxUtils = FXUtils.getShared();
+    
     inputTab = new Tab("Input");
     
 		inputPane = new GridPane();
+    fxUtils.applyStyle(inputPane);
+    
+    //
+    // First Column
+    //
     
     // Button to Specify the Input Source and Open it
+    // Let's put this in the top left corner
     openDataButton = new Button ("Open Input");
     Tooltip openDataTip = new Tooltip("Specify the Data Source to be Input");
     Tooltip.install(openDataButton, openDataTip);
@@ -348,18 +359,22 @@ public class TextMergeInput {
         chooseAndOpen();
       }
     });
+    openDataButton.setMaxWidth(Double.MAX_VALUE);
+    openDataButton.setMaxWidth(Double.MAX_VALUE);
+    inputPane.add(openDataButton, 0, 0, 1, 1);
+    GridPane.setHgrow(openDataButton, Priority.SOMETIMES);
         
-		// Combo box for input type
+		// Label for Input Type
     inputTypeLabel = new Label ("Type of Data Source");
-    inputTypeLabel.setBorder (etched);
+    fxUtils.addLabelHeading(inputTypeLabel, 0, 1);
     
+    // Combo Box for Input Type
 		inputTypeBox.setEditable (false);
 		inputTypeBox.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle (ActionEvent event) {
 		      String inType = (String)inputTypeBox.getSelectionModel().getSelectedItem();
           initInputModules();
-          
           inputModuleIndex = 0;
           inputModuleFound = false;
           while (inputModuleIndex < inputModules.size() && (! inputModuleFound)) {
@@ -372,11 +387,61 @@ public class TextMergeInput {
 		    } // end ActionPerformed method
 		  } // end action listener for input type combo box
 		); 
+    inputTypeBox.setMaxWidth(Double.MAX_VALUE);
+    inputPane.add(inputTypeBox, 0, 2);
+    GridPane.setHgrow(inputTypeBox, Priority.SOMETIMES);
     
-    // Create Check Box for Data Dictionary Input
-    // inputDictionaryLabel = new Label ("Data Dictionary Input", Label.LEFT);
-    inputDictionaryLabel.setBorder (etched);
+    // create directory depth fields
+    inputDirMaxDepthLabel = new Label ("Maximum Directory Depth");
+    fxUtils.addLabelHeading(inputDirMaxDepthLabel, 0, 5);
     
+    inputDirMaxDepthValue = new TextField (String.valueOf(dirMaxDepth));
+    inputDirMaxDepthValue.setEditable (false);
+    inputDirMaxDepthValue.setAlignment(Pos.BASELINE_RIGHT);
+    inputPane.add(inputDirMaxDepthValue, 0, 6);
+    GridPane.setHgrow(inputDirMaxDepthValue, Priority.SOMETIMES);
+    
+    inputDirMaxDepthUpButton = new Button ("Increment (+)");
+    // inputDirMaxDepthUpButton.setBorder (raisedBevel);
+    inputDirMaxDepthUpButton.setTooltip
+      (new Tooltip("Increase Level of Sub-Directory Explosion"));
+    inputDirMaxDepthUpButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        dirMaxDepth++;
+        inputDirMaxDepthValue.setText (String.valueOf(dirMaxDepth));
+      }
+    });
+    inputDirMaxDepthUpButton.setMaxWidth(Double.MAX_VALUE);
+    inputPane.add(inputDirMaxDepthUpButton, 0, 7, 1, 1);
+    GridPane.setHgrow(inputDirMaxDepthUpButton, Priority.SOMETIMES);
+    
+    inputDirMaxDepthDownButton = new Button ("Decrement (-)");
+    // inputDirMaxDepthDownButton.setBorder (raisedBevel);
+    inputDirMaxDepthDownButton.setTooltip
+      (new Tooltip("Decrease Level of Sub-Directory Explosion"));
+    inputDirMaxDepthDownButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        if (dirMaxDepth > 1) {
+            dirMaxDepth--;
+        }
+        inputDirMaxDepthValue.setText (String.valueOf(dirMaxDepth));
+      }
+    });
+    inputDirMaxDepthDownButton.setMaxWidth(Double.MAX_VALUE);
+    inputPane.add(inputDirMaxDepthDownButton, 0, 8, 1, 1);
+    GridPane.setHgrow(inputDirMaxDepthDownButton, Priority.SOMETIMES);
+    
+    //
+    // Second Column
+    //
+    
+    // Data Dictionary Label
+    inputDictionaryLabel = new Label ("Data Dictionary Input");
+    fxUtils.addLabelHeading(inputDictionaryLabel, 1, 1);
+    
+    // Input Dictionary Checkbox
     inputDictionaryCkBox = new CheckBox ("Open Companion Dictionary?");
     inputDictionaryCkBox.setSelected (false);
     inputDictionaryCkBox.setOnAction(new EventHandler<ActionEvent>() {
@@ -385,23 +450,39 @@ public class TextMergeInput {
         usingDictionary = inputDictionaryCkBox.isSelected();
       }
     });
+    inputPane.add(inputDictionaryCkBox, 1, 2, 1, 1);
+    GridPane.setHgrow(inputDictionaryCkBox, Priority.SOMETIMES);
     
-    // Create Check Box for Tags Explosion
-    explodeTagsLabel = new Label ("Tags Explosion");
-    explodeTagsLabel.setBorder (etched);
+  		// Combo box for Normalization type
+    inputNormalLabel = new Label ("Data Normalization");
     
-    explodeTagsCkBox = new CheckBox ("One row for each tag?");
-    explodeTagsCkBox.setSelected (false);
-    explodeTagsCkBox.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent evt) {
-        explodeTags = explodeTagsCkBox.isSelected();
-      }
-    });
+		normalType = 0;
+    if (normalization) {
+      inputNormalBox.getSelectionModel().select(0);
+      inputNormalBox.setEditable (false);
+      inputNormalBox.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          String inType = (String)inputNormalBox.getSelectionModel().getSelectedItem();
+            normalType = 0;
+            if (inType.equals (INPUT_NORMAL1)) {
+              normalType = 1;
+            }
+            setNormalTypeImplications();
+        }
+      });
+      fxUtils.addLabelHeading(inputNormalLabel, 1, 5);
+      inputPane.add(inputNormalBox, 1, 6, 1, 1);
+      GridPane.setHgrow(inputNormalBox, Priority.SOMETIMES);
+    }
+    
+    //
+    // Third Column
+    //
     
     // Create Radio Buttons for File Merge
     inputMergeLabel = new Label ("Merge into Existing Data");
-    inputMergeLabel.setBorder (etched);
+    fxUtils.addLabelHeading(inputMergeLabel, 2, 1);
 
     inputMergeGroup = new ToggleGroup();
   
@@ -419,6 +500,8 @@ public class TextMergeInput {
         }
       }
     });
+    inputPane.add(inputMergeNoButton, 2, 2, 1, 1);
+    GridPane.setHgrow(inputMergeNoButton, Priority.SOMETIMES);
     
     inputMergeButton = new RadioButton ("Merge New Data with Old");
     // inputMergeButton.setActionCommand ("MERGE");
@@ -432,6 +515,8 @@ public class TextMergeInput {
         }
       }
     });
+    inputPane.add(inputMergeButton, 2, 3, 1, 1);
+    GridPane.setHgrow(inputMergeButton, Priority.SOMETIMES);
 		
     inputMergeSameColumnsButton = new RadioButton ("Merge with Same Columns");
     // inputMergeSameColumnsButton.setActionCommand ("SAME");
@@ -445,142 +530,31 @@ public class TextMergeInput {
         }
       }
     });
+    inputPane.add(inputMergeSameColumnsButton, 2, 4, 1, 1);
+    GridPane.setHgrow(inputMergeSameColumnsButton, Priority.SOMETIMES);
     
-    // create directory depth fields
-    inputDirMaxDepthLabel = new Label ("Maximum Directory Depth");
-    inputDirMaxDepthLabel.setBorder (etched);
+    // Create Check Box for Tags Explosion
+    explodeTagsLabel = new Label ("Tags Explosion");
+    fxUtils.addLabelHeading(explodeTagsLabel, 2, 5);
     
-    inputDirMaxDepthValue = new TextField (String.valueOf(dirMaxDepth));
-    inputDirMaxDepthValue.setEditable (false);
-    // inputDirMaxDepthValue.setHorizontalAlignment (TextField.RIGHT);
-    
-    inputDirMaxDepthUpButton = new Button ("Increment (+)");
-    inputDirMaxDepthUpButton.setBorder (raisedBevel);
-    inputDirMaxDepthUpButton.setTooltip
-      (new Tooltip("Increase Level of Sub-Directory Explosion"));
-    inputDirMaxDepthUpButton.setOnAction(new EventHandler<ActionEvent>() {
+    explodeTagsCkBox = new CheckBox ("One row for each tag?");
+    explodeTagsCkBox.setSelected (false);
+    explodeTagsCkBox.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
-        dirMaxDepth++;
-        inputDirMaxDepthValue.setText (String.valueOf(dirMaxDepth));
+        explodeTags = explodeTagsCkBox.isSelected();
       }
     });
-    
-    inputDirMaxDepthDownButton = new Button ("Decrement (-)");
-    inputDirMaxDepthDownButton.setBorder (raisedBevel);
-    inputDirMaxDepthDownButton.setTooltip
-      (new Tooltip("Decrease Level of Sub-Directory Explosion"));
-    inputDirMaxDepthDownButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent evt) {
-        if (dirMaxDepth > 1) {
-            dirMaxDepth--;
-        }
-        inputDirMaxDepthValue.setText (String.valueOf(dirMaxDepth));
-      }
-    });
-    
-		// Combo box for Normalization type
-    inputNormalLabel = new Label ("Data Normalization");
-    inputNormalLabel.setBorder (etched);
-    
-		normalType = 0;
-    if (normalization) {
-      inputNormalBox.getSelectionModel().select(0);
-      inputNormalBox.setEditable (false);
-      inputNormalBox.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent evt) {
-          String inType = (String)inputNormalBox.getSelectionModel().getSelectedItem();
-            normalType = 0;
-            if (inType.equals (INPUT_NORMAL1)) {
-              normalType = 1;
-            }
-            setNormalTypeImplications();
-        }
-      });
-    }
-        
-    // Bottom of Screen
-		inputText = new TextArea("");
-    inputText.setWrapText(true);
-		inputText.setEditable (false);
-		inputText.setVisible (true);
+    inputPane.add(explodeTagsCkBox, 2, 6, 1, 1);
+    GridPane.setHgrow(explodeTagsCkBox, Priority.SOMETIMES);
 
     // Finish up the Input Pane
     setMergeImplications();
     setNormalTypeImplications();
-    
-		gb.startLayout (inputPane, 3, 9);
-		gb.setByRows (false);
-		gb.setAllInsets (2);
-		gb.setDefaultRowWeight (0.0);
-    gb.setFill(GridBagger.NONE);
-    inputPane.setHgap(4);
-    inputPane.setVgap(4);
-		
-		// Column 0
-    gb.setBottomInset(6);
-    gb.add (openDataButton);
-    
-    gb.setTopInset(6);
-    gb.setBottomInset(2);
-    gb.add (inputTypeLabel);
-    gb.setAllInsets(2);
-    gb.add (inputTypeBox);
-    
-    gb.setRow(5);
-    gb.setTopInset(6);
-    gb.add (inputDirMaxDepthLabel);
-    gb.setAllInsets(2);
-    gb.add (inputDirMaxDepthValue);
-    gb.add (inputDirMaxDepthUpButton);
-    gb.add (inputDirMaxDepthDownButton);
-    
-    // Column 1
-    gb.nextColumn();
-    gb.setRow(1);
-    gb.setTopInset(6);
-    gb.add (inputDictionaryLabel);
-    gb.setAllInsets(2);
-    gb.add (inputDictionaryCkBox);
-    
-    if (normalization) {
-      gb.setRow(5);
-      gb.setTopInset(6);
-      gb.setBottomInset(2);
-      gb.add (inputNormalLabel);
-      gb.setAllInsets(2);
-      gb.add (inputNormalBox);
-    }
-    
-    // Column 2
-    gb.nextColumn();
-    gb.setRow(1);
-    gb.setTopInset(6);
-    gb.add (inputMergeLabel);
-    gb.setAllInsets(2);
-    gb.setTopInset(5);
-    gb.add (inputMergeNoButton);
-    gb.add (inputMergeButton);
-    gb.add (inputMergeSameColumnsButton);
-    
-    gb.setRow(5);
-    gb.setTopInset(6);
-    gb.add (explodeTagsLabel);
-    gb.setAllInsets(2);
-    gb.add (explodeTagsCkBox);
-    
-    // Bottom of Panel
-    gb.setRow(9);
-    gb.setColumn(0);
-    gb.setWidth (3);
-    gb.setRowWeight (1.0);
-    gb.add (inputText);
-
     inputTab.setContent(inputPane);
+    inputTab.setClosable(false);
     tabs.getTabs().add(inputTab);
-  }
+  } // end method setTabs
   
   /**
    Select the tab for this panel. 
@@ -757,13 +731,17 @@ public class TextMergeInput {
     dataRecList.initialize();
    
     initDataSets();
-    this.textMergeController.setListAvailable(false);
+    textMergeController.setListAvailable(false);
   }
   
   private void chooseAndOpen() {
     if (Home.runningOnMac() 
         && inputModule != null 
         && inputModule instanceof TextMergeInputMacApps) {
+      chooseAndOpenDirectory();
+    }
+    else
+    if (inputModule instanceof TextMergeInputNotenik) {
       chooseAndOpenDirectory();
     } else {
       chooseAndOpenFile();
@@ -839,7 +817,7 @@ public class TextMergeInput {
     
     log.recordEvent (LogEvent.NORMAL,
         "Rows before open: "
-            + String.valueOf(psList.totalSize()),
+            + String.valueOf(dataRecList.totalSize()),
         false);
     if (merge == 0) {
       dataDict = new DataDictionary();
@@ -925,7 +903,7 @@ public class TextMergeInput {
     }
     log.recordEvent (LogEvent.NORMAL,
         "Rows after open:  "
-            + String.valueOf(psList.totalSize()),
+            + String.valueOf(dataRecList.totalSize()),
         false);
   } // end openFileOrDirectory method
   
@@ -1018,7 +996,6 @@ public class TextMergeInput {
       dataRecList.setSource(new FileSpec(chosenFile));
 
       initDataSets();
-      
       /*
       if (openOutputDataButton != null) {
         openOutputDataButton.setEnabled (true);
@@ -1062,10 +1039,10 @@ public class TextMergeInput {
                   + " could not be opened successfully");
           alert.showAndWait();
         }
-      }
+      } // end catch block
       openOK = false;
       dataRecList.newListLoaded();
-    } // end try block
+    } // end catch block
     
     textMergeController.setListAvailable(openOK);
 
@@ -1266,8 +1243,8 @@ public class TextMergeInput {
   }
   
   private void initDataSets () {
-    psList.setComparator(new PSDefaultComparator());
-    psList.setInputFilter(null);
+    dataRecList.setComparator(new PSDefaultComparator());
+    dataRecList.setInputFilter(null);
     /*
     dataTable = new DataTable (filteredDataSet);
     numberOfFields = recDef.getNumberOfFields();

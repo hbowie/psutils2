@@ -29,16 +29,16 @@ package com.powersurgepub.psutils2.logging;
 public class Logger {
   
   /** Single shared occurrence of Logger. */
-  private static       Logger     sharedLogger;
+  private static        Logger     sharedLogger;
   
   /** Hold area for log messages received before any log output is available. */
-  private              ArrayList  hold = new ArrayList();
+  private               ArrayList  hold = new ArrayList();
   
   /** 
      The actual output destination for the log records. Note that this
      could also be a sub-class of LogOutput.
    */
-  private LogOutput    log;
+  private               LogOutput    logOutput = new LogOutputNone();
   
   /**
      Events with severities greater than or equal to this value will 
@@ -118,17 +118,17 @@ public class Logger {
      will be used.
    */
   public Logger () {
-    // this.log = new LogOutput();
+
   } // end Logger constructor
 
   /**
      The constructor to use when providing LogOutput
      as a parm.
     
-     @param log a destination for the log file.
+     @param logOutput a destination for the logOutput file.
    */
-  public Logger (LogOutput log) {
-    this.log = log;
+  public Logger (LogOutput logOutput) {
+    this.logOutput = logOutput;
   } // end Logger constructor
   
   /**
@@ -213,10 +213,11 @@ public class Logger {
   } // end writeData method
   
   private void writeLine (String line) {
-    if (log == null) {
+    if (logOutput == null
+        || logOutput instanceof LogOutputNone) {
       hold.add (line);
     } else {
-      log.writeLine (line);
+      logOutput.writeLine (line);
     }
   }
   
@@ -224,8 +225,8 @@ public class Logger {
      Closes the LogOutput destination.
    */
   public void close() {
-    if (log != null) {
-      log.close();
+    if (logOutput != null) {
+      logOutput.close();
     }
   }
   
@@ -234,28 +235,33 @@ public class Logger {
     
      @return The LogOutput destination being used.
    */
-  public LogOutput getLog ()     { return log; }
+  public LogOutput getLogOutput ()     { 
+    return logOutput; 
+  }
   
   /**
      Has a failure occurred?
     
      @return failure flag
    */
-  public boolean isFailure ()   { return failure; }
+  public boolean isFailure ()   { 
+    return failure; 
+  }
   
   /**
-     Change the log destination being used.
+     Change the logOutput destination being used.
     
-     @param log A new LogOutput destination.
+     @param logOutput A new LogOutput destination.
    */
-  public void setLog (LogOutput log) {
-    this.log = log;
-    if ((this.log != null) 
+  public void setLogOutput (LogOutput logOutput) {
+    this.logOutput = logOutput;
+    if ((this.logOutput != null
+        && (! (this.logOutput instanceof LogOutputNone)))
         && hold != null
         && (hold.size() > 0)) {
       for (int i = 0; i < hold.size(); i++) {
         String line = (String)hold.get (i);
-        this.log.writeLine (line);
+        this.logOutput.writeLine (line);
       }
       hold = null;
     }
@@ -316,7 +322,7 @@ public class Logger {
      the logging threshold.
    */
   public String toString () {
-    return "Logger " + log.toString() + " threshold=" + logThreshold;
+    return "Logger " + logOutput.toString() + " threshold=" + logThreshold;
   } // end toString method
 
 } // end Logger class

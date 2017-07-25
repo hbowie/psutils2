@@ -82,6 +82,9 @@ public class Home {
   private URL                 pageURL;
   private String              programHistory;
   private URL                 programHistoryURL;
+  
+  private MenuItem            aboutMenuItem;
+  
   private MenuItem            helpHistoryMenuItem;
   
   private MenuItem						helpUserGuideMenuItem;
@@ -591,9 +594,25 @@ public class Home {
    
     @param helpMenu JMenu acting as the Help menu. 
    */
-  public void setHelpMenu (Stage mainWindow, Menu helpMenu) {
+  public void setHelpMenu (Stage mainWindow, Menu helpMenu, AboutWindow aboutWindow) {
     
     this.mainWindow = mainWindow;
+    
+    int helpItems = 0;
+    
+    // Add About Menu Item
+    if (aboutWindow != null) {
+      aboutMenuItem = new MenuItem("About " + Home.getShared().getProgramName());
+      aboutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          WindowMenuManager.getShared().locateUpperLeftAndMakeVisible
+            (mainWindow, aboutWindow);
+        }
+      });
+      helpMenu.getItems().add(helpItems, aboutMenuItem);
+      helpItems++;
+    }
     
     // Add User Guide Menu Item
     helpUserGuideMenuItem = new MenuItem("User Guide");
@@ -604,7 +623,8 @@ public class Home {
       }
     });
 
-    helpMenu.getItems().add(0, helpUserGuideMenuItem);
+    helpMenu.getItems().add(helpItems, helpUserGuideMenuItem);
+    helpItems++;
     
     // Add Program History Menu Item
     helpHistoryMenuItem = new MenuItem("Program History");
@@ -614,10 +634,12 @@ public class Home {
         openProgramHistory();
       }
     });
-    helpMenu.getItems().add(1, helpHistoryMenuItem);
+    helpMenu.getItems().add(helpItems, helpHistoryMenuItem);
+    helpItems++;
     
     SeparatorMenuItem helpSep1 = new SeparatorMenuItem();
-    helpMenu.getItems().add(2, helpSep1);
+    helpMenu.getItems().add(helpItems, helpSep1);
+    helpItems++;
     
     // Add Check for Updates Menu Item
     helpCheckForUpdatesMenuItem = new MenuItem("Check for Updates...");
@@ -628,7 +650,8 @@ public class Home {
         ProgramVersion.getShared().informUserIfLatest();
       }
     }); 
-    helpMenu.getItems().add(3, helpCheckForUpdatesMenuItem);
+    helpMenu.getItems().add(helpItems, helpCheckForUpdatesMenuItem);
+    helpItems++;
     
     helpPSPubWebSite = new MenuItem (programName + " Home Page");
     helpPSPubWebSite.setOnAction(new EventHandler<ActionEvent>() {
@@ -637,7 +660,8 @@ public class Home {
         openHomePage();
       }
     });
-    helpMenu.getItems().add(4, helpPSPubWebSite);
+    helpMenu.getItems().add(helpItems, helpPSPubWebSite);
+    helpItems++;
     
     helpSubmitFeedbackMenuItem = new MenuItem ("Submit Feedback");
     helpSubmitFeedbackMenuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -646,10 +670,12 @@ public class Home {
         openURL ("mailto:support@powersurgepub.com");
       }
     });
-    helpMenu.getItems().add(5, helpSubmitFeedbackMenuItem);
+    helpMenu.getItems().add(helpItems, helpSubmitFeedbackMenuItem);
+    helpItems++;
     
     SeparatorMenuItem helpSep2 = new SeparatorMenuItem();
-    helpMenu.getItems().add(6, helpSep2);
+    helpMenu.getItems().add(helpItems, helpSep2);
+    helpItems++;
     
     helpReduceWindowSize = new MenuItem ("Reduce Window Size");
     KeyCombination kc 
@@ -661,9 +687,9 @@ public class Home {
         setDefaultScreenSizeAndLocation();
       }
     });
-    helpMenu.getItems().add(7, helpReduceWindowSize);
+    helpMenu.getItems().add(helpItems, helpReduceWindowSize);
+    helpItems++;
 
-    
   } // end method
   
   public void setDefaultScreenSizeAndLocation() {

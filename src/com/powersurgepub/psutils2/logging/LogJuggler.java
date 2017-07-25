@@ -16,6 +16,8 @@
 
 package com.powersurgepub.psutils2.logging;
 
+  import javafx.scene.control.*;
+
 /**
 
    A complete set of all the possible logging destinations.  
@@ -26,26 +28,26 @@ package com.powersurgepub.psutils2.logging;
 
 public class LogJuggler {
 
-  /** Requests null output when passed to setLog. */
+  /** Requests null output when passed to setLogOutput. */
   public    static final String LOG_NONE_STRING     = "None";
 
-  /** Requests System.out output when passed to setLog. */
+  /** Requests System.out output when passed to setLogOutput. */
   public    static final String LOG_WINDOW_STRING   = "Window";
 
-  /** Requests disk file output when passed to setLog. */
+  /** Requests disk file output when passed to setLogOutput. */
   public    static final String LOG_DISK_STRING     = "Disk"; 
 
-  /** Requests JTextArea output when passed to setLog. */
+  /** Requests JTextArea output when passed to setLogOutput. */
   public    static final String LOG_TEXT_STRING   	= "Text";
   
-  /** Requests System.out output when passed to setLog. */
+  /** Requests System.out output when passed to setLogOutput. */
   public    static final String LOG_SYSOUT_STRING   	= "SysOut";
 
   /** Default program ID to pass to the logging objects. */
   private    String    programID = "LogJuggler";
 
-  /** The current logging destination. */
-  private LogOutput    log;
+  /** The logger being used. */
+  private Logger         logger;
 
   /** A logging destination of a window. */
   private LogOutput      windowLog;
@@ -57,7 +59,7 @@ public class LogJuggler {
   private LogOutputDisk  diskLog;
 
   /** A logging destination of a text area. */
-  private LogWindow      textLog;
+  private LogOutputText  textLog;
   
   /** A logging destination of System.out. */
   private LogOutput      sysLog;
@@ -69,10 +71,7 @@ public class LogJuggler {
    */
 
   public LogJuggler () {
-    // noLog = new LogOutputNone();
-    // log = noLog;
-    // setLog (LOG_WINDOW_STRING);
-    setLog (Logger.getShared().getLog());
+    setLogger (Logger.getShared());
   } // end LogJuggler constructor
 
   /**
@@ -83,7 +82,7 @@ public class LogJuggler {
    */
 
   public LogJuggler (String programID) {
-    this();
+    setLogger (Logger.getShared());
     this.programID = programID;
   } 
 
@@ -92,14 +91,18 @@ public class LogJuggler {
 
      @return Current logging destination.
    */
-  public LogOutput getLog ()     { return log; }
+  public LogOutput getLogOutput ()     { 
+    return logger.getLogOutput(); 
+  }
 
   /** 
      Returns the current logging object. 
 
      @return Current logging object.
    */
-  public Logger   getLogger ()  { return Logger.getShared(); }
+  public Logger   getLogger ()  { 
+    return logger; 
+  }
 
   /**
      Sets the logging destination based on the String
@@ -113,38 +116,40 @@ public class LogJuggler {
 
                       All other values will also send output to System.out </ul>
    */
-  public void setLog (String logString) {
+  public void switchLogOutput (String logString) {
     if (logString.equals (LOG_NONE_STRING)) {
       if (noLog == null) {
         noLog = new LogOutputNone();
       }
-      log = noLog;
+      logger.setLogOutput(noLog);
     } else
     if (logString.equals (LOG_DISK_STRING)) {
       if (diskLog == null) {
         diskLog = new LogOutputDisk (programID);
       }
-      log = diskLog;
+      logger.setLogOutput(diskLog);
     } else 
-		if (logString.equals (LOG_TEXT_STRING)) {
-      if (textLog == null) {
-        textLog = new LogWindow(null);
-      }
-      log = textLog;
+		if (logString.equals (LOG_TEXT_STRING)
+        && textLog != null) {
+      logger.setLogOutput(textLog);
     } else
     if (logString.equals (LOG_SYSOUT_STRING)) {
       if (sysLog == null) {
         sysLog = new LogOutput ();
       }
-      log = sysLog;
+      logger.setLogOutput(sysLog);
     } else {
       if (windowLog == null) {
         windowLog = new LogOutput ();
       }
-      log = windowLog;
+      logger.setLogOutput(windowLog);
 		} 
-
-    Logger.getShared().setLog (log);
+  }
+  
+  public void setLogger(Logger logger) {
+    if (logger != null) {
+      this.logger = logger;
+    }
   }
 
   /**
@@ -152,9 +157,13 @@ public class LogJuggler {
 
      @param log A valid logging output destination.
    */
-  public void setLog (LogOutput log) {
-    this.log = log;
-    Logger.getShared().setLog (log);
+  public void setLogOutput (LogOutput logOutput) {
+    logger.setLogOutput(logOutput);
+  }
+  
+  public void setTextArea(TextArea textArea) {
+    textLog = new LogOutputText(textArea);
+    logger.setLogOutput(textLog);
   }
 
   /**
@@ -178,6 +187,20 @@ public class LogJuggler {
 			textLog.close();
 		}
 
+  }
+  
+  /**
+     Creates a LogEvent object and then records it.
+    
+     @param severity      the severity of the event
+    
+     @param message       the message to be written to the log
+    
+     @param dataRelated   indicates whether this event is related
+                          to preceding data.
+   */
+  public void recordEvent (int severity, String message, boolean dataRelated) {
+    logger.recordEvent(severity, message, dataRelated);
   }
 
   /**
