@@ -176,6 +176,14 @@ public class ComboBoxWidget
     }
   }
   
+  public void setSelectedIndex(int index) {
+    this.getSelectionModel().select(index);
+  }
+  
+  public String getSelectedString() {
+    return (String)this.getSelectionModel().getSelectedItem();
+  }
+  
   /**
    Add another item to the list displayed in the combo box. Keep the list
    in alphabetical order, and do not allow duplicates. 

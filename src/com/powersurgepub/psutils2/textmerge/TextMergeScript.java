@@ -62,7 +62,7 @@ public class TextMergeScript
   private     File                templateLibrary = null;
 
   private     TextMergeInput      inputModule = null;
-  // private     TextMergeFilter     filterModule = null;
+  private     TextMergeFilter     filterModule = null;
   // private     TextMergeSort       sortModule = null;
   // private     TextMergeTemplate   templateModule = null;
   // private     TextMergeOutput     outputModule = null;
@@ -176,11 +176,11 @@ public class TextMergeScript
     this.inputModule = inputModule;
   }
 
-  /*
   public void setFilterModule (TextMergeFilter filterModule) {
     this.filterModule = filterModule;
   }
 
+  /*
   public void setSortModule (TextMergeSort sortModule) {
     this.sortModule = sortModule;
   }
@@ -929,6 +929,7 @@ public class TextMergeScript
           ScriptConstants.NO_MODIFIER,
           ScriptConstants.PARAMS_OBJECT);
     }
+    */
     if (filterModule != null) {
       filterModule.playScript(
           ScriptConstants.CLEAR_ACTION,
@@ -941,7 +942,7 @@ public class TextMergeScript
           ScriptConstants.PARAMS_OBJECT,
           ScriptConstants.NO_VALUE);
     }
-    */
+
   }
 
   /**
@@ -995,7 +996,7 @@ public class TextMergeScript
       recentScripts.addRecentFile (inScriptFile);
     }
     // Fix this later!!!
-    // filterModule.initItemFilter();
+    filterModule.initItemFilter();
     while (! inScript.isAtEnd()) {
       try {
         inAction = inScript.nextRecordIn();
@@ -1137,7 +1138,7 @@ public class TextMergeScript
      Play one recorded action in the Filter module.
    */
   private void playFilterModule () {
-    /*
+    
     if (filterModule == null) {
       Logger.getShared().recordEvent(LogEvent.MEDIUM,
           "Filter module not available to play scripted filter action", false);
@@ -1148,7 +1149,6 @@ public class TextMergeScript
           inActionObject,
           inActionValue);
     }
-    */
   }
 
   /**
