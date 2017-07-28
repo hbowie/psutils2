@@ -93,5 +93,9 @@ public class FXUtils {
     grid.add(label, column, row, 1, 1);
     GridPane.setHgrow(label, Priority.SOMETIMES);
   }
+  
+  public void applyHeadingStyle(Label label) {
+    label.setStyle(labelHeadingStyle);
+  }
 
 }

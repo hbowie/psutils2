@@ -181,7 +181,16 @@ public class ComboBoxWidget
   }
   
   public String getSelectedString() {
-    return (String)this.getSelectionModel().getSelectedItem();
+    Object selected = this.getSelectionModel().getSelectedItem();
+    if (selected == null) {
+      return "";
+    }
+    else
+    if (selected instanceof String) {
+      return (String)this.getSelectionModel().getSelectedItem();
+    } else {
+      return selected.toString();
+    }
   }
   
   /**

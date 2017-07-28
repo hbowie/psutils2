@@ -63,9 +63,9 @@ public class TextMergeScript
 
   private     TextMergeInput      inputModule = null;
   private     TextMergeFilter     filterModule = null;
-  // private     TextMergeSort       sortModule = null;
+  private     TextMergeSort       sortModule = null;
   // private     TextMergeTemplate   templateModule = null;
-  // private     TextMergeOutput     outputModule = null;
+  private     TextMergeOutput     outputModule = null;
 
   private     TabPane             tabs = null;
   private     Tab                 scriptTab = null;
@@ -180,11 +180,11 @@ public class TextMergeScript
     this.filterModule = filterModule;
   }
 
-  /*
   public void setSortModule (TextMergeSort sortModule) {
     this.sortModule = sortModule;
   }
-
+  
+  /*
   public void setTemplateModule (TextMergeTemplate templateModule) {
     this.templateModule = templateModule;
   }
@@ -197,11 +197,10 @@ public class TextMergeScript
       return templateModule.getTemplateLibrary();
     }
   }
-
+  */
   public void setOutputModule (TextMergeOutput outputModule) {
     this.outputModule = outputModule;
   }
-  */
   
   private File getTemplateLibrary() {
     return null;
@@ -918,7 +917,7 @@ public class TextMergeScript
   }
 
   public void clearSortAndFilterSettings() {
-    /*
+
     if (sortModule != null) {
       sortModule.playSortModule(
           ScriptConstants.CLEAR_ACTION,
@@ -929,7 +928,7 @@ public class TextMergeScript
           ScriptConstants.NO_MODIFIER,
           ScriptConstants.PARAMS_OBJECT);
     }
-    */
+
     if (filterModule != null) {
       filterModule.playScript(
           ScriptConstants.CLEAR_ACTION,
@@ -1100,7 +1099,7 @@ public class TextMergeScript
      Play one recorded action in the Sort module.
    */
   private void playSortModule () {
-    /*
+    
     if (sortModule == null) {
       Logger.getShared().recordEvent(LogEvent.MEDIUM,
           "Sort module not available to play scripted sort action", false);
@@ -1110,14 +1109,14 @@ public class TextMergeScript
           inActionModifier,
           inActionObject);
     }
-    */
+    
   } // end playSortModule method
 
   /**
      Play one recorded action in the Combine module.
    */
   private void playCombineModule () {
-    /*
+    
     if (sortModule == null
         || (! sortModule.isCombineAllowed())) {
       Logger.getShared().recordEvent(LogEvent.MEDIUM,
@@ -1131,7 +1130,7 @@ public class TextMergeScript
           inActionValueAsInt,
           inActionValueValidInt);
     }
-    */
+    
   } // end playCombineModule method
 
   /**
@@ -1155,7 +1154,7 @@ public class TextMergeScript
      Play one recorded action in the Output module.
    */
   private void playOutputModule () {
-    /*
+    
     if (outputModule == null) {
       Logger.getShared().recordEvent(LogEvent.MEDIUM,
           "Output module not available to play scripted filter action", false);
@@ -1166,8 +1165,8 @@ public class TextMergeScript
           inActionObject,
           inActionValue);
     }
-    */
-  /*
+    
+    /*
     if (inActionAction.equals (ScriptConstants.SET_ACTION)
       && inActionObject.equals (ScriptConstants.USING_DICTIONARY_OBJECT)) {
       usingDictionary = Boolean.valueOf(inActionValue).booleanValue();
