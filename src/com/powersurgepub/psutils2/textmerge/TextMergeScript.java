@@ -27,7 +27,6 @@ package com.powersurgepub.psutils2.textmerge;
   import java.io.*;
   import java.net.*;
 
- 	import javafx.collections.*;
  	import javafx.event.*;
  	import javafx.scene.control.*;
  	import javafx.scene.control.Alert.*;
@@ -57,39 +56,34 @@ public class TextMergeScript
 
   private     ScriptExecutor      scriptExecutor = null;
 
-  private     PSList              psList = null;
+  private     DataRecList         list = null;
 
   private     File                templateLibrary = null;
 
   private     TextMergeInput      inputModule = null;
   private     TextMergeFilter     filterModule = null;
   private     TextMergeSort       sortModule = null;
-  // private     TextMergeTemplate   templateModule = null;
+  private     TextMergeTemplate   templateModule = null;
   private     TextMergeOutput     outputModule = null;
 
   private     TabPane             tabs = null;
-  private     Tab                 scriptTab = null;
   private     MenuBar             menus = null;
 
   private     File                currentDirectory = null;
   private			String							normalizerPath = "";
 
-  // Fields used for the User Interface
-  private     Border              raisedBevel;
-  private     Border              etched;
-  private     GridBagger          gb = new GridBagger();
-
   // Script panel objects
-  private     GridPane            scriptPanel;
-  private     Button              scriptRecordButton  = new Button();
-  private     Button              scriptStopButton    = new Button();
-  private     Button              scriptPlayButton    = new Button();
-  private     Button              scriptReplayButton  = new Button();
-  private     Button              scriptAutoPlayButton = new Button();
-  private     Button              scriptEasyPlayButton = new Button();
-  private     Label							  scriptPlaceHolder;
-  private     StringBuilder       scriptTextBuilder = new StringBuilder();
-  private     TextArea            scriptText = new TextArea("");
+  private     FXUtils             fxUtils;
+  private     Tab scriptTab = null;
+  private     GridPane scriptPane;
+  private     Button scriptRecordButton;
+  private     Button scriptPlayButton;
+  private     Button scriptAutoPlayButton;
+  private     Button scriptStopButton;
+  private     Button scriptReplayButton;
+  private     Button scriptEasyPlayButton;
+	private			StringBuilder scriptText;
+  private     TextArea scriptTextArea;
 
 	private     boolean             scriptRecording = false;
 
@@ -109,7 +103,7 @@ public class TextMergeScript
   private     Menu                recentScriptsMenu = null;
 
   // Easy Play panel objects
-  private     GridPane              easyPlayGrid = null;
+  private     GridPane            easyPlayPane = null;
 
 	/*
 	   Scripting stuff
@@ -134,9 +128,9 @@ public class TextMergeScript
   private     String              easyPlay = "";
   private     File                easyPlayFolder = null;
 
-  public TextMergeScript (Window ownerWindow, PSList psList) {
+  public TextMergeScript (Window ownerWindow, DataRecList list) {
     this.ownerWindow = ownerWindow;
-    this.psList = psList;
+    this.list = list;
     setListOptions();
   }
 
@@ -167,8 +161,8 @@ public class TextMergeScript
     return played;
   }
 
-  public void setPSList (PSList psList) {
-    this.psList = psList;
+  public void setList (DataRecList list) {
+    this.list = list;
     setListOptions();
   }
 
@@ -184,7 +178,6 @@ public class TextMergeScript
     this.sortModule = sortModule;
   }
   
-  /*
   public void setTemplateModule (TextMergeTemplate templateModule) {
     this.templateModule = templateModule;
   }
@@ -197,13 +190,9 @@ public class TextMergeScript
       return templateModule.getTemplateLibrary();
     }
   }
-  */
+  
   public void setOutputModule (TextMergeOutput outputModule) {
     this.outputModule = outputModule;
-  }
-  
-  private File getTemplateLibrary() {
-    return null;
   }
 
   /**
@@ -371,129 +360,131 @@ public class TextMergeScript
 
     this.tabs = tabs;
 
-		scriptPanel = new GridPane();
-
-		// Button to record a script
-		scriptRecordButton.setText("Record");
-		scriptRecordButton.setVisible(true);
-		scriptRecordButton.setTooltip(new Tooltip("Start recording your actions"));
-		scriptRecordButton.setOnAction(new EventHandler<ActionEvent>() 
-		  {
-		    @Override
-        public void handle(ActionEvent evt) {
-          startScriptRecording();
-		    } // end ActionPerformed method
-		  } // end action listener for script record button
-		);
-
-    // Button to stop recording
-		scriptStopButton.setText("Stop");
-		scriptStopButton.setVisible(true);
-		scriptStopButton.setTooltip(new Tooltip("Stop recording"));
-		scriptStopButton.setOnAction(new EventHandler<ActionEvent>() 
-		  {
-		    @Override      public void handle(ActionEvent evt) {
-		      stopScriptRecordingUI();
-		    } // end ActionPerformed method
-		  } // end action listener for script stop button
-		);
-
-    // Set Off Initially
+    buildUI();
+    
     scriptStopButton.setDisable (true);
-
-    // Button to playback a script that has already been recorded
-		scriptPlayButton.setText("Play");
-		scriptPlayButton.setVisible(true);
-		scriptPlayButton.setTooltip
-        (new Tooltip("Play back a previously recorded script"));
-		scriptPlayButton.setOnAction(new EventHandler<ActionEvent>() 
-		  {
-		    @Override
-        public void handle(ActionEvent evt) {
-          startScriptPlaying();
-		    } // end ActionPerformed method
-		  } // end action listener for script play button
-		);
-
-    // Button to replay the script just played/recorded
-		scriptReplayButton.setText("Play Again");
-		scriptReplayButton.setVisible(true);
-		scriptReplayButton.setTooltip(new Tooltip("Replay the last script"));
-		scriptReplayButton.setOnAction(new EventHandler<ActionEvent>() 
-		  {
-		    @Override
-        public void handle(ActionEvent evt) {
-          startScriptPlayingAgain();
-		    } // end ActionPerformed method
-		  } // end action listener for script play button
-		);
-
-    // Set Off Initially
     setScriptReplayControls();
-
-    // Button to set an auto play script
-    if (autoplayAllowed) {
-      scriptAutoPlayButton.setVisible(true);
-      scriptAutoPlayButton.setTooltip
-        (new Tooltip("Select a script to automatically play at startup"));
-      scriptAutoPlayButton.setOnAction(new EventHandler<ActionEvent>() 
-        {
-          @Override      public void handle(ActionEvent evt) {
-            toggleAutoPlay();
-          } // end ActionPerformed method
-        } // end action listener for script play button
-      );
-    }
-
-    // Button to set an easy play folder
-		scriptEasyPlayButton.setVisible(true);
-		scriptEasyPlayButton.setTooltip(new Tooltip
-        ("Select a folder of scripts to be invoked via buttons"));
-		scriptEasyPlayButton.setOnAction(new EventHandler<ActionEvent>() 
-		  {
-		    @Override      public void handle(ActionEvent evt) {
-          toggleEasyPlay();
-		    } // end ActionPerformed method
-		  } // end action listener for script play button
-		);
-
-    // Create place holder for third column
-    scriptPlaceHolder
-        = new Label ("                            ");
-    scriptPlaceHolder.setTextAlignment(TextAlignment.CENTER);
-
-		scriptText.setWrapText (true);
-		scriptText.setEditable (false);
-		scriptText.setVisible (true);
-
-		gb.startLayout (scriptPanel, 3, 3);
-		gb.setDefaultRowWeight (0.0);
-
-		gb.setAllInsets (1);
-
-		gb.add (scriptRecordButton);
-		gb.add (scriptPlayButton);
-    if (autoplayAllowed) {
-      gb.add (scriptAutoPlayButton);
-    }
-
-    gb.add (scriptStopButton);
-		gb.add (scriptReplayButton);
-    gb.add (scriptEasyPlayButton);
-    // gb.add (scriptPlaceHolder);
-
-		gb.nextRow ();
-
-		gb.setWidth (3);
-		gb.setRowWeight (1.0);
-		gb.add (scriptText);
-
-    scriptTab = new Tab("Script");
-    scriptTab.setContent(scriptPanel);
+    
     tabs.getTabs().add(scriptTab);
 
     addEasyPlayTabIfRequested();
   }
+  
+  /**
+   Build the user interface
+   */
+	private void buildUI() {
+
+    fxUtils = FXUtils.getShared();
+    int rowCount = 0;
+
+		scriptTab = new Tab("Script");
+
+		scriptPane = new GridPane();
+		fxUtils.applyStyle(scriptPane);
+
+		scriptRecordButton = new Button("Record");
+		Tooltip scriptRecordButtonTip = new Tooltip("Start recording your actions");
+    Tooltip.install(scriptRecordButton, scriptRecordButtonTip);
+    scriptRecordButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        startScriptRecording();
+		  } // end handle method
+		}); // end event handler
+		scriptPane.add(scriptRecordButton, 0, rowCount, 1, 1);
+		scriptRecordButton.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptRecordButton, Priority.SOMETIMES);
+
+		scriptPlayButton = new Button("Play");
+		Tooltip scriptPlayButtonTip = new Tooltip("Play back a previously recorded script");
+    Tooltip.install(scriptPlayButton, scriptPlayButtonTip);
+    scriptPlayButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        startScriptPlaying();
+		  } // end handle method
+		}); // end event handler
+		scriptPane.add(scriptPlayButton, 1, rowCount, 1, 1);
+		scriptPlayButton.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptPlayButton, Priority.SOMETIMES);
+
+    if (autoplayAllowed) {
+      scriptAutoPlayButton = new Button("Turn Auto Play On");
+      scriptAutoPlayButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          toggleAutoPlay();
+        } // end handle method
+      }); // end event handler
+      scriptPane.add(scriptAutoPlayButton, 2, rowCount, 1, 1);
+      scriptAutoPlayButton.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setHgrow(scriptAutoPlayButton, Priority.SOMETIMES);
+    }
+
+		rowCount++;
+
+		scriptStopButton = new Button("Stop");
+		Tooltip scriptStopButtonTip = new Tooltip("Stop recording");
+    Tooltip.install(scriptStopButton, scriptStopButtonTip);
+    scriptStopButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        stopScriptRecordingUI();
+		  } // end handle method
+		}); // end event handler
+		scriptPane.add(scriptStopButton, 0, rowCount, 1, 1);
+		scriptStopButton.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptStopButton, Priority.SOMETIMES);
+
+		scriptReplayButton = new Button("Play Again");
+		Tooltip scriptReplayButtonTip = new Tooltip("Replay the last script");
+    Tooltip.install(scriptReplayButton, scriptReplayButtonTip);
+    scriptReplayButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        startScriptPlayingAgain();
+		  } // end handle method
+		}); // end event handler
+		scriptPane.add(scriptReplayButton, 1, rowCount, 1, 1);
+		scriptReplayButton.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptReplayButton, Priority.SOMETIMES);
+
+		scriptEasyPlayButton = new Button("Turn Easy Play On");
+    scriptEasyPlayButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        toggleEasyPlay();
+		  } // end handle method
+		}); // end event handler
+		scriptPane.add(scriptEasyPlayButton, 2, rowCount, 1, 1);
+		scriptEasyPlayButton.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptEasyPlayButton, Priority.SOMETIMES);
+
+		rowCount++;
+
+		scriptText = new StringBuilder();
+		scriptTextArea = new TextArea();
+		scriptPane.add(scriptTextArea, 0, rowCount, 3, 1);
+		scriptTextArea.setMaxWidth(Double.MAX_VALUE);
+		GridPane.setHgrow(scriptTextArea, Priority.ALWAYS);
+		scriptTextArea.setMaxHeight(Double.MAX_VALUE);
+		scriptTextArea.setPrefRowCount(100);
+		GridPane.setVgrow(scriptTextArea, Priority.ALWAYS);
+		scriptTextArea.setPrefRowCount(100);
+		scriptTextArea.setWrapText(true);
+
+		rowCount++;
+
+		scriptTab.setContent(scriptPane);
+		scriptTab.setClosable(false);
+  } // end method buildUI
+
+	private void appendScriptText(String text) {
+		scriptText.append(text);
+		scriptTextArea.setText(scriptText.toString());
+	}
+
 
   private void setListOptions() {
 
@@ -501,16 +492,16 @@ public class TextMergeScript
     scriptDirectory = null;
     templateLibrary = null;
     easyPlay = "";
-    if (tabs != null && easyPlayGrid != null) {
+    if (tabs != null && easyPlayPane != null) {
       removeEasyPlayTab();
     }
 
-    if (psList == null) {
-      // System.out.println ("  psList is null");
+    if (list == null) {
+      // System.out.println ("  list is null");
     } else {
 
       // Set current directory
-      FileSpec source = psList.getSource();
+      FileSpec source = list.getSource();
       if (source != null) {
         currentDirectory = source.getFolder();
       } else {
@@ -762,8 +753,8 @@ public class TextMergeScript
   }
 
   private void saveEasyPlay() {
-    if (psList != null) {
-      FileSpec fileSpec = psList.getSource();
+    if (list != null) {
+      FileSpec fileSpec = list.getSource();
       if (fileSpec != null) {
         fileSpec.setEasyPlay(easyPlay);
       }
@@ -775,26 +766,27 @@ public class TextMergeScript
 	 */
 	private void addEasyPlayTab (String easyPlay) {
 
-    easyPlayGrid = new GridPane();
-
-    gb.startLayout (easyPlayGrid, 3, 6);
-		gb.setDefaultRowWeight (0.0);
-		gb.setAllInsets (1);
+    easyPlayPane = new GridPane();
+		fxUtils.applyStyle(scriptPane);
 
     easyPlayFolder = new File (easyPlay);
     String[] scripts = easyPlayFolder.list();
+    
+    int row = 0;
+    int column = 0;
+    
     for (int i = 0; i < scripts.length; i++) {
       File scriptFile = new File (easyPlayFolder, scripts[i]);
       FileName scriptName = new FileName(scriptFile);
       if (scriptName.getExt().equalsIgnoreCase(SCRIPT_EXT)) {
+    
         Button easyPlayButton = new Button(scriptName.getBase());
         easyPlayButton.setTooltip(new Tooltip
             ("Play " + scriptName.getBase() + "." + SCRIPT_EXT
             + " from " + easyPlay));
         easyPlayButton.setMinSize(200, 28);
         easyPlayButton.setVisible(true);
-        easyPlayButton.setOnAction(new EventHandler<ActionEvent>()
-        {
+        easyPlayButton.setOnAction(new EventHandler<ActionEvent>() {
           @Override      
           public void handle(ActionEvent evt) {
             inScriptFile = new File
@@ -803,12 +795,19 @@ public class TextMergeScript
             playScript();
           }
         });
-        gb.add(easyPlayButton);
+        scriptPane.add(easyPlayButton, column, row, 1, 1);
+        easyPlayButton.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setHgrow(easyPlayButton, Priority.SOMETIMES);
+        column++;
+        if (column > 2) {
+          row++;
+          column = 0;
+        }
       } // end if directory entry ends with script extension
     } // end for each directory entry
     
     Tab easyPlayTab = new Tab("Easy");
-    easyPlayTab.setContent(easyPlayGrid);
+    easyPlayTab.setContent(easyPlayPane);
     tabs.getTabs().add(0, easyPlayTab);
 
 	} // end method addEasyPlayTab
@@ -880,15 +879,15 @@ public class TextMergeScript
 
   private void saveScriptDirectory() {
 
-    if (psList != null) {
-      FileSpec source = psList.getSource();
+    if (list != null) {
+      FileSpec source = list.getSource();
       if (source != null) {
         source.setScriptsFolder(scriptDirectory);
       } else {
         // System.out.println ("TextMergeScript.saveScriptDirectory source is null");
       }
     } else {
-      // System.out.println ("TextMergeScript.saveScriptDirectory psList is null");
+      // System.out.println ("TextMergeScript.saveScriptDirectory list is null");
     }
   }
 
@@ -1067,14 +1066,9 @@ public class TextMergeScript
     setScriptReplayControls();
     selectTab();
   } // end method playScript
-  
-  private void appendScriptText(String str) {
-    scriptTextBuilder.append(str);
-    scriptText.setText(scriptTextBuilder.toString());
-  }
 
   private void removeEasyPlayTab() {
-    tabs.getTabs().remove(easyPlayGrid);
+    tabs.getTabs().remove(easyPlayPane);
   }
 
   /**
@@ -1196,7 +1190,7 @@ public class TextMergeScript
      Play one recorded action in the Template module.
    */
   private void playTemplateModule () {
-    /*
+    
     if (templateModule == null) {
       Logger.getShared().recordEvent(LogEvent.MEDIUM,
           "Template module not available to play scripted template action", false);
@@ -1207,7 +1201,7 @@ public class TextMergeScript
           inActionObject,
           inActionValue);
     }
-    */
+    
   } // end playTemplateModule method
 
   private void playCallbackModule() {

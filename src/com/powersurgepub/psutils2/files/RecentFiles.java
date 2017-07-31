@@ -501,10 +501,11 @@ public class RecentFiles {
   private MenuItem createMenuItem (FileSpec fileSpec) {
 
     // Create the new menu item
-    Label label = new Label(fileSpec.getCollectionTitle());
-    Tooltip tip = new Tooltip(fileSpec.getDisplayName());
-    Tooltip.install(label, tip);
-    CustomMenuItem menuItem = new CustomMenuItem(label);
+    // Label label = new Label(fileSpec.getCollectionTitle());
+    // Tooltip tip = new Tooltip(fileSpec.getDisplayName());
+    // Tooltip.install(label, tip);
+    // CustomMenuItem customMenuItem = new CustomMenuItem(label);
+    MenuItem menuItem = new MenuItem(fileSpec.getCollectionTitle());
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
