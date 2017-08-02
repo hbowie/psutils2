@@ -39,6 +39,27 @@ public class FXUtils {
   private Pos    gridAlignment = Pos.TOP_LEFT;
   private String gridStyle = "-fx-padding: 10; ";
   
+  private double labelMaxWidth = 120;
+  private double labelMaxHeight = 25;
+  private double labelMinWidth = 100;
+  private double labelMinHeight = 19;
+  private double labelPrefWidth = 100;
+  private double labelPrefHeight = 19;
+  
+  private double buttonMaxWidth = 150;
+  private double buttonMaxHeight = 35;
+  private double buttonMinWidth = 130;
+  private double buttonMinHeight = 29;
+  private double buttonPrefWidth = 130;
+  private double buttonPrefHeight = 29;
+  
+  private double comboBoxMaxWidth = Double.MAX_VALUE;
+  private double comboBoxMaxHeight = Double.MAX_VALUE;
+  private double comboBoxMinWidth = 169;
+  private double comboBoxMinHeight = 27;
+  private double comboBoxPrefWidth = 169;
+  private double comboBoxPrefHeight = 27;
+  
   private     String                labelHeadingStyle =
       "-fx-border-color: gray; " +
       "-fx-border-width: 1; " + 
@@ -96,6 +117,24 @@ public class FXUtils {
   
   public void applyHeadingStyle(Label label) {
     label.setStyle(labelHeadingStyle);
+  }
+  
+  public void standardize (Label label) {
+    label.setMaxSize(labelMaxWidth, labelMaxHeight);
+    label.setMinSize(labelMinWidth, labelMinHeight);
+    label.setPrefSize(labelPrefWidth, labelPrefHeight);
+  }
+  
+  public void standardize (Button button) {
+    button.setMaxSize(buttonMaxWidth, buttonMaxHeight);
+    button.setMinSize(buttonMinWidth, buttonMinHeight);
+    button.setPrefSize(buttonPrefWidth, buttonPrefHeight);
+  }
+  
+  public void standardize (ComboBox cb) {
+    cb.setMaxSize(comboBoxMaxWidth, comboBoxMaxHeight);
+    cb.setMinSize(comboBoxMinWidth, comboBoxMinHeight);
+    cb.setPrefSize(comboBoxPrefWidth, comboBoxPrefHeight);
   }
 
 }

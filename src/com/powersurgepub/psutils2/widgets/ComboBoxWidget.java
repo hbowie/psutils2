@@ -136,10 +136,22 @@ public class ComboBoxWidget
     this.getItems().add(item);
   }
   
+  public void addItem(Object obj) {
+    this.getItems().add(obj);
+  }
+  
+  public void insertItemAt(String item, int i) {
+    this.getItems().add(i, item);
+  }
+  
   public void removeAllItems() {
     while (this.getItems().size() > 0) {
       this.getItems().remove(0);
     }
+  }
+  
+  public void removeItemAt(int i) {
+    this.getItems().remove(i);
   }
   
   public int getItemCount() {
@@ -191,6 +203,10 @@ public class ComboBoxWidget
     } else {
       return selected.toString();
     }
+  }
+  
+  public int getSelectedIndex() {
+    return this.getSelectionModel().getSelectedIndex();
   }
   
   /**
