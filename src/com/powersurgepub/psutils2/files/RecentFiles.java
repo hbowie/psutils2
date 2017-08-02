@@ -509,40 +509,13 @@ public class RecentFiles {
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
-        fileRecentMenuItemActionPerformed(evt);
-      }
-    });
-    return menuItem;
-  } // end method
-
-  /**
-    Action listener for recent file menu items.
-
-    @param evt = Action event.
-   */
-  private void fileRecentMenuItemActionPerformed(ActionEvent evt) {
-    EventTarget target = evt.getTarget();
-    if (target instanceof MenuItem) {
-      MenuItem mi = (MenuItem)target;
-      String name = mi.getText();
-      int i = 0;
-      boolean found = false;
-      FileSpec fileSpec = null;
-      while (i < files.size() && (! found)) {
-        fileSpec = get(i);
-        if (name.equals(fileSpec.getPath())) {
-          found = true;
-        } else {
-          i++;
-        }
-      }
-      if (found) {
         File file = new File(fileSpec.getPath());
         if (file.exists()) {
           fileOpener.handleOpenFile(fileSpec);
         }
       }
-    }
+    });
+    return menuItem;
   } // end method
   
   public FileSpec get(File file) {
