@@ -219,6 +219,18 @@ public class TagsNodeValue {
     this.treeLevel = treeLevel;
   }
   
+  public void setChildLevel(int parentLevel) {
+    this.treeLevel = parentLevel + 1;
+  }
+  
+  public void setSiblingLevel(int siblingLevel) {
+    this.treeLevel = siblingLevel;
+  }
+  
+  public void setParentLevel(int childLevel) {
+    this.treeLevel = childLevel - 1;
+  }
+  
   /**
    Gets the level of this node in the tree. 
   

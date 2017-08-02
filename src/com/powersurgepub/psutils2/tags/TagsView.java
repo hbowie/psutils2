@@ -652,7 +652,7 @@ public class TagsView {
 
   /**
    Get the next node following the current one, in a depth-first progression
-   through the tree.
+   through the tree. Will ensure that the treeLevel property is accurately set. 
 
    @param startingNode The node we're starting with.
    @return The next node, or null if we've traversed the entire tree.
@@ -667,14 +667,24 @@ public class TagsView {
 
     if (currNode.getChildren().size() > 0) {
       nextUp = currNode.getChildren().get(0);
+      nextUp.getValue().setChildLevel(level);
     } else {
       nextUp = currNode.nextSibling();
+      if (nextUp != null) {
+        nextUp.getValue().setSiblingLevel(level);
+      }
       noMoreSiblings = (nextUp == null);
       while (level > 0 && noMoreSiblings) {
         nextUp = currNode.getParent();
+        if (nextUp != null) {
+          nextUp.getValue().setParentLevel(currNode.getValue().getTreeLevel());
+        }
         currNode = nextUp;
         level = currNode.getValue().getTreeLevel();
         nextUp = currNode.nextSibling();
+        if (nextUp != null) {
+          nextUp.getValue().setSiblingLevel(level);
+        }
         noMoreSiblings = (nextUp == null);
       } // While looking for next sibling at a higher level
     } // end if node has no children
