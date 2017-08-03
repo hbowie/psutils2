@@ -19,6 +19,7 @@ package com.powersurgepub.psutils2.files;
 	import com.powersurgepub.psutils2.basic.*;
   import com.powersurgepub.psutils2.env.*;
 	import com.powersurgepub.psutils2.logging.*;
+  import com.powersurgepub.psutils2.prefs.*;
 	import com.powersurgepub.psutils2.ui.*;
 
   import java.io.*;
@@ -37,7 +38,9 @@ package com.powersurgepub.psutils2.files;
  
  @author Herb Bowie
  */
-public class FilePrefs {
+public class FilePrefs 
+    implements
+      PrefSet {
   
   public static final String BACKUP_FREQUENCY             = "backup-frequency";
   public static final String OCCASIONAL_BACKUPS           = "occasional-backups";
@@ -308,10 +311,6 @@ public class FilePrefs {
   
   public Tab getTab() {
     return tab;
-  }
-  
-  public Pane getPane() {
-    return grid;
   }
   
   public void addTab(TabPane tabs) {
@@ -734,54 +733,6 @@ public class FilePrefs {
   }
   
   /**
-   Save the preferences that were last specified by the user. 
-   */
-  public void savePrefs() {
-    
-    // Save backup prefs
-    if (manualBackupsButton.isSelected()) {
-      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, MANUAL_BACKUPS);
-    }
-    else
-    if (automaticBackupsButton.isSelected()) {
-      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, AUTOMATIC_BACKUPS);
-    } else {
-      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, OCCASIONAL_BACKUPS);
-    }
-    
-    // Save backups to keep
-    UserPrefs.getShared().setPref
-        (BACKUPS_TO_KEEP, backupsToKeepSlider.getValue());
-    
-    // Save recent files max
-    UserPrefs.getShared().setPref
-        (RECENT_FILES_MAX, recentFilesMaxSlider.getValue());
-    
-    // Save startup file launch prefs
-    if (startupComboBox.getSelectionModel().getSelectedIndex() == NO_FILE_INDEX) {
-      UserPrefs.getShared().setPref(LAUNCH_AT_STARTUP, NO_FILE);
-    }
-    else
-    if (startupComboBox.getSelectionModel().getSelectedIndex() == LAST_FILE_OPENED_INDEX) {
-      UserPrefs.getShared().setPref(LAUNCH_AT_STARTUP, LAST_FILE_OPENED);
-    } else {
-      FileSpec selectedFileSpec = getStartupFileSpec();
-      UserPrefs.getShared().setPref
-          (LAUNCH_AT_STARTUP, selectedFileSpec.getPath());
-    }
-    
-    // Save Essential file prefs
-    UserPrefs.getShared().setPref(ESSENTIAL_PATH, essentialPath);
-    
-    // Save purge inaccessible files prefs
-    if (purgeWhenComboBox.getSelectionModel().getSelectedIndex() == AT_STARTUP_INDEX) {
-      UserPrefs.getShared().setPref(PURGE_INACCESSIBLE_FILES, AT_STARTUP);
-    } else {
-      UserPrefs.getShared().setPref(PURGE_INACCESSIBLE_FILES, NEVER);
-    }
-  }
-  
-  /**
    Handle a major event that could threaten data integrity (and thus
    should prompt a backup).
   
@@ -1065,17 +1016,17 @@ public class FilePrefs {
 
 private void manualBackupsButtonActionPerformed() {                                                    
   msgToUser.setText(" ");
-  savePrefs();
+  save();
 }                                                   
 
 private void occasionalBackupsButtonActionPerformed(ActionEvent evt) {                                                        
   msgToUser.setText(" ");
-  savePrefs();
+  save();
 }                                                       
 
 private void automaticBackupsButtonActionPerformed(ActionEvent evt) {                                                       
   msgToUser.setText(" ");
-  savePrefs();
+  save();
 }                                                      
 
   private void recentFilesMaxSliderStateChanged() {                                                  
@@ -1157,4 +1108,71 @@ private void automaticBackupsButtonActionPerformed(ActionEvent evt) {
       }
     }
   }    
+  
+  /**
+   Get the title for this set of preferences. 
+  
+   @return The title for this set of preferences. 
+  */
+  public String getTitle() {
+    return "Files";
+  }
+  
+  /**
+   Get a JavaFX Pane presenting all the preferences in this set to the user. 
+  
+   @return The JavaFX Pane containing Controls allowing the user to update
+           all the preferences in this set. 
+  */
+  public Pane getPane() {
+    return grid;
+  }
+  
+  /**
+   Save all of these preferences to disk, so that they can be restored
+   for the user at a later time. 
+  */
+  public void save() {
+    // Save backup prefs
+    if (manualBackupsButton.isSelected()) {
+      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, MANUAL_BACKUPS);
+    }
+    else
+    if (automaticBackupsButton.isSelected()) {
+      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, AUTOMATIC_BACKUPS);
+    } else {
+      UserPrefs.getShared().setPref(BACKUP_FREQUENCY, OCCASIONAL_BACKUPS);
+    }
+    
+    // Save backups to keep
+    UserPrefs.getShared().setPref
+        (BACKUPS_TO_KEEP, backupsToKeepSlider.getValue());
+    
+    // Save recent files max
+    UserPrefs.getShared().setPref
+        (RECENT_FILES_MAX, recentFilesMaxSlider.getValue());
+    
+    // Save startup file launch prefs
+    if (startupComboBox.getSelectionModel().getSelectedIndex() == NO_FILE_INDEX) {
+      UserPrefs.getShared().setPref(LAUNCH_AT_STARTUP, NO_FILE);
+    }
+    else
+    if (startupComboBox.getSelectionModel().getSelectedIndex() == LAST_FILE_OPENED_INDEX) {
+      UserPrefs.getShared().setPref(LAUNCH_AT_STARTUP, LAST_FILE_OPENED);
+    } else {
+      FileSpec selectedFileSpec = getStartupFileSpec();
+      UserPrefs.getShared().setPref
+          (LAUNCH_AT_STARTUP, selectedFileSpec.getPath());
+    }
+    
+    // Save Essential file prefs
+    UserPrefs.getShared().setPref(ESSENTIAL_PATH, essentialPath);
+    
+    // Save purge inaccessible files prefs
+    if (purgeWhenComboBox.getSelectionModel().getSelectedIndex() == AT_STARTUP_INDEX) {
+      UserPrefs.getShared().setPref(PURGE_INACCESSIBLE_FILES, AT_STARTUP);
+    } else {
+      UserPrefs.getShared().setPref(PURGE_INACCESSIBLE_FILES, NEVER);
+    }
+  }
 }

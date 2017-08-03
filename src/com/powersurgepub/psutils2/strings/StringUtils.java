@@ -16,11 +16,13 @@
 
 package com.powersurgepub.psutils2.strings;
 
-import com.powersurgepub.psutils2.basic.GlobalConstants;
-import com.powersurgepub.psutils2.strings.StringConverter;
-  import java.awt.*;
+  import com.powersurgepub.psutils2.basic.*;
+
   import java.io.*;
+  import java.math.*;
   import java.net.*;
+
+  import javafx.scene.paint.*;
   
 /**
    A utility class containing static methods to do things
@@ -632,22 +634,26 @@ public class StringUtils {
   
   public static String colorToHexString (Color color) {
     if (color == null) {
-      int red = Color.WHITE.getRed();
-      int green = Color.WHITE.getGreen();
-      int blue = Color.WHITE.getBlue();
-      return (oneColorToHexString(red) 
-          + oneColorToHexString(green)
-          + oneColorToHexString(blue));
+      return (oneColorToHexString(255) 
+          + oneColorToHexString(255)
+          + oneColorToHexString(255));
     } else {
-      int red = color.getRed();
-      int green = color.getGreen();
-      int blue = color.getBlue();
+      int red = (int)Math.round(color.getRed() * 255);
+      int green = (int)Math.round(color.getGreen() * 255);
+      int blue = (int)Math.round(color.getBlue() * 255);
       return (oneColorToHexString(red) 
           + oneColorToHexString(green)
           + oneColorToHexString(blue));
     }
   }
   
+  /**
+   Convert a six-position hex string to a JavaFX Color object. 
+  
+   @param color The six-character hex string to be used as input. 
+  
+   @return A corresponding Color object. 
+  */
   public static Color hexStringToColor (String color) {
     int red = 0;
     int green = 0;
@@ -659,9 +665,15 @@ public class StringUtils {
     } catch (NumberFormatException e) {
       // ok
     }
-    return new Color (red, green, blue);
+    return Color.rgb (red, green, blue);
   }
   
+  /**
+   Convert an integer representing a red, green or blue color component to
+   its equivalent two-character hex string. 
+  @param color
+  @return 
+  */
   public static String oneColorToHexString (int color) {
     if (color < 16) {
       return "0" + Integer.toHexString(color).toUpperCase();
