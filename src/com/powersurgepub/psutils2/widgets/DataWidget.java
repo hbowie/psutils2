@@ -39,4 +39,12 @@ public interface DataWidget {
   */
   public void setText(String t);
   
+  public double getMinWidth();
+  
+  public double getMinHeight();
+  
+  public double getPrefWidth();
+  
+  public double getPrefHeight();
+  
 }

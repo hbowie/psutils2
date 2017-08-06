@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.powersurgepub.psutils2.urls;
+package com.powersurgepub.psutils2.links;
 
 /**
   An item with a URL that can be validated.

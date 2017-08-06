@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.powersurgepub.psutils2.urls;
+package com.powersurgepub.psutils2.links;
 
   import java.io.*;
   import java.net.*;

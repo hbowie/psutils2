@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.powersurgepub.psutils2.widgets;
+package com.powersurgepub.psutils2.links;
 
 /**
  A generic interface for a utility that can tweak a URL. 
@@ -35,9 +35,9 @@ public interface LinkTweakerInterface {
   /**
    Set the location of the link tweaker window. 
   
-   @param x
-   @param y 
+   @param x The desired horizontal position of the top left corner. 
+   @param y The desired vertical position of the top left corner. 
   */
-  public void setLocation (int x, int y);
+  public void setLocation (double x, double y);
   
 }

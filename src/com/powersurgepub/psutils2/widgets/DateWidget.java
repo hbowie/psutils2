@@ -100,7 +100,7 @@ public class DateWidget
     recurButton.setDisable(! dateWidgetOwner.canRecur());
   }
   
-  public void setFrame(Stage stage) {
+  public void setStage(Stage stage) {
     this.stage = stage;
   }
   

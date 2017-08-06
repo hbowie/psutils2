@@ -22,16 +22,11 @@ package com.powersurgepub.psutils2.ui;
   import java.io.*;
   import java.net.*;
 
- 	import javafx.application.*;
- 	import javafx.beans.value.*;
- 	import javafx.collections.*;
  	import javafx.event.*;
  	import javafx.geometry.*;
  	import javafx.scene.*;
  	import javafx.scene.control.*;
  	import javafx.scene.control.Alert.*;
-	import javafx.scene.image.*;
-	import javafx.scene.input.*;
  	import javafx.scene.layout.*;
   import javafx.scene.web.*;
  	import javafx.stage.*;
@@ -46,7 +41,7 @@ package com.powersurgepub.psutils2.ui;
  */
 public class AboutWindow 
     implements 
-        WindowToManage{
+        WindowToManage {
   
   public  static final String COPYRIGHT_YEAR_THRU = "2017";
   

@@ -17,6 +17,7 @@
 package com.powersurgepub.psutils2.widgets;
 
   import com.powersurgepub.psutils2.env.*;
+  import com.powersurgepub.psutils2.links.*;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.ui.*;
 

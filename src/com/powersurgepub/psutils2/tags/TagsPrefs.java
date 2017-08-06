@@ -17,6 +17,7 @@
 package com.powersurgepub.psutils2.tags;
 
   import com.powersurgepub.psutils2.env.*;
+  import com.powersurgepub.psutils2.prefs.*;
   import com.powersurgepub.psutils2.ui.*;
   import com.powersurgepub.psutils2.widgets.*;
 
@@ -33,12 +34,12 @@ package com.powersurgepub.psutils2.tags;
 
   @author Herb Bowie
  */
-public class TagsPrefs {
+public class TagsPrefs 
+    implements
+      PrefSet {
   
   private static final String SELECT_TAGS    = "select-tags";
   private static final String SUPPRESS_TAGS  = "suppress-tags";
-  
-  private Tab         tab      = new Tab("Tags Export");
   
   private GridPane    grid     = new GridPane();
   
@@ -86,8 +87,6 @@ public class TagsPrefs {
     suppressTextSelector.setText
         (UserPrefs.getShared().getPref (SUPPRESS_TAGS, ""));
     
-    tab.setContent(grid);
-    tab.setClosable(false);
   }
   
   public void setTagsValueList (ValueList valueList) {
@@ -108,6 +107,33 @@ public class TagsPrefs {
         (SELECT_TAGS, selectTextSelector.getText());
     UserPrefs.getShared().setPref
         (SUPPRESS_TAGS, suppressTextSelector.getText());
+  }
+  
+  /**
+   Get the title for this set of preferences. 
+  
+   @return The title for this set of preferences. 
+  */
+  public String getTitle() {
+    return "Tags Export";
+  }
+  
+  /**
+   Get a JavaFX Pane presenting all the preferences in this set to the user. 
+  
+   @return The JavaFX Pane containing Controls allowing the user to update
+           all the preferences in this set. 
+  */
+  public Pane getPane() {
+    return grid;
+  }
+  
+  /**
+   Save all of these preferences to disk, so that they can be restored
+   for the user at a later time. 
+  */
+  public void save() {
+    savePrefs();
   }
 
 }

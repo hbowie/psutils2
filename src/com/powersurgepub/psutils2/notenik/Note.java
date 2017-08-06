@@ -16,13 +16,13 @@
 
 package com.powersurgepub.psutils2.notenik;
 
+import com.powersurgepub.psutils2.links.ItemWithURL;
   import com.powersurgepub.psutils2.files.*;
   import com.powersurgepub.psutils2.index.*;
   import com.powersurgepub.psutils2.records.*;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.tags.*;
   import com.powersurgepub.psutils2.ui.*;
-  import com.powersurgepub.psutils2.urls.*;
   import com.powersurgepub.psutils2.values.*;
   import com.powersurgepub.psutils2.widgets.*;
 

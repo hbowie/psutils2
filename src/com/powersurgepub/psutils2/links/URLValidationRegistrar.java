@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.powersurgepub.psutils2.urls;
+package com.powersurgepub.psutils2.links;
 
 /**
  An interface for a class to which URL validation can be reported.

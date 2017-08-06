@@ -40,6 +40,8 @@ public class PrefsJuggler
   private Scene                       prefScene;
   private TabPane                     tabs;
   
+  private GeneralPrefs                generalPrefs = null;
+  
   /**
    Constructor. 
   
@@ -51,6 +53,18 @@ public class PrefsJuggler
     prefStage.setTitle(Home.getShared().getProgramName() + " Preferences");
     prefStage.initOwner(primaryStage);
     tabs = new TabPane();
+  }
+  
+  /**
+   Add the General Preferences. 
+  */
+  public void addGeneralPrefs() {
+    generalPrefs = new GeneralPrefs();
+    addSet(generalPrefs);
+  }
+  
+  public GeneralPrefs getGeneralPrefs() {
+    return generalPrefs;
   }
   
   /**
@@ -101,6 +115,10 @@ public class PrefsJuggler
   public void setScene() {
     prefScene = new Scene(tabs);
     prefStage.setScene(prefScene);
+  }
+  
+  public Window getWindow() {
+    return prefStage;
   }
   
   /**
