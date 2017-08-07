@@ -73,6 +73,8 @@ public class TagsPrefs
     
     // Second row
     grid.add(tagsSuppressLabel, 0, 1, 1, 1);
+    suppressTextSelector = new TextSelector();
+    suppressTextSelector.setEditable(true);
     suppressTextSelector.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {

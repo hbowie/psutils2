@@ -21,8 +21,10 @@ package com.powersurgepub.psutils2.prefs;
 
   import java.util.*;
 
+  import javafx.event.*;
   import javafx.scene.*;
   import javafx.scene.control.*;
+  import javafx.scene.input.*;
   import javafx.scene.layout.*;
   import javafx.stage.*;
 
@@ -41,6 +43,8 @@ public class PrefsJuggler
   private TabPane                     tabs;
   
   private GeneralPrefs                generalPrefs = null;
+  
+  private MenuItem                    prefsMenuItem;
   
   /**
    Constructor. 
@@ -115,6 +119,29 @@ public class PrefsJuggler
   public void setScene() {
     prefScene = new Scene(tabs);
     prefStage.setScene(prefScene);
+    prefStage.setMaxWidth(2000);
+    prefStage.setMaxHeight(1600);
+    prefStage.setMinWidth(800);
+    prefStage.setMinHeight(600);
+    prefStage.setWidth(1000);
+    prefStage.setHeight(800);
+    setLocation(100, 100);
+  }
+  
+  public void addToMenu(Menu prefsMenu, boolean withAccelerator) {
+    prefsMenuItem = new MenuItem("Preferences...");
+    if (withAccelerator) {
+      KeyCombination kc
+          = new KeyCharacterCombination(";", KeyCombination.SHORTCUT_DOWN);
+      prefsMenuItem.setAccelerator(kc);
+    }
+    prefsMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        toFront();
+      }
+    });
+    prefsMenu.getItems().add(prefsMenuItem);
   }
   
   public Window getWindow() {

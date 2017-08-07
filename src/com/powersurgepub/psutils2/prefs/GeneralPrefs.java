@@ -106,13 +106,15 @@ public class GeneralPrefs
     int rowCount = 0;
 
 		generalPrefsPane = new GridPane();
+    fxUtils.setGridAlignment(Pos.TOP_CENTER);
 		fxUtils.applyStyle(generalPrefsPane);
 
 		splitPaneLabel = new Label("Split Pane:");
-		splitPaneLabel.setTextAlignment(TextAlignment.RIGHT);
+    splitPaneLabel.setAlignment(Pos.BASELINE_RIGHT);
 		generalPrefsPane.add(splitPaneLabel, 0, rowCount, 1, 1);
 		splitPaneLabel.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(splitPaneLabel, Priority.SOMETIMES);
+    GridPane.setHalignment(splitPaneLabel, HPos.RIGHT);
 
 		splitPaneCheckBox = new CheckBox("Horizontal Split?");
     splitPaneCheckBox.setOnAction(new EventHandler<ActionEvent>() {
@@ -130,7 +132,7 @@ public class GeneralPrefs
 		rowCount++;
 
 		confirmDeletesLabel = new Label("Deletion:");
-		confirmDeletesLabel.setTextAlignment(TextAlignment.RIGHT);
+    confirmDeletesLabel.setAlignment(Pos.BASELINE_RIGHT);
 		generalPrefsPane.add(confirmDeletesLabel, 0, rowCount, 1, 1);
 		confirmDeletesLabel.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(confirmDeletesLabel, Priority.SOMETIMES);
@@ -150,7 +152,7 @@ public class GeneralPrefs
 		rowCount++;
 
 		softwareUpdatesLabel = new Label("Software Updates:");
-		softwareUpdatesLabel.setTextAlignment(TextAlignment.RIGHT);
+    softwareUpdatesLabel.setAlignment(Pos.BASELINE_RIGHT);
 		generalPrefsPane.add(softwareUpdatesLabel, 0, rowCount, 1, 1);
 		softwareUpdatesLabel.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(softwareUpdatesLabel, Priority.SOMETIMES);
@@ -178,8 +180,6 @@ public class GeneralPrefs
 		  } // end handle method
 		}); // end event handler
 		generalPrefsPane.add(softwareUpdatesCheckNowButton, 1, rowCount, 1, 1);
-		softwareUpdatesCheckNowButton.setMaxWidth(Double.MAX_VALUE);
-		GridPane.setHgrow(softwareUpdatesCheckNowButton, Priority.SOMETIMES);
 
 		rowCount++;
   } // end method buildUI
@@ -208,8 +208,10 @@ public class GeneralPrefs
    for the user at a later time. 
   */
   public void save() {
-    UserPrefs.getShared().setPref
-        (DIVIDER_LOCATION, splitPane.getDividerPositions()[0]);
+    if (splitPane != null) {
+      UserPrefs.getShared().setPref
+          (DIVIDER_LOCATION, splitPane.getDividerPositions()[0]);
+    }
   }
   
   public void appLaunch() {

@@ -136,5 +136,17 @@ public class FXUtils {
     cb.setMinSize(comboBoxMinWidth, comboBoxMinHeight);
     cb.setPrefSize(comboBoxPrefWidth, comboBoxPrefHeight);
   }
+  
+  public void displayControlAttributes(Control control, String name) {
+    System.out.println("FXUtils.displayControlAttributes for " + name);
+    System.out.println("  Min Width   = " + String.valueOf(control.getMinWidth()));
+    System.out.println("  Min Height  = " + String.valueOf(control.getMinHeight()));
+    System.out.println("  Pref Width  = " + String.valueOf(control.getPrefWidth()));
+    System.out.println("  Pref Height = " + String.valueOf(control.getPrefHeight()));
+    System.out.println("  Max Width   = " + String.valueOf(control.getMaxWidth()));
+    System.out.println("  Max Height  = " + String.valueOf(control.getMaxHeight()));
+    System.out.println("  Width       = " + String.valueOf(control.getWidth()));
+    System.out.println("  Height      = " + String.valueOf(control.getHeight()));
+  }
 
 }

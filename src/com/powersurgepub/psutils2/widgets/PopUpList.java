@@ -66,6 +66,7 @@ public class PopUpList
   */
   private void buildUI() {
 
+    pane = new BorderPane();
     list = new ListView<String>();
 
     list.setMinSize(120, 240);
