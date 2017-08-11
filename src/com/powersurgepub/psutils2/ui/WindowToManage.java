@@ -16,8 +16,6 @@
 
 package com.powersurgepub.psutils2.ui;
 
-  import java.awt.*;
-
 /**
  Interface for a window to be managed by WindowMenuManager.
 
