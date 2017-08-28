@@ -18,6 +18,8 @@ package com.powersurgepub.psutils2.values;
 
   import com.powersurgepub.psutils2.basic.*;
 
+  import java.util.*;
+
   import javafx.collections.*;
   import javafx.scene.control.*;
 
@@ -38,7 +40,7 @@ public class ItemStatusConfig {
   
   private static ItemStatusConfig sharedConfig = null;
   
-  private ObservableList<ItemStatusValue> values;
+  private ArrayList<ItemStatusValue> values;
   
   private int statusLow = 0;
   private int statusHigh = 9;
@@ -57,7 +59,7 @@ public class ItemStatusConfig {
   
   public ItemStatusConfig() {
     // Populate the values array with the standard, default configuration. 
-    values = FXCollections.observableArrayList();
+    values = new ArrayList();
     
     ItemStatusValue suggestedValue = new ItemStatusValue("Suggested");
     values.add(suggestedValue);
@@ -231,12 +233,22 @@ public class ItemStatusConfig {
     }
   }
   
+  /*
   public ObservableList<ItemStatusValue> getComboBoxModel() {
     return values;
-  }
+  } */
   
   public void populateComboBox(ComboBox box) {
-    box.setItems(values);
+    while (box.getItems().size() > 0) {
+      box.getItems().remove(0);
+    }
+    for (int i = 0; i < values.size(); i++) {
+      ItemStatusValue val = values.get(i);
+      if (val.isAvailable()) {
+        box.getItems().add(val.getLabel());
+      }
+    }
+    box.setEditable(false);
   }
   
   /**
@@ -262,13 +274,24 @@ public class ItemStatusConfig {
    @return True if OK; false if bad. 
   */
   public boolean statusValid(int status) {
-    if (status >= statusLow
-        && status <= statusHigh
-        && values.get(status).isAvailable()) {
-      return true;
-    } else {
-      return false;
+
+    boolean valid = true;
+    if (status < statusLow
+        || status > statusHigh) {
+      valid = false;
     }
+    if (valid) {
+      Object obj = values.get(status);
+      if (obj instanceof ItemStatusValue) {
+        ItemStatusValue value = (ItemStatusValue)obj;
+        valid = value.isAvailable();
+      } else {
+        System.out.println("Object from list is an instance of " + obj.getClass());
+        System.out.println("  - toString = " + obj.toString());
+        valid = false;
+      }
+    }
+    return valid;
   }
   
   public int getStatusLow() {

@@ -96,7 +96,6 @@ public class NoteIO
   private  String       fileId;
   
   public NoteIO () {
-    System.out.println("NoteIO constructor with no parms");
     initialize();
   }
   
@@ -106,8 +105,6 @@ public class NoteIO
      @param  inPath Directory path to be read.
    */
   public NoteIO (String inPath, int inType) {
-    System.out.println("NoteIO constructor with inpath = " 
-        + inPath + ", inType = " + inType);
     if (inPath.startsWith("http")) {
       noteFileToRead = null;
     } else {
@@ -124,8 +121,6 @@ public class NoteIO
      @param  inPathFile Directory path to be read.
    */
   public NoteIO (File fileOrFolder, int inType) {
-    System.out.println("NoteIO constructor with fileOrFolder = " 
-        + fileOrFolder.toString() + ", inType = " + inType);
     if (fileOrFolder.isDirectory()) {
       setHomeFolder(fileOrFolder);
     } else {
@@ -137,7 +132,6 @@ public class NoteIO
   }
   
   public NoteIO (TextLineReader lineReader, int inType) {
-    System.out.println("NoteIO constructor with TextLineReader");
     noteFileToRead = null;
     if (lineReader instanceof FileLineReader) {
       FileLineReader fileLineReader = (FileLineReader) lineReader;
@@ -157,8 +151,6 @@ public class NoteIO
    @param recDef The record definition to be used for the collection. 
   */
   public NoteIO (File folder, int inType, RecordDefinition recDef) {
-    System.out.println("NoteIO constructor with folder = " 
-        + folder.toString() + ", inType = " + inType + " plus recdef");
     noteParms.setNoteType(inType);
     noteParms.setRecDef(recDef);
     setHomeFolder(folder);
@@ -166,15 +158,11 @@ public class NoteIO
   } 
   
   public NoteIO (File folder) {
-    System.out.println("NoteIO constructor with folder = " 
-        + folder.toString());
     setHomeFolder(folder);
     initialize();
   }
   
   public NoteIO (File folder, NoteParms parms) {
-    System.out.println("NoteIO constructor with folder = " 
-        + folder.toString() + " plus NoteParms");
     setHomeFolder(folder);
     noteParms = parms;
     initialize();
@@ -210,11 +198,6 @@ public class NoteIO
   }
   
   public void setHomeFolder (File homeFolder) {
-    if (homeFolder == null) {
-      System.out.println("Setting home folder to null");
-    } else {
-      System.out.println("Setting home folder to " + homeFolder.toString());
-    }
     this.homeFolder = homeFolder;
     if (homeFolder == null) {
       homePath = "";

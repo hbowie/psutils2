@@ -261,6 +261,7 @@ public class Template {
     // These lines only need to be processed once. 
     templateUtil.setSkippingData (false);
     templateUtil.setFirstTemplateLine (true);
+    templateUtil.setDebug(false);
     do {
       nextLine = nextTemplateLine();
       templateUtil.setFirstTemplateLine (false);
@@ -463,6 +464,9 @@ public class Template {
         if (! dataFile.isAtEnd()) {
           dataRec = dataFile.nextRecordIn ();
           if (dataRec != null) {
+            templateUtil.sendDebugLine(" ");
+            templateUtil.sendDebugLine("Processing Data Record # " 
+                + String.valueOf(dataFile.getRecordNumber()));
             templateUtil.resetGroupBreaks();
             templateUtil.setSkippingData (false);
             Iterator eRecLines = recLines.iterator();

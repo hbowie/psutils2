@@ -99,6 +99,8 @@ public class TemplateUtil {
   /** Include parm value to cause include file to be copied as-is. **/
   public static final String INCLUDE_COPY = "copy";
   
+  private       boolean   debug = false;
+  
   /** Used to write events and data to a log file. */
   private    Logger      log;
   
@@ -248,6 +250,18 @@ public class TemplateUtil {
     // io.logTypes();
   }
   
+  public void setDebug(boolean debug) {
+    this.debug = debug;
+  }
+  
+  public boolean getDebug() {
+    return debug;
+  }
+  
+  public boolean debugging() {
+    return debug;
+  }
+  
   public void setWebRoot (File webRootFile) {
     this.webRootFile = webRootFile;
     if (webRootFile == null) {
@@ -312,6 +326,17 @@ public class TemplateUtil {
    */
   public void recordEvent () {
     log.recordEvent (event);
+  }
+  
+  public void sendIfStateDebugLine() {
+    sendDebugLine("==> Skipping Data? " + String.valueOf(skippingData)
+        + " If Bypass Depth: " + String.valueOf(ifBypassDepth));
+  }
+  
+  public void sendDebugLine(String debugLine) {
+    if (debug) {
+      log.logDebugLine(debugLine);
+    }
   }
   
   /**
@@ -676,16 +701,18 @@ public class TemplateUtil {
   public void clearIfs () {
     ifBypassDepth = 0;
     skippingData = false;
+    sendDebugLine("Clearing Ifs");
   }
   
   /**
    Process an else command. 
    */
   public void anElse () {
-    boolean skippingBeforeElse = isSkippingData();
-    if (ifBypassDepth > 0) {
-      ifBypassDepth--;
+    if (skippingData && ifBypassDepth > 0) {
+      // If we bypassed the If, then bypass the Else as well,
+      // but we're still looking for an Endif
     } else {
+      boolean skippingBeforeElse = isSkippingData();
       setSkippingData (! skippingBeforeElse);
     }
   }

@@ -1175,4 +1175,13 @@ private void automaticBackupsButtonActionPerformed(ActionEvent evt) {
       UserPrefs.getShared().setPref(PURGE_INACCESSIBLE_FILES, NEVER);
     }
   }
+  
+  /**
+   Set the File Spec whose prefs are to be modified, if any. 
+  
+   @param fileSpec 
+  */
+  public void setFileSpec(FileSpec fileSpec) {
+    // Nothing to do
+  }
 }

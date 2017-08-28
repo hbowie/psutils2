@@ -75,6 +75,9 @@ package com.powersurgepub.psutils2.template;
                     line when an invalid logical operator is detected. 
  */
 public class TemplateLine {
+  
+  /** Command for debugging */
+  final static String DEBUG     = "debug";
 
   /** Command for specifying new delimiters. */
   final static String DELIMS    = "delims";
@@ -270,7 +273,8 @@ public class TemplateLine {
 				|| nextToken.equals (IFENDGROUP)
         || nextToken.equals (IFNEWLIST)
 				|| nextToken.equals (IFENDLIST)
-        || nextToken.equals (COMMENT)) {
+        || nextToken.equals (COMMENT)
+        || nextToken.equals (DEBUG)) {
         commandLine = true;
         command = nextToken;
       } // end if valid command
@@ -305,6 +309,10 @@ public class TemplateLine {
       templateUtil.tailorEvent (LogEvent.NORMAL,
         "Processing " + command + " Command", true);
       StringScanner operandScanner = new StringScanner (operands);
+      if (templateUtil.debugging()) {
+        templateUtil.sendDebugLine(lineString);
+      }
+      
       
       // DELIMS Command
       if (this.command.equals (DELIMS)) {
@@ -344,6 +352,13 @@ public class TemplateLine {
                     true);
       } // end delims command processing
       
+      // DEBUG Command
+      if (this.command.equals (DEBUG)) {
+        templateUtil.setDebug(true);
+        templateUtil.sendDebugLine(lineString);
+      }
+      else 
+        
       // OUTPUT Command
       if (this.command.equals (OUTPUT)) {
         if (! templateUtil.isSkippingData()) {
@@ -374,12 +389,14 @@ public class TemplateLine {
       // ELSE Command
       if (this.command.equals (ELSE)) {
         templateUtil.anElse();
+        templateUtil.sendIfStateDebugLine();
       }
       else
 
       // ENDIF Command
       if (this.command.equals (ENDIF)) {
         templateUtil.anotherEndIf();
+        templateUtil.sendIfStateDebugLine();
       } // end endif command processing
       else
       
@@ -475,8 +492,11 @@ public class TemplateLine {
             } // end try/catch
             ifResult = thisIf;
           }
+          templateUtil.sendDebugLine
+              ("Result of If evaluation = " + String.valueOf(ifResult));
           templateUtil.setSkippingData (! ifResult);
         }
+        templateUtil.sendIfStateDebugLine();
       } // end if command processing
       else
       

@@ -16,6 +16,8 @@
 
 package com.powersurgepub.psutils2.prefs;
 
+  import com.powersurgepub.psutils2.files.*;
+
   import javafx.scene.layout.*;
 
 /**
@@ -39,6 +41,13 @@ public interface PrefSet {
            all the preferences in this set. 
   */
   public Pane getPane();
+  
+  /**
+   Set the File Spec whose prefs are to be modified, if any. 
+  
+   @param fileSpec 
+  */
+  public void setFileSpec(FileSpec fileSpec);
   
   /**
    Save all of these preferences to disk, so that they can be restored

@@ -37,8 +37,6 @@ public class TagsNodeValue {
   public static final int   TAG  = 1;
   public static final int   ITEM = 2;
   
-  private int             tagIndex = 0;
-  
   /** The next node for this taggable item. */
   private TreeItem<TagsNodeValue> nextNodeForItem = null;
   
@@ -46,6 +44,8 @@ public class TagsNodeValue {
   private boolean         itemsBeforeCategories = true;
   
   private Object          object = null;
+  
+  private int             tagIndex = 0;
   
   /**
    the number of levels above this node -- the distance from the root to 
@@ -238,6 +238,33 @@ public class TagsNodeValue {
   */
   public int getTreeLevel() {
     return treeLevel;
+  }
+  
+  /**
+   Used for tree navigation. Since tag levels are numbered starting at 0, 
+   and since the first level tags will reside just below the tree's root, 
+   this method returns the level of the node, but adjusted so that it 
+   will match the corresponding tags index. 
+  
+  @return the level of the node within the tree, where the root node is 
+          considered to be at -1, and the first level with real keys
+          is considered to be at level 0. This allows level
+          to be used to pull the appropriate tag level out of the tags,
+          where zero would be the first level. 
+  */
+  public int getTagsLevel() {
+    return treeLevel - 1;
+  }
+  
+  /**
+   Sets the tree level of this node based on the tags level. Based on tags
+   level numbering, the root node is at -1, whereas using tree level numbering,
+   the root node is at 0. 
+  
+   @param tagsLevel One less than the tree level. 
+  */
+  public void setTagsLevel(int tagsLevel) {
+    this.treeLevel = tagsLevel + 1;
   }
 
   public String toLongerString() {

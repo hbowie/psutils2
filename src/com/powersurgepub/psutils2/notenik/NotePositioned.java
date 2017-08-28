@@ -33,6 +33,8 @@ public class NotePositioned {
   public static final int NAVIGATE_USING_TREE = 2;
 
   private   Note     note;
+  /** This is the index to this note's location within 
+      a sorted, filtered list of notes.  */
   private   int      index;
   private   TreeItem<TagsNodeValue> tagsNode;
   private   int      navigator = NAVIGATE_USING_LIST;
@@ -68,6 +70,12 @@ public class NotePositioned {
     return note;
   }
 
+  /**
+    Set the index to this note's location within 
+    a sorted, filtered list of notes.
+  
+    @param index This note's location within a sorted, filtered list of notes.
+  */
   public void setIndex (int index) {
     this.index = index;
   }
@@ -80,6 +88,12 @@ public class NotePositioned {
     return (index >= 0 && index < notes.size());
   }
 
+  /**
+    Get the index to this note's location within 
+    a sorted, filtered list of notes.  
+  
+    @return This note's location within a sorted, filtered list of notes. 
+  */
   public int getIndex () {
     return index;
   }

@@ -17,6 +17,7 @@
 package com.powersurgepub.psutils2.prefs;
 
   import com.powersurgepub.psutils2.env.*;
+import com.powersurgepub.psutils2.files.*;
   import com.powersurgepub.psutils2.ui.*;
 
   import java.util.*;
@@ -166,6 +167,20 @@ public class PrefsJuggler
     while (iterator.hasNext()) {
       PrefSet nextSet = iterator.next();
       nextSet.save();
+    }
+  }
+  
+  /**
+   Set the File Spec whose prefs are to be modified, if any. 
+  
+   @param fileSpec 
+  */
+  public void setFileSpec(FileSpec fileSpec) {
+    Collection<PrefSet> sets = prefSets.values();
+    Iterator<PrefSet> iterator = sets.iterator();
+    while (iterator.hasNext()) {
+      PrefSet nextSet = iterator.next();
+      nextSet.setFileSpec(fileSpec);
     }
   }
   

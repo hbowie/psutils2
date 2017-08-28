@@ -116,12 +116,14 @@ public class AboutWindow
    @param copyRightYearFrom    Specify the year first published. 
   */
   public AboutWindow (
+      Stage primaryStage,
       boolean loadFromDisk, 
       boolean jxlUsed,
       boolean markdownUsed,
       boolean xercesUsed,
       boolean saxonUsed,
       String  copyRightYearFrom) {
+    this.primaryStage = primaryStage;
     this.loadFromDisk = loadFromDisk;
     this.jxlUsed = jxlUsed;
     this.markdownUsed = markdownUsed;

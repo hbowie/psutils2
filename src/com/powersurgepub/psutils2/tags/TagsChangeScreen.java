@@ -30,6 +30,8 @@ package com.powersurgepub.psutils2.tags;
 public class TagsChangeScreen 
     extends Stage {
   
+  public static final String WINDOW_TITLE = "Add/Replace Tags";
+  
   private   TagsList              findCategories     = new TagsList();
   private   TagsList              replaceCategories  = new TagsList();
   private   TaggableList          taggableList;
@@ -71,7 +73,7 @@ public class TagsChangeScreen
   
   private void buildUI() {
     
-    this.setTitle("Add/Replace Tags");
+    this.setTitle(WINDOW_TITLE);
     grid = new GridPane();
     
     // Set spacing between components
@@ -129,5 +131,18 @@ public class TagsChangeScreen
     this.close();
     // dispose();
   }  
+  
+  public void setVisible (boolean visible) {
+    if (visible) {
+      this.show();
+    } else {
+      this.close();
+    }
+  }
+  
+  public void setLocation(double x, double y) {
+    this.setX(x);
+    this.setY(y);
+  }
 
 }

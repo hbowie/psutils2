@@ -93,7 +93,7 @@ public class ScrollingTextArea
   }
   
   public void setWrapStyleWord(boolean wrapStyleWord) {
-    this.setWrapStyleWord(wrapStyleWord);
+    this.setWrapText(true);
   }
   
   public void setTextWithCaretAtZero(String t) {

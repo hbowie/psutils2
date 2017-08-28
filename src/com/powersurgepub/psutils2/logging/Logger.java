@@ -204,6 +204,10 @@ public class Logger {
     } // end if event is logged
   } // end nextEvent method
   
+  public void logDebugLine(String debugLine) {
+    writeLine("DEBUG: " + debugLine);
+  }
+  
   /**
      Writes the last data line to the LogOutput destination.
    */

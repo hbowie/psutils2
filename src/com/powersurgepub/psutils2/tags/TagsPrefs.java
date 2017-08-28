@@ -17,6 +17,7 @@
 package com.powersurgepub.psutils2.tags;
 
   import com.powersurgepub.psutils2.env.*;
+  import com.powersurgepub.psutils2.files.*;
   import com.powersurgepub.psutils2.prefs.*;
   import com.powersurgepub.psutils2.ui.*;
   import com.powersurgepub.psutils2.widgets.*;
@@ -136,6 +137,15 @@ public class TagsPrefs
   */
   public void save() {
     savePrefs();
+  }
+  
+  /**
+   Set the File Spec whose prefs are to be modified, if any. 
+  
+   @param fileSpec 
+  */
+  public void setFileSpec(FileSpec fileSpec) {
+    // Nothing to do
   }
 
 }
