@@ -18,6 +18,7 @@ package com.powersurgepub.psutils2.widgets;
 
   import javafx.scene.*;
   import javafx.scene.control.*;
+  import javafx.scene.layout.*;
 
 /**
  An object containing the ui components for a single data field: label and widget.
@@ -26,8 +27,8 @@ package com.powersurgepub.psutils2.widgets;
  */
 public class WidgetWithLabel {
   
-  private Node       label = null;
-  private DataWidget widget = null;
+  private Region        label = null;
+  private DataWidget    widget = null;
 
   /**
    Default constructor.
@@ -36,11 +37,11 @@ public class WidgetWithLabel {
     
   }
   
-  public void setLabel(Node label) {
+  public void setLabel(Region label) {
     this.label = label;
   }
   
-  public Node getLabel() {
+  public Region getLabel() {
     return label;
   }
   

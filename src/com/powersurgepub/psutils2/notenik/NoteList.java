@@ -54,14 +54,14 @@ public class NoteList
    New notes are added to the end of notes. Notes are never removed from
    this list. 
   */
-  private ArrayList<Note>             notes = null;
-  private ObservableList<SortedNote>  sortedNotes = null;
-  private NoteSortParm                sortParm = new NoteSortParm();
-  private TableView<SortedNote>       noteTable = null;
-  private TableColumn<SortedNote, String> doneColumn = null;
-  private TableColumn<SortedNote, String> dateColumn = null;
-  private TableColumn<SortedNote, String> seqColumn = null;
-  private TableColumn<SortedNote, String> titleColumn = null;
+  private ArrayList<Note>                     notes = null;
+  private ObservableList<SortedNote>          sortedNotes = null;
+  private NoteSortParm                        sortParm = new NoteSortParm();
+  private TableView<SortedNote>               noteTable = null;
+  private TableColumn<SortedNote, String>     doneColumn = null;
+  private TableColumn<SortedNote, SortedDate> dateColumn = null;
+  private TableColumn<SortedNote, SortedSeq>  seqColumn = null;
+  private TableColumn<SortedNote, String>     titleColumn = null;
   
   /**
    Items in this list contain an index pointing back to a note in notes. 
@@ -145,6 +145,23 @@ public class NoteList
     tagsView.setSource(source);
   }
   
+  /*
+   Build the table view, configuring its columns based on the sort parameters
+   provided, and connecting the notes table to it. 
+  */
+  
+  /**
+   Recreate the list of sorted keys when the sort parameters change. 
+  */
+  public void sortParmChanged() {
+    sortedNotes = FXCollections.observableArrayList();
+    for (int i = 0; i < notes.size(); i++) {
+      addSortedNote(i);
+    }
+    adjustTableStructure();
+    // fireTableDataChanged();
+  }
+  
   private void adjustTableStructure() {
     while (noteTable.getColumns().size() > 0) {
       noteTable.getColumns().remove(0);
@@ -156,6 +173,7 @@ public class NoteList
     noteTable = new TableView<SortedNote>(sortedNotes);
     noteTable.setItems(sortedNotes);
     addColumns();
+    // noteTable.setSortPolicy(null);
   }
   
   private void addColumns() {
@@ -164,16 +182,22 @@ public class NoteList
       case NoteSortParm.SORT_TASKS_BY_DATE:
         noteTable.getColumns().addAll
           (doneColumn, dateColumn, seqColumn, titleColumn);
+        noteTable.getSortOrder().addAll
+          (doneColumn, dateColumn, seqColumn, titleColumn);
         break;
       case NoteSortParm.SORT_TASKS_BY_SEQ:
         noteTable.getColumns().addAll
           (doneColumn, seqColumn, dateColumn, titleColumn);
+        noteTable.getSortOrder().addAll
+          (doneColumn, seqColumn, dateColumn, titleColumn);
         break;
       case NoteSortParm.SORT_BY_SEQ_AND_TITLE:
         noteTable.getColumns().addAll(seqColumn, titleColumn);
+        noteTable.getSortOrder().addAll(seqColumn, titleColumn);
         break;
       case NoteSortParm.SORT_BY_TITLE:
         noteTable.getColumns().addAll(titleColumn);
+        noteTable.getSortOrder().addAll(titleColumn);
         break;
       default:
         break;
@@ -183,40 +207,40 @@ public class NoteList
   /**
    Build all the columns we might ever use to display a table of notes. 
   */
-  public void buildColumns() {
+  private void buildColumns() {
     
     // Build the Done Column
     doneColumn = new TableColumn<SortedNote, String>("X");
     doneColumn.setPrefWidth(20);
     doneColumn.setMaxWidth(30);
-    doneColumn.setSortable(false);
+    // doneColumn.setSortable(false);
     doneColumn.setCellValueFactory(
         new PropertyValueFactory<SortedNote, String>("done")
     );
 
     // Build the Date Columns
-    dateColumn = new TableColumn<SortedNote, String>("Date");
+    dateColumn = new TableColumn<SortedNote, SortedDate>("Date");
     dateColumn.setPrefWidth(120);
     dateColumn.setMaxWidth(160);
-    dateColumn.setSortable(false);
+    // dateColumn.setSortable(false);
     dateColumn.setCellValueFactory(
-        new PropertyValueFactory<SortedNote, String>("dateCommon")
+        new PropertyValueFactory<SortedNote, SortedDate>("date")
     );
 
     // Build the Seq Column
-    seqColumn = new TableColumn<SortedNote, String>("Seq");
+    seqColumn = new TableColumn<SortedNote, SortedSeq>("Seq");
     seqColumn.setPrefWidth(60);
     seqColumn.setMaxWidth(120);
-    seqColumn.setSortable(false);
+    // seqColumn.setSortable(false);
     seqColumn.setCellValueFactory(
-        new PropertyValueFactory<SortedNote, String>("seq")
+        new PropertyValueFactory<SortedNote, SortedSeq>("seq")
     );
 
     // Build the Title Column
     titleColumn 
         = new TableColumn<SortedNote, String>("Title");
     titleColumn.setPrefWidth(400);
-    titleColumn.setSortable(false);
+    // titleColumn.setSortable(false);
     titleColumn.setCellValueFactory(
         new PropertyValueFactory<SortedNote, String>("title")
     );
@@ -365,18 +389,18 @@ public class NoteList
    */
   public NotePositioned add2 (Note newNote) {
 
-    System.out.println("NoteList.add2 adding Note with title = " + newNote.getTitle());
+    // System.out.println("NoteList.add2 adding Note with title = " + newNote.getTitle());
     
     Note resultingNote = newNote;
     boolean merged = false;
     int noteIndex = -1;
     
-    System.out.println("NoteList.add2 before addUniqueKey");
+    // System.out.println("NoteList.add2 before addUniqueKey");
     addUniqueKey(newNote, notes.size());
     
-    System.out.println("NoteList.add2 before sortParm.maintainSeqStats");
+    // System.out.println("NoteList.add2 before sortParm.maintainSeqStats");
     sortParm.maintainSeqStats(newNote.getSeqValue());
-    System.out.println("  - unique match? " + String.valueOf(uniqueMatch));
+    // System.out.println("  - unique match? " + String.valueOf(uniqueMatch));
     
     if (uniqueMatch) {
       resultingNote = getNoteFromUniqueIndex(uniqueIndex);
@@ -386,22 +410,22 @@ public class NoteList
     } else {
       noteIndex = notes.size();
       notes.add (newNote);
-      addSortKey (noteIndex);
+      addSortedNote (noteIndex);
     }
-    System.out.println("  - merged? " + String.valueOf(merged));
-    System.out.println("NoteList.add2 before tagsList calls");
+    // System.out.println("  - merged? " + String.valueOf(merged));
+    // System.out.println("NoteList.add2 before tagsList calls");
     if (merged) {
       tagsList.modify  (resultingNote);
       tagsView.modify (resultingNote);
     } else {
-      System.out.println("NoteList.add2 before tagsList add");
+      // System.out.println("NoteList.add2 before tagsList add");
       tagsList.add  (resultingNote);
-      System.out.println("NoteList.add2 before tagsView add");
+      // System.out.println("NoteList.add2 before tagsView add");
       tagsView.add (resultingNote);
     }
-    System.out.println("NoteList.add2 about to create NotePositioned");
+    // System.out.println("NoteList.add2 about to create NotePositioned");
     NotePositioned notePositioned = new NotePositioned(resultingNote, sortIndex);
-    System.out.println("NoteList.add2 NotePositioned created");
+    // System.out.println("NoteList.add2 NotePositioned created");
     return notePositioned;
   } // end add method
 
@@ -975,30 +999,13 @@ public class NoteList
     return sortedNotes.size();
   }
   
-  /*
-   Build the table view, configuring its columns based on the sort parameters
-   provided, and connecting the notes table to it. 
-  */
-  
   /**
-   Recreate the list of sorted keys when the sort parameters change. 
-  */
-  public void sortParmChanged() {
-    sortedNotes = FXCollections.observableArrayList();
-    for (int i = 0; i < notes.size(); i++) {
-      addSortKey(i);
-    }
-    adjustTableStructure();
-    // fireTableDataChanged();
-  }
-  
-  /**
-   Add a new sort key to the list. 
+   Add a new sorted note to the list of sorted, filtered notes. 
    
    @param index Pointing to the position in the Notes List containing the 
                 note to be added. 
    */
-  public void addSortKey (int index) {
+  private void addSortedNote (int index) {
 
     Note newNote = notes.get(index);
     SortedNote sorted = new SortedNote(newNote, index);
@@ -1020,7 +1027,7 @@ public class NoteList
       sortedNotes.add(sortIndex, sorted);
     }
     
-  } // end addSortKey method
+  } // end addSortedNote method
   
   /** 
    Return the number of columns in the table. 

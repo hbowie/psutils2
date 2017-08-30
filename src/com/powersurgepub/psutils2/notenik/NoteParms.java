@@ -24,9 +24,11 @@ package com.powersurgepub.psutils2.notenik;
 
   import java.text.*;
   import java.util.*;
+import javafx.geometry.*;
 
   import javafx.scene.control.*;
   import javafx.scene.layout.*;
+import javafx.scene.text.*;
 
 /**
  A set of parameters to specify how a particular Note Collection is configured. 
@@ -36,6 +38,9 @@ package com.powersurgepub.psutils2.notenik;
  @author Herb Bowie
  */
 public class NoteParms {
+  
+  public static final double      LABEL_MIN_WIDTH = 120;
+  public static final double      LABEL_PREF_WIDTH = 160;
   
   /** The type of notes found in this collection. */
   private    int              noteType = NOTES_ONLY_TYPE;
@@ -693,7 +698,8 @@ public class NoteParms {
    update a data field.
   
    @param fieldDef The definition of the type of field.
-   @param gb       The GridBagger object to be used to place this component.
+   @param grid     The GridPane object to be used to place this component.
+   @param row      The row number on which this field is to be place. 
   
    @return         The data widget that was created. 
   */
@@ -706,6 +712,8 @@ public class NoteParms {
     int fieldType = fieldDef.getType();
     String fieldName = fieldDef.getProperName();
     Label label = new Label(fieldName + ": ");
+    label.setAlignment(Pos.TOP_LEFT);
+    label.setTextAlignment(TextAlignment.LEFT);
     WidgetWithLabel widgetWithLabel = new WidgetWithLabel();
     widgetWithLabel.setLabel(label);
     
@@ -750,8 +758,13 @@ public class NoteParms {
         
       // Complex text field  
       case DataFieldDefinition.STRING_BUILDER_TYPE:
-        ScrollingTextArea scrollingText 
-            = new ScrollingTextArea(60, 5, true, true);
+        ScrollingTextArea scrollingText;
+        if (fieldName.equals(BODY_FIELD_NAME)) {
+          scrollingText = new ScrollingTextArea(60, 20, true, true);
+          scrollingText.setMaxHeight(Double.MAX_VALUE);
+        } else {
+          scrollingText = new ScrollingTextArea(60, 5, true, true);
+        }
         label.setLabelFor(scrollingText);
         grid.add(label, 0, row);
         grid.add(scrollingText, 1, row);
@@ -799,6 +812,10 @@ public class NoteParms {
         widgetWithLabel.setWidget(oneLiner);
         break;
     }
+    
+    widgetWithLabel.getLabel().setMinWidth(LABEL_MIN_WIDTH);
+    widgetWithLabel.getLabel().setPrefWidth(LABEL_PREF_WIDTH);
+    widgetWithLabel.getLabel().setMaxWidth(Double.MAX_VALUE);
     
     // Return the results
     return widgetWithLabel;

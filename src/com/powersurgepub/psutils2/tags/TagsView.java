@@ -131,8 +131,15 @@ public class TagsView {
    *    @param tagged   Item to be deleted.
    */
   public void remove (Taggable tagged) {
+    System.out.println("TagsView.remove");
+    if (tagged == null) {
+      System.out.println("  - tagged is null");
+    }
     // selectItem (tagged);
     TreeItem<TagsNodeValue> treeNode = tagged.getTagsNode();
+    if (treeNode == null) {
+      System.out.println("  - tags node is null");
+    }
     TagsNodeValue nodeNext = null;
     tagged.setTagsNode (null);
     while (treeNode != null) { 
@@ -155,7 +162,7 @@ public class TagsView {
   public void add(Taggable tagged) {
 
     Tags tags = tagged.getTags();
-    System.out.println("TagsView.add tags to be added = " + tags.toString());
+    // System.out.println("TagsView.add tags to be added = " + tags.toString());
     TagsIterator iterator = new TagsIterator(tags);
     
     TreeItem<TagsNodeValue> lastNode = null;
@@ -169,11 +176,11 @@ public class TagsView {
       if (iterator.hasNextTag()) {
         nextTag = iterator.nextTag();
       }
-      System.out.println ("  nextTag = " + nextTag);
+      // System.out.println ("  nextTag = " + nextTag);
       TagsNodeValue valueToAdd = new TagsNodeValue (tagged, tagIndex);
       TreeItem<TagsNodeValue> nodeToAdd = new TreeItem<TagsNodeValue>(valueToAdd);
-      System.out.println ("    TagsModel add " + String.valueOf(tagIndex)
-          + " from " + tagged.getTags().toString());
+      // System.out.println ("    TagsModel add " + String.valueOf(tagIndex)
+      //     + " from " + tagged.getTags().toString());
 
       // Store this node so we can find it later by its index
       if (tagIndex == 0) {
@@ -189,7 +196,7 @@ public class TagsView {
       
       // levels = the number of levels in the new tagged item's tags
       int levels = tags.getLevels (tagIndex);
-      System.out.println ("      levels = " + String.valueOf(levels));
+      // System.out.println ("      levels = " + String.valueOf(levels));
       boolean done = false;
       int compass = BELOW_THIS_NODE;
       // level is used to keep track of our current depth as we walk
@@ -205,20 +212,20 @@ public class TagsView {
       // for the tagged item to be added
       do {
         compass = compareNodes(nodeToAdd, currentNode);
-        if (currentNode == null) {
+        /* if (currentNode == null) {
             System.out.println ("        compass = " + String.valueOf(compass)
               + " for null node");
         } else {
           System.out.println ("        compass = " + String.valueOf(compass)
               + " for node type " + currentNode.toString());
-        }
+        } */
         TreeItem<TagsNodeValue> newNode;
         switch (compass) {
           case (BELOW_THIS_NODE):
             level++;
             child = 0;
             if (currentNode.getChildren().size() > 0) {
-              System.out.println("          Branch 1: Below with children");
+              // System.out.println("          Branch 1: Below with children");
               // New tagged item should be below this one, and children already exist
               newNode = currentNode.getChildren().get(0);
               parentNode = currentNode;
@@ -230,26 +237,26 @@ public class TagsView {
               // level++;
               if (levels > level) {
                 // Not yet at desired depth -- create a new tags node
-                System.out.println("          Branch 2: Adding new tags node");
+                // System.out.println("          Branch 2: Adding new tags node");
                 String levelCat = tags.getLevel (tagIndex, level);
-                System.out.println ("          Adding new tags node for tag "
-                    + String.valueOf(tagIndex)
-                    + ", level " + String.valueOf(level)
-                    + ": " + levelCat);
+                // System.out.println ("          Adding new tags node for tag "
+                //     + String.valueOf(tagIndex)
+                //     + ", level " + String.valueOf(level)
+                //     + ": " + levelCat);
                 TagsNodeValue newValue = new TagsNodeValue(levelCat);
                 newNode = new TreeItem<TagsNodeValue>(newValue);
                 // newNode = new TagsNodeValue (levelCat);
               } else {
                 // we're at desired depth -- add the new tagged node
-                System.out.println("          Branch 3: Below with children");
+                // System.out.println("          Branch 3: Below with children");
                 newNode = nodeToAdd;
                 done = true;
               }
               newNode.getValue().setTagsLevel(level);
               currentNode.getChildren().add(newNode);
-              System.out.println ("          Adding new node " 
-                  + newNode.getValue().toLongerString());
-              System.out.println ("            Done? " + String.valueOf (done));
+              // System.out.println ("          Adding new node " 
+              //     + newNode.getValue().toLongerString());
+              // System.out.println ("            Done? " + String.valueOf (done));
              
               parentNode = currentNode;
               currentNode = newNode;
@@ -259,7 +266,7 @@ public class TagsView {
             break;
           case (AFTER_THIS_NODE):
             // new node should be after this one -- keep going
-            System.out.println("          Branch 4: After current node");
+            // System.out.println("          Branch 4: After current node");
             newNode = currentNode.nextSibling();
             currentNode = newNode;
             child++;
@@ -267,30 +274,30 @@ public class TagsView {
           case (BEFORE_THIS_NODE):
             // Don't go any farther -- put it here or add a new tags
             if (levels > level) {
-              System.out.println("          Branch 5: Before and below");
+              // System.out.println("          Branch 5: Before and below");
               String levelCat = tags.getLevel(tagIndex, level);
               TagsNodeValue newValue = new TagsNodeValue(levelCat);
               newNode = new TreeItem<TagsNodeValue>(newValue);
             } else {
-              System.out.println("          Branch 6: Adding new node here");
+              // System.out.println("          Branch 6: Adding new node here");
               newNode = nodeToAdd;
               done = true;
             }
             newNode.getValue().setTagsLevel(level);
             parentNode.getChildren().add(child, newNode);
-            System.out.println ("          Adding new node " +newNode.toString());
-            System.out.println ("            Done? " + String.valueOf (done));
+            // System.out.println ("          Adding new node " +newNode.toString());
+            // System.out.println ("            Done? " + String.valueOf (done));
             currentNode = newNode;
             break;
           case (EQUALS_THIS_NODE):
-            System.out.println("          Branch 7: Equals current node, adding here");
+            // System.out.println("          Branch 7: Equals current node, adding here");
             newNode = nodeToAdd;
             newNode.getValue().setTagsLevel(level);
             parentNode.getChildren().add(child, newNode);
             currentNode = newNode;
             done = true;
-            System.out.println ("          Adding new node " +newNode.toString());
-            System.out.println ("            Done? " + String.valueOf (done));
+            // System.out.println ("          Adding new node " +newNode.toString());
+            // System.out.println ("            Done? " + String.valueOf (done));
             break;
           default:
             Logger.getShared().recordEvent (LogEvent.MAJOR,
@@ -352,7 +359,7 @@ public class TagsView {
     TagsNodeValue value1 = node1.getValue();
     
     int levels1 = value1.getLevels();
-    
+    /*
     if (node2 == null) {
       System.out.println ("Comparing " 
           + String.valueOf (node1.getValue().getNodeType())
@@ -368,7 +375,7 @@ public class TagsView {
           + "-" + node2.getValue().toString()
           + " (" + String.valueOf (node2.getValue().getLevels()) + ")");
     }
-    
+    */
     
     int result = 0;
     if (node2 == null) {
@@ -410,11 +417,13 @@ public class TagsView {
             // less than or equal to the number of levels of the item
             // we are trying to place. 
             String levelTag1 = value1.getLevel (treeLevel2 - 1);
+            /*
             System.out.println ("levelTag1 for "
                 + node1.getValue().getTags().toString()
                 + " @ " + String.valueOf(node1.getValue().getTagIndex())
                 + ", " + String.valueOf(treeLevel2 - 1)
                 + " = " + levelTag1);
+            */
             
             result = levelTag1.compareToIgnoreCase(value2.toString());
             if (result > 0) {
@@ -474,7 +483,7 @@ public class TagsView {
           break;
       }
     }
-    System.out.println ("compareToNode result = " + String.valueOf(result));
+    // System.out.println ("compareToNode result = " + String.valueOf(result));
     return result;
   }
   

@@ -27,6 +27,7 @@ package com.powersurgepub.psutils2.values;
  */
 public class StringDate 
     implements
+        Comparable,
         DataValue {
   
   public static final String[] DERIVED_SUFFIX = {
@@ -568,6 +569,14 @@ public class StringDate
     return strDate;
   }
   
+  public int compareTo(Object obj2) {
+    return (getYMD().compareTo(obj2.toString()));
+  }
+  
+  public int compareTo(StringDate strDate2) {
+    return (getYMD().compareTo(strDate2.getYMD()));
+  }
+  
   /**
      Compares this data value to another and indicates which is greater.
     
@@ -589,6 +598,20 @@ public class StringDate
   public boolean isInThePast() {
     String ymd = getYMD();
     return (ymd.length() > 9 && ymd.compareTo(TODAY_YMD) < 0);
+  }
+  
+  /**
+   Get a date to be used for sorting, with blank dates sorting after 
+   non-blank dates. 
+  
+   @return A date string to be used for sorting. 
+  */
+  public String getYMDforSort() {
+    if (hasData()) {
+      return getYMD();
+    } else {
+      return "9999-12-31";
+    }
   }
   
   /**

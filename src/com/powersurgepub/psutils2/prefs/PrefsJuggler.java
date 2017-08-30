@@ -64,7 +64,7 @@ public class PrefsJuggler
    Add the General Preferences. 
   */
   public void addGeneralPrefs() {
-    generalPrefs = new GeneralPrefs();
+    generalPrefs = GeneralPrefs.getShared();
     addSet(generalPrefs);
   }
   

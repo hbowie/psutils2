@@ -38,7 +38,7 @@ public class GeneralPrefs
       PrefSet {
   
   public static final String SPLIT_HORIZONTAL             = "splithorizontal";
-  public static final String DIVIDER_LOCATION             = "divider-location";
+  public static final String FX_DIVIDER_LOCATION          = "fx-divider-location";
   public static final String CONFIRM_DELETES              = "confirm-deletes";
   public static final String CHECK_FOR_SOFTWARE_UPDATES   = "check-updates";
   public static final String CHECK_VERSION_AUTO           = "versioncheckauto";
@@ -81,7 +81,7 @@ public class GeneralPrefs
   }
 
   /** Creates new form CommonPrefs */
-  public GeneralPrefs() {
+  private GeneralPrefs() {
     
     buildUI();
 
@@ -209,9 +209,10 @@ public class GeneralPrefs
    for the user at a later time. 
   */
   public void save() {
+
     if (splitPane != null) {
       UserPrefs.getShared().setPref
-          (DIVIDER_LOCATION, splitPane.getDividerPositions()[0]);
+          (FX_DIVIDER_LOCATION, splitPane.getDividerPositions()[0]);
     }
   }
   
@@ -237,10 +238,12 @@ public class GeneralPrefs
   }
 
   public void setSplitPane(SplitPane splitPane) {
+
     this.splitPane = splitPane;
     setSplit(splitPaneCheckBox.isSelected());
+    Double dividerPosition = UserPrefs.getShared().getPrefAsDouble(FX_DIVIDER_LOCATION, 0.5);
     splitPane.setDividerPosition
-        (0, UserPrefs.getShared().getPrefAsInt (DIVIDER_LOCATION, 240));
+        (0, dividerPosition);
   }
 
   public boolean splitPaneHorizontal () {

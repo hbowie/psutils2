@@ -722,6 +722,12 @@ public class Note
     }
   }
   
+  /**
+   Get a date to be used for sorting, with blank dates sorting after 
+   non-blank dates. 
+  
+   @return A date string to be used for sorting. 
+  */
   public String getDateYMDforSort() {
     if (dateAdded && dateValue != null && dateValue.hasData()) {
       return dateValue.getYMD();

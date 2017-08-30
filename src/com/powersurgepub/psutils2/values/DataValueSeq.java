@@ -277,6 +277,18 @@ public class DataValueSeq
     return toPaddedString(padChar, 8, padChar, 4);
   }
   
+  /**
+   Returns a padded string, for purposes of comparison.
+  
+   @param leftChar  Character to use to pad out to the left. 
+   @param left      Number of positions to pad to the left 
+                    of the decimal point.
+   @param rightChar Character to use to pad out to the right. 
+   @param right     Number of positions to pad to the right 
+                    of the decimal point.
+  
+   @return          Sequence value, with padding. 
+  */
   public String toPaddedString(char leftChar, int left, char rightChar, int right) {
     StringBuilder padded = new StringBuilder(value);
     int positionsToLeft = value.length();
@@ -284,7 +296,7 @@ public class DataValueSeq
       positionsToLeft = positionOfFirstDecimal;
     }
     while (positionsToLeft < left) {
-      padded.insert(0, padChar);
+      padded.insert(0, leftChar);
       positionsToLeft++;
     }
     int positionsToRight = 0;
@@ -296,7 +308,7 @@ public class DataValueSeq
         padded.append('.');
       }
       while (positionsToRight < right) {
-        padded.append(padChar);
+        padded.append(rightChar);
         positionsToRight++;
       }
     }

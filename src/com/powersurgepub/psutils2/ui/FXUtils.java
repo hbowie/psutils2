@@ -67,6 +67,9 @@ public class FXUtils {
       "-fx-border-insets: 1; " + 
       "-fx-padding: 5; ";
   
+  private     String                separatorStyle = 
+      "-fx-text-fill: gray; ";
+  
   private static FXUtils fxUtils;
   
   public static FXUtils getShared() {
@@ -135,6 +138,18 @@ public class FXUtils {
     cb.setMaxSize(comboBoxMaxWidth, comboBoxMaxHeight);
     cb.setMinSize(comboBoxMinWidth, comboBoxMinHeight);
     cb.setPrefSize(comboBoxPrefWidth, comboBoxPrefHeight);
+  }
+  
+  /**
+   Build a menu item that can be used as a separator and add it to the 
+   passed menu. 
+  
+   @param menu The menu to have a separator added to it. 
+  */
+  public void addSeparator(Menu menu) {
+    MenuItem sep = new MenuItem("------------");
+    sep.setStyle(separatorStyle);
+    menu.getItems().add(sep);
   }
   
   public void displayControlAttributes(Control control, String name) {

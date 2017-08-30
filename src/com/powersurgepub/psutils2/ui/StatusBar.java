@@ -17,11 +17,14 @@
 package com.powersurgepub.psutils2.ui;
 
   import com.powersurgepub.psutils2.files.*;
+import com.powersurgepub.psutils2.values.*;
   import java.text.*;
   import java.util.*;
+  import javafx.geometry.*;
   import javafx.scene.*;
   import javafx.scene.control.*;
   import javafx.scene.layout.*;
+import javafx.scene.text.*;
 
 /**
  A Status Bar to be placed at the bottom of a window.
@@ -30,7 +33,7 @@ package com.powersurgepub.psutils2.ui;
  */
 public class StatusBar {
   
-  private HBox statusBar;
+  private HBox  statusBar;
   private Label fileNameLabel;
   private Label dividerLabel1;
   private Label indexLabel;
@@ -44,21 +47,26 @@ public class StatusBar {
 
   /** Creates new form StatusBar */
   public StatusBar() {
-    statusBar = new HBox(0);
-    
+    statusBar = new HBox(10);
+    statusBar.setPadding(new Insets(10));
     dividerLabel1 = new Label(" | ");
     dividerLabel2 = new Label(" | ");
     fileNameLabel = new Label(" ");
+    fileNameLabel.setMaxWidth(Double.MAX_VALUE);
     indexLabel = new Label("1");
     ofLabel = new Label(" of ");
     sizeLabel = new Label("1");
     statusLabel = new Label(" ");
+    statusLabel.setMaxWidth(Double.MAX_VALUE);
+    statusLabel.setAlignment(Pos.BASELINE_RIGHT);
+    statusLabel.setTextAlignment(TextAlignment.RIGHT);
     
     statusBar.getChildren().addAll(fileNameLabel, dividerLabel1, indexLabel, 
         ofLabel, sizeLabel, dividerLabel2, statusLabel);
     
     HBox.setHgrow(fileNameLabel, Priority.ALWAYS);
     HBox.setHgrow(statusLabel, Priority.ALWAYS);
+    statusLabel.setText(StringDate.getTodayCommon());
   }
   
   public Pane getPane() {
@@ -81,7 +89,11 @@ public class StatusBar {
   }
   
   public void setStatus (String briefStatus) {
-    statusLabel.setText(briefStatus);
+    if (briefStatus == null || briefStatus.trim().length() == 0) {
+      statusLabel.setText(StringDate.getTodayCommon());
+    } else {
+      statusLabel.setText(briefStatus);
+    }
   }                    
                
 }

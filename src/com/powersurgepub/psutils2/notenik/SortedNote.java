@@ -25,11 +25,15 @@ package com.powersurgepub.psutils2.notenik;
  */
 public class SortedNote {
   
-  private Note note;
-  private int  stableListIndex = -1;
+  private Note        note;
+  private SortedDate  sortedDate;
+  private SortedSeq   sortedSeq;
+  private int         stableListIndex = -1;
   
-  public SortedNote(Note note, int stableIndex) {
+  public SortedNote(Note note, int stableListIndex) {
     this.note = note;
+    sortedDate = new SortedDate(note.getDate());
+    sortedSeq = new SortedSeq(note.getSeqValue());
     this.stableListIndex = stableListIndex;
   }
   
@@ -55,12 +59,12 @@ public class SortedNote {
   
    @return date in dd MMM yyyy format. 
   */
-  public String getDateCommon() {
-    return note.getDateCommon();
+  public SortedDate getDate() {
+    return sortedDate;
   }
   
-  public String getSeq() {
-    return note.getSeq();
+  public SortedSeq getSeq() {
+    return sortedSeq;
   }
   
   public String getTitle() {
