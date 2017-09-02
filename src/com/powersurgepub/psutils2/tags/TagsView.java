@@ -99,6 +99,11 @@ public class TagsView {
     return (File)rootNode.getValue().getUserObject();
   }
   
+  /**
+   Get the tree view of the tags and their items. 
+  
+   @return The tree view of the gags and their items. 
+  */
   public TreeView getTreeView() {
     return tagsView;
   }

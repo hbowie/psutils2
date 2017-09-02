@@ -136,6 +136,15 @@ public class NoteList
   public TagsView getTagsModel () {
     return tagsView;
   }
+  
+  /**
+   Get the tree view of the tags and their notes. 
+  
+   @return The tree view of the tags and their notes. 
+  */
+  public TreeView getTreeView() {
+    return tagsView.getTreeView();
+  }
 
   public File getSource () {
     return tagsView.getSource();
@@ -892,7 +901,40 @@ public class NoteList
   public NotePositioned priorUsingList (NotePositioned position) {
     return (positionUsingListIndex (position.getIndex() - 1));
   }
+  
+  /**
+   Check to make sure the note at the given index is actually the note
+   that was selected. 
+  
+   @param index The TableView row index that was selected. 
+   @param note  The TableView row object that was selected. 
+  
+   @return THe Note Positioned. 
+  */
+  public NotePositioned positionUsingListIndexAndNote
+      (int index, Note note) {
+    System.out.println("NoteList.positionUsingListIndexAndNote");
+    System.out.println("  - Passed Index = " + String.valueOf(index));
+    System.out.println("  - Passed Note  = " + note.getTitle());
+    NotePositioned position = positionUsingListIndex(index);
+    if (! position.getNote().equals(note)) {
+      System.out.println("  - Indexed Note = " 
+          + position.getNote().getTitle());
+      findSortInternal(note);
+      if (sortMatch) {
+        position.setNote(note);
+        position.setIndex(sortIndex);
+      }
+    } 
+    return position;
+  }
 
+  /** 
+   Establish the position of a selection using a list index and a selected note.
+  
+  @param index
+  @return 
+  */
   public NotePositioned positionUsingListIndex (int index) {
     if (index < 0) {
       index = 0;
@@ -991,6 +1033,11 @@ public class NoteList
     return title;
   }
 
+  /**
+   Return the size of the sorted, filtered list of notes. 
+  
+   @return Size of sorted, filtered list. 
+  */
   public int size() {
     return sortedNotes.size();
   }

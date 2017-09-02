@@ -341,6 +341,11 @@ public class Note
         && getUniqueKey().length() > 0);
   }
   
+  /**
+   Get a key that uniquely identifies this note. 
+  
+   @return A unique key based on the note's title. 
+  */
   public String getUniqueKey() {
     return titleValue.getLowerHyphens();
   }
