@@ -295,11 +295,24 @@ public class Note
   
   public boolean equals (Object obj2) {
     boolean eq = false;
-    if (obj2.getClass().getSimpleName().equals ("Note")) {
+    if (obj2 != null
+        && obj2.getClass().getSimpleName().equals ("Note")) {
       Note note2 = (Note)obj2;
       eq = (this.getUniqueKey().equalsIgnoreCase (note2.getUniqueKey()));
     }
     return eq;
+  }
+  
+  public boolean equalsUniqueKey(String key2) {
+    if (key2 == null) {
+      return false;
+    } 
+    else
+    if (key2.trim().length() == 0) {
+      return false;
+    } else {
+      return (this.getUniqueKey().equalsIgnoreCase(key2));
+    }
   }
   
   /**
