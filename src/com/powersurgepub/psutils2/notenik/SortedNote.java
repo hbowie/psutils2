@@ -19,8 +19,11 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.notenik.*;
   import com.powersurgepub.psutils2.values.*;
 
+  import javafx.beans.property.*;
+
 /**
- 
+ A note wrapped in fields needed to sort the note within a TableView. 
+
  @author Herb Bowie
  */
 public class SortedNote {
@@ -28,13 +31,25 @@ public class SortedNote {
   private Note        note;
   private SortedDate  sortedDate;
   private SortedSeq   sortedSeq;
-  private int         stableListIndex = -1;
   
-  public SortedNote(Note note, int stableListIndex) {
+  private SimpleStringProperty done;
+  private SimpleStringProperty title;
+  private SimpleStringProperty sortKey;
+  
+  public SortedNote(Note note, NoteSortParm sortParm) {
     this.note = note;
+    done = new SimpleStringProperty(this, "", "Done");
+    title = new SimpleStringProperty(this, "", "Title");
+    sortKey = new SimpleStringProperty(this, "", "SortKey");
+    genKeys(sortParm);
+  }
+  
+  public void genKeys(NoteSortParm sortParm) {
+    done.set(note.getDone());
     sortedDate = new SortedDate(note.getDate());
     sortedSeq = new SortedSeq(note.getSeqValue());
-    this.stableListIndex = stableListIndex;
+    title.set(note.getTitle());
+    sortKey.set(note.getSortKey(sortParm));
   }
   
   public Note getNote() {
@@ -42,7 +57,7 @@ public class SortedNote {
   }
   
   public int getStableListIndex() {
-    return stableListIndex;
+    return note.getCollectionID();
   }
   
   /**
@@ -51,7 +66,11 @@ public class SortedNote {
    @return an X if item is completed or canceled, or a space if not done. 
   */
   public String getDone() {
-    return note.getDone();
+    return done.get();
+  }
+  
+  public SimpleStringProperty doneProperty() {
+    return done;
   }
   
   /**
@@ -68,11 +87,19 @@ public class SortedNote {
   }
   
   public String getTitle() {
-    return note.getTitle();
+    return title.get();
   }
   
-  public String getSortKey (NoteSortParm parm) {
-    return note.getSortKey(parm);
+  public SimpleStringProperty titleProperty() {
+    return title;
+  }
+  
+  public String getSortKey () {
+    return sortKey.get();
+  }
+  
+  public SimpleStringProperty sortKeyProperty() {
+    return sortKey;
   }
 
 }

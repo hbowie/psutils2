@@ -90,6 +90,7 @@ public class ItemStatusConfig {
     
     ItemStatusValue closedValue = new ItemStatusValue("Closed");
     values.add(closedValue);
+    
   }
   
   /**
@@ -178,6 +179,7 @@ public class ItemStatusConfig {
         }
       } // End if we have both a number and a string
     } // End while processing status values
+
   } // End of set methiod
   
   /**
@@ -239,13 +241,15 @@ public class ItemStatusConfig {
   } */
   
   public void populateComboBox(ComboBox box) {
+
     while (box.getItems().size() > 0) {
       box.getItems().remove(0);
     }
+
     for (int i = 0; i < values.size(); i++) {
       ItemStatusValue val = values.get(i);
       if (val.isAvailable()) {
-        box.getItems().add(val.getLabel());
+        box.getItems().add(val.getNumberWithLabel(i));
       }
     }
     box.setEditable(false);
@@ -335,6 +339,15 @@ public class ItemStatusConfig {
     str.append(" - ");
     str.append(values.get(closed).toString());
     return str.toString();
+  }
+  
+  public void display() {
+    System.out.println("ItemStatusConfig.display");
+    for (int i = statusLow; i <= statusHigh; i++) {
+      System.out.println("  - " + String.valueOf(i)
+          + " - " + values.get(i).getLabel()
+          + " - Available? " + String.valueOf(values.get(i).isAvailable()));
+    }
   }
 
 }

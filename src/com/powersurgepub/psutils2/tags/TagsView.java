@@ -150,10 +150,12 @@ public class TagsView {
     while (treeNode != null) { 
       TagsNodeValue treeNodeValue = treeNode.getValue();
       TreeItem<TagsNodeValue> nextNode = treeNodeValue.getNextNodeForItem();
-      TagsNodeValue nextNodeValue = nextNode.getValue();
-      TreeItem<TagsNodeValue> parentNode = treeNode.getParent();
-      if (parentNode != null) {
-        parentNode.getChildren().remove(treeNode);
+      if (nextNode != null) {
+        TagsNodeValue nextNodeValue = nextNode.getValue();  
+        TreeItem<TagsNodeValue> parentNode = treeNode.getParent();
+        if (parentNode != null) {
+          parentNode.getChildren().remove(treeNode);
+        }
       }
       treeNode = nextNode;
     }

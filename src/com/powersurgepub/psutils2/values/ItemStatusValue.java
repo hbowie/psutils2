@@ -68,6 +68,10 @@ public class ItemStatusValue {
     return label;
   }
   
+  public String getNumberWithLabel(int i) {
+    return (String.valueOf(i) + " - " + label);
+  }
+  
   public String toString() {
     return label;
   }

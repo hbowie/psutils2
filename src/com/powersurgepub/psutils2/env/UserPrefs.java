@@ -394,15 +394,32 @@ public class UserPrefs {
   public int getPrefAsInt (String key, int defaultValue) {
     String pref = getPref (key);
     int prefInt = 0;
+    boolean ok = false;
     if (pref.length() == 0) {
       prefInt = defaultValue;
     } else {
       try {
         prefInt = Integer.parseInt (pref);
+        ok = true;
       } catch (NumberFormatException e) {
+        ok = false;
+      }
+      if (! ok) {
+        try {
+          double prefDouble = Double.parseDouble(pref);
+          prefInt = (int)prefDouble;
+          ok = true;
+        } catch (NumberFormatException e) {
+          ok = false;
+        }
+      }
+      if (! ok) {
         prefInt = defaultValue;
+        System.out.println("UserPrefs.getPrefAsInt NumberFormatException on " 
+            + pref + " for " + key);
       }
     }
+
     return prefInt;
   }
   

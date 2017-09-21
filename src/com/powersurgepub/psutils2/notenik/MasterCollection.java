@@ -274,6 +274,9 @@ public class MasterCollection {
    @param newTitle The title after the modification. 
   */
   public void modRecentFile(String oldTitle, String newTitle) {
+    System.out.println("MasterCollection.modRecentFile");
+    System.out.println("  - old title = " + oldTitle);
+    System.out.println("  - new title = " + newTitle);
     if (! oldTitle.equals(newTitle)) {
       recentFiles.modRecentFile(oldTitle, newTitle);
     }
@@ -293,6 +296,18 @@ public class MasterCollection {
    */
   public FileSpec getFileSpec (int i) {
     return recentFiles.get(i);
+  }
+  
+  /**
+   Given a file, return the corresponding recent file spec, or null
+   in this file has no match. 
+  
+   @param file The file of interest. 
+  
+   @return The corresponding file spec, if any, otherwise null.
+  */
+  public FileSpec getFileSpec(File file) {
+    return recentFiles.get(file);
   }
   
   public String getPrefsQualifier () {

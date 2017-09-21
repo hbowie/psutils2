@@ -52,6 +52,8 @@ public class TextSelector
   private int             comma = 0;
   private int             start = 0;
   
+  private boolean         poppingUp = false;
+  
   public TextSelector () {
     super();
     
@@ -89,7 +91,7 @@ public class TextSelector
           if ((listModel != null)
               && (listModel.size() > 0)
               && popup == null) {
-          displayList();
+          focusGained();
         }
         char c = evt.getKeyChar();
         if (c == '\r' || c == '\n') {
@@ -118,14 +120,17 @@ public class TextSelector
   }
   
   private void focusChanged(boolean focusGained) {
+    System.out.println("TextSelector.focusChanged");
     if (focusGained) {
+      System.out.println("  - focus gained");
       if (listModel != null
           && listModel.size() > 0
           && this.getText().length() > 0) {
-        displayList();
+        focusGained();
       }
     } else {
-      hideList();
+      System.out.println("  - focus lost");
+      focusLost();
       if (handler != null) {
         handler.textSelectionComplete();
       }
@@ -136,7 +141,7 @@ public class TextSelector
     this.handler = handler;
   }
   
-  public void displayList() {
+  public void focusGained() {
 
     // Point location = this.getLocationOnScreen();
     // Dimension dimension = getSize();
@@ -160,16 +165,26 @@ public class TextSelector
     // this.requestFocusInWindow();
     
     // displayingList = false;
+    poppingUp = true;
     popUpList.show();
+    this.requestFocus();
+    poppingUp = false;
   }
   
-  public void hideList() {
-    popUpList.hide();
+  public void focusLost() {
+    if (poppingUp) {
+      // do nothing
+    }
+    else
+    if (popUpList.isShowing()) {
+      popUpList.hide();
+    }
     // popup.hide();
     // popup = null;
   }
   
   public void setPrefix () {
+    System.out.println("TextSelector.setPrefix");
     checkText();
     String cat;
     if (start < text.length()) {
@@ -213,6 +228,7 @@ public class TextSelector
   }
   
   public void setValueList (ValueList listModel) {
+    System.out.println("TextSelector.setValueList");
     this.listModel = listModel;
     popUpList.setTextSelector (this);
     popUpList.setModel (listModel);

@@ -46,7 +46,7 @@ public class NoteIO
   private             String              homePath            = "";
   
   private             File                altFolder           = null;
-  private             NoteList            list                = null;
+  private             NoteCollectionModel model               = null;
   private             int                 notesLoaded         = 0;
   
   /** Sequential number identifying last record read or written. */
@@ -339,12 +339,12 @@ public class NoteIO
   /**
    Load the notes from disk to memory. 
   
-   @param list The list to contain the loaded notes. 
+   @param model The model to contain the loaded notes. 
    @param loadUnTagged Should untagged notes be loaded? If not, they will
                        be suppressed. 
    @throws IOException If there's a problem reading the notes from disk. 
   */
-  public void load (NoteList list, boolean loadUnTagged) 
+  public void load (NoteCollectionModel model, boolean loadUnTagged) 
       throws IOException {
     
     notesLoaded = 0;
@@ -352,12 +352,12 @@ public class NoteIO
     if (! loadUnTagged) {
       taggedMsg = " Tagged";
     }
-    this.list = list;
+    this.model = model;
     openForInput();
     Note note = readNextNote();
     while (note != null) {
       if (note.hasTags() || loadUnTagged) {
-        list.add(note);
+        model.add(note);
         notesLoaded++;
       }
       note = readNextNote();
@@ -745,7 +745,7 @@ public class NoteIO
     return note;
   }
   
-  public void  save (NoteList noteList) 
+  public void  save (NoteCollectionModel noteList) 
       throws IOException {
     
     save (homeFolder, noteList, true);
@@ -758,7 +758,7 @@ public class NoteIO
    *
    * ======================================================================= */
  
-  public void save (File folder, NoteList noteList, boolean primaryLocation) 
+  public void save (File folder, NoteCollectionModel noteList, boolean primaryLocation) 
       throws IOException {
     for (int i = 0; i < noteList.size(); i++) {
       Note nextNote = noteList.get(i);
@@ -787,6 +787,14 @@ public class NoteIO
     closeOutput();
   }
   
+  /**
+   Save the passed note to the passed text line writer. 
+  
+   @param note The note to be saved. 
+   @param outWriter The writer to use for saving the note. 
+  
+   @return True if the save was successful. 
+  */
   public boolean save (Note note, TextLineWriter outWriter) {
     boolean ok = true;
     writer = outWriter;
@@ -816,6 +824,16 @@ public class NoteIO
     closeOutput();
   }
   
+  /**
+   Get a File object pointing to a file in the sync folder, given 
+   the appropriate info about the sync preferences.
+  
+   @param syncFolderStr The path to the sync folder. 
+   @param syncPrefix    The prefix appended to the title of each synced note. 
+   @param title         The original title of the note. 
+  
+   @return A file object pointing to the specific sync file for this note. 
+  */
   public File getSyncFile (String syncFolderStr, String syncPrefix, String title) {
     File syncFolder = new File(syncFolderStr);
     return new File(syncFolder, syncPrefix + title + noteParms.getPreferredFileExt());
@@ -944,6 +962,13 @@ public class NoteIO
     return getFile(folder, localPath).exists();
   }
   
+  /**
+   Does this note already exist on disk?
+  
+   @param localPath The path that would be used for the note. 
+  
+   @return True if a note already exists on disk  at this location. 
+  */
   public boolean exists (String localPath) {
     return getFile(homeFolder, localPath).exists();
   }

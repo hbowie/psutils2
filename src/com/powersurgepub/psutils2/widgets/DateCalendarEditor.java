@@ -47,6 +47,15 @@ public class DateCalendarEditor
   public final static GregorianCalendar DEFAULT_DATE 
       = new GregorianCalendar (2050, 11, 1);
   
+  public final static String STYLE_ANOTHER_MONTH 
+      = "-fx-font-weight: lighter; ";
+  
+  public final static String STYLE_THIS_DATE 
+      = "-fx-font-weight: bolder; -fx-text-fill: red; ";
+  
+  public final static String STYLE_AVERAGE_DAY
+      = "-fx-font-weight: normal; -fx-text-fill: black; ";
+  
   private DateWidgetOwner               dateWidgetOwner;
   
   private Scene                         scene;
@@ -123,20 +132,20 @@ public class DateCalendarEditor
     // grid1.startLayout (grid1, 3, 3);
     // grid1.setAllInsets (4);
     // Set spacing between components
-    grid1.setPadding(new Insets(4));
-    grid1.setHgap(4);
-    grid1.setVgap(4);
+    grid1.setPadding(new Insets(10));
+    grid1.setHgap(10);
+    grid1.setVgap(10);
     
     yearDecrementButton.setText("<");
-    // yearDecrementButton.setFocusable(false);
+    yearDecrementButton.setMaxWidth(Double.MAX_VALUE);
     yearDecrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
         decrementYear();
       }
     });
-        
     grid1.add(yearDecrementButton, 0, 0, 1, 1);
+    GridPane.setHgrow(yearDecrementButton, Priority.ALWAYS);
 
     yearTextField.setAlignment(Pos.CENTER);
     yearTextField.setText("2005");
@@ -144,10 +153,11 @@ public class DateCalendarEditor
         (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
           yearTextFieldFocusChange(newValue);
     });
-
     grid1.add(yearTextField, 1, 0, 1, 1);
+    GridPane.setHgrow(yearTextField, Priority.ALWAYS);
 
     yearIncrementButton.setText(">");
+    yearIncrementButton.setMaxWidth(Double.MAX_VALUE);
     yearIncrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -155,8 +165,10 @@ public class DateCalendarEditor
       }
     });
     grid1.add(yearIncrementButton, 2, 0, 1, 1);
+    GridPane.setHgrow(yearIncrementButton, Priority.ALWAYS);
 
     monthDecrementButton.setText("<");
+    monthDecrementButton.setMaxWidth(Double.MAX_VALUE);
     monthDecrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -164,6 +176,7 @@ public class DateCalendarEditor
       }
     });
     grid1.add(monthDecrementButton, 0, 1, 1, 1);
+    GridPane.setHgrow(monthDecrementButton, Priority.ALWAYS);
 
     monthTextField.setAlignment(Pos.CENTER);
     monthTextField.setText("WWWWWWWWWWW");
@@ -172,8 +185,10 @@ public class DateCalendarEditor
           monthTextFieldFocusChanged(newValue);
     });
     grid1.add(monthTextField, 1, 1, 1, 1);
+    GridPane.setHgrow(monthTextField, Priority.ALWAYS);
 
     monthIncrementButton.setText(">");
+    monthIncrementButton.setMaxWidth(Double.MAX_VALUE);
     monthIncrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -181,8 +196,10 @@ public class DateCalendarEditor
       }
     });
     grid1.add(monthIncrementButton, 2, 1, 1, 1);
+    GridPane.setHgrow(monthIncrementButton, Priority.ALWAYS);
     
     dayDecrementButton.setText("<");
+    dayDecrementButton.setMaxWidth(Double.MAX_VALUE);
     dayDecrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -190,6 +207,7 @@ public class DateCalendarEditor
       }
     });
     grid1.add(dayDecrementButton, 0, 2, 1, 1);
+    GridPane.setHgrow(dayDecrementButton, Priority.ALWAYS);
 
     dayTextField.setAlignment(Pos.CENTER);
     dayTextField.setText("  ");
@@ -198,8 +216,10 @@ public class DateCalendarEditor
           dayTextFieldFocusChanged(newValue);
     });
     grid1.add(dayTextField, 1, 2, 1, 1);
+    GridPane.setHgrow(dayTextField, Priority.ALWAYS);
 
     dayIncrementButton.setText(">");
+    dayIncrementButton.setMaxWidth(Double.MAX_VALUE);
     dayIncrementButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -207,12 +227,13 @@ public class DateCalendarEditor
       }
     });
     grid1.add(dayIncrementButton, 2, 2, 1, 1);
+    GridPane.setHgrow(dayIncrementButton, Priority.ALWAYS);
     
     masterGrid.add (grid1, 0, 0, 1, 1);
 
-    grid2.setPadding(new Insets(4));
-    grid1.setHgap(1);
-    grid1.setVgap(1);
+    grid2.setPadding(new Insets(5));
+    grid1.setHgap(5);
+    grid1.setVgap(5);
 
     // Lay out a 7 x 7 grid to show the days in the month
     
@@ -244,10 +265,15 @@ public class DateCalendarEditor
     saturday.setAlignment(Pos.CENTER);
     grid2.add (saturday, 6, 0, 1, 1);
     
+    grid3.setPadding(new Insets(10));
+    grid3.setHgap(10);
+    grid3.setVgap(10);
+    
     int col = 0;
     int row = 1;
     for (int i = 0; i < 42; i++) {
       DayOfMonthButton db = new DayOfMonthButton("00");
+      db.setMaxWidth(Double.MAX_VALUE);
       db.setOnAction(new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent evt) {
@@ -256,6 +282,7 @@ public class DateCalendarEditor
         }
       });
       grid2.add (db, col, row, 1, 1);
+      GridPane.setHgrow(db, Priority.ALWAYS);
       dayButton.add (db);
       if (col < 6) {
         col++;
@@ -271,6 +298,7 @@ public class DateCalendarEditor
     // Four buttons arranged in a 2 x 2 grid
     
     noDateButton  = new Button ("N/A");
+    noDateButton.setMaxWidth(Double.MAX_VALUE);
     noDateButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -278,17 +306,21 @@ public class DateCalendarEditor
       }
     });
     grid3.add(noDateButton, 0, 0, 1, 1);
+    GridPane.setHgrow(noDateButton, Priority.ALWAYS);
     
     todayButton   = new Button ("Today");
+    todayButton.setMaxWidth(Double.MAX_VALUE);
     todayButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
         setDateToToday();
       }
     });
-    grid3.add(todayButton, 1, 1, 1, 1);
+    grid3.add(todayButton, 1, 0, 1, 1);
+    GridPane.setHgrow(todayButton, Priority.ALWAYS);
     
     recurButton   = new Button ("Recur");
+    recurButton.setMaxWidth(Double.MAX_VALUE);
     recurButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -296,8 +328,10 @@ public class DateCalendarEditor
       }
     });
     grid3.add(recurButton, 0, 1, 1, 1);
+    GridPane.setHgrow(recurButton, Priority.ALWAYS);
     
     okButton      = new Button ("OK"); 
+    okButton.setMaxWidth(Double.MAX_VALUE);
     okButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
@@ -305,8 +339,12 @@ public class DateCalendarEditor
       }
     });
     grid3.add(okButton, 1, 1, 1, 1);
+    GridPane.setHgrow(okButton, Priority.ALWAYS);
     
     masterGrid.add (grid3, 0, 2, 1, 1);
+    GridPane.setHgrow(grid1, Priority.ALWAYS);
+    GridPane.setHgrow(grid2, Priority.ALWAYS);
+    GridPane.setHgrow(grid3, Priority.ALWAYS);
     
     yearTextField.requestFocus();
     
@@ -626,24 +664,15 @@ public class DateCalendarEditor
       for (int i = 0; i < 42; i++) {
         DayOfMonthButton db = (DayOfMonthButton)dayButton.get (i);
         String dayText = String.valueOf (calendarDay.get (Calendar.DATE));
-        String startItalics = "";
-        String endItalics = "";
-        String startBold = "";
-        String endBold = "";
+        db.setText(dayText);
         if (month == calendarDay.get (Calendar.MONTH)) {
           if (day == calendarDay.get (Calendar.DATE)) {
-            startBold = "<b><font color=red>";
-            endBold = "</font></b>";
-            db.setText ("<html>" + startItalics + startBold + dayText 
-            + endBold + endItalics + "</html>");
+            db.setStyle(STYLE_THIS_DATE);
           } else {
-            db.setText (dayText);
+            db.setStyle(STYLE_AVERAGE_DAY);
           }
         } else {
-          startItalics = "<i>";
-          endItalics = "</i>";
-          db.setText ("<html>" + startItalics + startBold + dayText 
-            + endBold + endItalics + "</html>");
+          db.setStyle(STYLE_ANOTHER_MONTH);
         }
         db.setDate (actionFormatter.format(calendarDay.getTime()));
         calendarDay.add (Calendar.DATE, 1);

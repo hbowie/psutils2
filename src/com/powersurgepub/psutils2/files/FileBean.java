@@ -71,6 +71,10 @@ public class FileBean {
     return name.get();
   }
   
+  public StringProperty nameProperty() {
+    return name;
+  }
+  
   public final void setName(String name) {
     this.name.set(name);
   }
@@ -79,12 +83,20 @@ public class FileBean {
     return date.get();
   }
   
+  public StringProperty dateProperty() {
+    return date;
+  }
+  
   public final void setDate(String lastModDate) {
     this.date.set(lastModDate);
   }
   
   public final String getExists() {
     return exists.get();
+  }
+  
+  public StringProperty existsProperty() {
+    return exists;
   }
   
   public final void setExists(String exists) {

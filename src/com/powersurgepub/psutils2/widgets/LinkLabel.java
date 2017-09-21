@@ -39,10 +39,15 @@ package com.powersurgepub.psutils2.widgets;
 public class LinkLabel 
     extends GridPane {
   
-  private ComboBox              linkComboBox = new ComboBox();
+  private MenuBar               linkMenuBar;
+  private Menu                  linkMenu;
+  private MenuItem              tweakMenuItem;
+  private MenuItem              diskMenuItem;
+  private MenuItem              launchMenuItem;
   private TextArea              linkText     = null;
   private LinkTweakerInterface  linkTweaker = null;
   private Window                window = null;
+  private boolean               resetting = false;
   
   /**
    Creates new form LinkLabel
@@ -58,25 +63,34 @@ public class LinkLabel
   
   private void buildUI() {
 
-    linkComboBox.getItems().addAll("Link:", "Tweak...", "Disk File...", "Launch..." );
-    linkComboBox.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent evt) {
-        linkComboBoxActionPerformed(evt);
-      }
-    });
+    linkMenuBar = new MenuBar();
+    
+    linkMenu = new Menu("Link:");
+    
+    tweakMenuItem = new MenuItem("Tweak...");
+    tweakMenuItem.setOnAction(e -> tweak());
+    linkMenu.getItems().add(tweakMenuItem);
+    
+    diskMenuItem = new MenuItem("Disk File...");
+    diskMenuItem.setOnAction(e -> selectFromDisk());
+    linkMenu.getItems().add(diskMenuItem);
+    
+    launchMenuItem = new MenuItem("Launch...");
+    launchMenuItem.setOnAction(e -> launch());
+    linkMenu.getItems().add(launchMenuItem);
+    
+    linkMenuBar.getMenus().add(linkMenu);
+    
     this.setPadding(new Insets(0, 0, 4, 4));
-    add(linkComboBox, 0, 0, 1, 1);
+    add(linkMenuBar, 0, 0, 1, 1);
   }
   
   public void setLabelText (String labelText) {
-    linkComboBox.getItems().remove(0);
-    linkComboBox.getItems().add(0, labelText);
-    linkComboBox.getSelectionModel().select(0);
+    linkMenu.setText(labelText);
   }
   
   public String getLabelText() {
-    String linkLabel = (String)linkComboBox.getItems().get(0);
+    String linkLabel = linkMenu.getText();
     return linkLabel;
   }
   
@@ -107,6 +121,7 @@ public class LinkLabel
   }
   
   public void selectFromDisk() {
+
     if (linkText != null) {
       FileChooser chooser = new FileChooser ();
       chooser.setTitle ("Select File as URL");
@@ -123,7 +138,7 @@ public class LinkLabel
           String tweaked = StringUtils.tweakAnyLink(webPage, false, false, false, "");
           linkText.setText (tweaked);
         } catch (MalformedURLException e) {
-          // do nothing
+          System.out.println("Malformed URL Exception");
         }
       }    
     }
@@ -133,25 +148,6 @@ public class LinkLabel
     if (linkText != null) {
       Home.getShared().openURL(linkText.getText());
     }
-  }
-  
-  private void linkComboBoxActionPerformed(ActionEvent evt) {                                             
-
-    int action = linkComboBox.getSelectionModel().getSelectedIndex();
-    switch (action) {
-      case 1: 
-        tweak();
-        break;
-      case 2:
-        selectFromDisk();
-        break;
-      case 3:
-        launch();
-        break;
-      default:
-        break;
-    }
-    linkComboBox.getSelectionModel().select(0);
   }
 
 }

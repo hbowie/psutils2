@@ -17,14 +17,12 @@
 package com.powersurgepub.psutils2.ui;
 
   import com.powersurgepub.psutils2.files.*;
-import com.powersurgepub.psutils2.values.*;
+  import com.powersurgepub.psutils2.values.*;
   import java.text.*;
-  import java.util.*;
   import javafx.geometry.*;
-  import javafx.scene.*;
   import javafx.scene.control.*;
   import javafx.scene.layout.*;
-import javafx.scene.text.*;
+  import javafx.scene.text.*;
 
 /**
  A Status Bar to be placed at the bottom of a window.

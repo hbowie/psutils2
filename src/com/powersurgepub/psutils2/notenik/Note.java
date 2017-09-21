@@ -45,6 +45,9 @@ public class Note
       Taggable, 
       ItemWithURL {
   
+  private int           collectionID = -1;
+  private boolean       deleted = false;
+  
   private RecordDefinition recDef;
   
   /** This is a readable file name derived from the Note's title. */
@@ -296,7 +299,7 @@ public class Note
   public boolean equals (Object obj2) {
     boolean eq = false;
     if (obj2 != null
-        && obj2.getClass().getSimpleName().equals ("Note")) {
+        && obj2 instanceof Note) {
       Note note2 = (Note)obj2;
       eq = (this.getUniqueKey().equalsIgnoreCase (note2.getUniqueKey()));
     }
@@ -326,7 +329,7 @@ public class Note
    */
   public int compareTo (Object obj2) {
     int comparison = -1;
-    if (obj2.getClass().getSimpleName().equals ("Note")) {
+    if (obj2 instanceof Note) {
       Note note2 = (Note)obj2;
       comparison = this.getUniqueKey().compareToIgnoreCase(note2.getUniqueKey());
     }
@@ -363,6 +366,25 @@ public class Note
     return titleValue.getLowerHyphens();
   }
   
+  /**
+   Given a title string, return a unique key for a note with that tile. 
+  
+   @param title The title of a note. 
+  
+   @return The unique key for a note with that tile.  
+  */
+  public static String makeUniqueKey(String title) {
+    return StringUtils.makeFileName(title, false);
+  }
+  
+  /**
+   Return a string that can be used to sequence this note in a list of other
+   notes, 
+  
+   @param parm Indicates the type of sort the user has requested. 
+  
+   @return The string containing this note's current sort key. 
+  */
   public String getSortKey (NoteSortParm parm) {
 
     switch (parm.getParm()) {
@@ -1357,6 +1379,45 @@ public class Note
   
   public String toString() {
     return titleValue.toString();
+  }
+  
+  /**
+   Set the unique ID of this note within its collection. This is the position
+   of this note within the basic list contained in NoteCollectionList. 
+  
+   @param collectionID This note's unique ID within its collection. 
+  */
+  public void setCollectionID(int collectionID) {
+    this.collectionID = collectionID;
+  }
+  
+  /**
+   Obtain the unique ID of this note within its collection. This is the position
+   of this note within the basic list contained in NoteCollectionList. 
+  
+   @return This note's unique ID within its collection.
+  */
+  public int getCollectionID() {
+    return collectionID;
+  }
+  
+  /**
+   Has this note been marked for deletion?
+   
+   @param deleted Indicated whether this note has been flagged for 
+                  deletion. 
+  */
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
+  
+  /**
+   Has this note been marked for deletion?
+  
+   @return True if flagged for deletion, false if still active. 
+  */
+  public boolean isDeleted() {
+    return deleted;
   }
 
 }

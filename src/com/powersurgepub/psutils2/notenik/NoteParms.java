@@ -24,11 +24,11 @@ package com.powersurgepub.psutils2.notenik;
 
   import java.text.*;
   import java.util.*;
-import javafx.geometry.*;
 
+  import javafx.geometry.*;
   import javafx.scene.control.*;
   import javafx.scene.layout.*;
-import javafx.scene.text.*;
+  import javafx.scene.text.*;
 
 /**
  A set of parameters to specify how a particular Note Collection is configured. 

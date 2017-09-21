@@ -45,11 +45,7 @@ public class FileTable {
   private TableColumn<FileBean, String> existsColumn = null;
   
   public FileTable() {
-    files = FXCollections.emptyObservableList();
-  }
-  
-  public void setTable(TableView fileTable) {
-    this.fileTable = fileTable;
+    files = FXCollections.observableArrayList();
   }
   
   public void createTable() {
@@ -78,7 +74,7 @@ public class FileTable {
     );
 
     // Build the Date Columns
-    dateColumn = new TableColumn<FileBean, String>("date");
+    dateColumn = new TableColumn<FileBean, String>(getColumnName(1));
     dateColumn.setPrefWidth(120);
     dateColumn.setMaxWidth(160);
     dateColumn.setCellValueFactory(
@@ -86,7 +82,7 @@ public class FileTable {
     );
 
     // Build the Exists Column
-    existsColumn = new TableColumn<FileBean, String>("exists");
+    existsColumn = new TableColumn<FileBean, String>(getColumnName(2));
     existsColumn.setPrefWidth(60);
     existsColumn.setMaxWidth(120);
     existsColumn.setCellValueFactory(
@@ -100,6 +96,7 @@ public class FileTable {
   }
   
   public void add(File anotherFile) {
+    System.out.println("FileTable.add " + anotherFile.toString());
     files.add(new FileBean(anotherFile));
   }
   

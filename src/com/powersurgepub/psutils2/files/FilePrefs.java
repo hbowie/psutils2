@@ -1133,6 +1133,7 @@ private void automaticBackupsButtonActionPerformed(ActionEvent evt) {
    for the user at a later time. 
   */
   public void save() {
+
     // Save backup prefs
     if (manualBackupsButton.isSelected()) {
       UserPrefs.getShared().setPref(BACKUP_FREQUENCY, MANUAL_BACKUPS);

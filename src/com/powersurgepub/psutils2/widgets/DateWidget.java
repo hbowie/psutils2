@@ -49,6 +49,8 @@ public class DateWidget
   private Button                  recurButton;
   private Button                  todayButton;
   
+  private DateCalendarEditor      editor = null;
+  
   /** 
     Creates new pane DateWidget 
    */
@@ -200,7 +202,9 @@ public class DateWidget
   */
   public void editDate() {
     if (stage != null && dateWidgetOwner != null) {
-      DateCalendarEditor editor = new DateCalendarEditor(stage, this);
+      if (editor == null) {
+        editor = new DateCalendarEditor(stage, this);
+      }
       StringDate str = new StringDate();
       str.set(dateField.getText());
       Date date = str.getDate();
