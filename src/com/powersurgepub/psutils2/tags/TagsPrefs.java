@@ -62,27 +62,27 @@ public class TagsPrefs
     // First row
     grid.add(tagsSelectLabel, 0, 0, 1, 1);
     selectTextSelector = new TextSelector();
-    selectTextSelector.setEditable(true);
+    /*selectTextSelector.setEditable(true);
     selectTextSelector.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
         UserPrefs.getShared().setPref
             (SELECT_TAGS, selectTextSelector.getText());
       }
-    });
+    }); */
     grid.add(selectTextSelector, 1, 0, 1, 1);
     
     // Second row
     grid.add(tagsSuppressLabel, 0, 1, 1, 1);
     suppressTextSelector = new TextSelector();
-    suppressTextSelector.setEditable(true);
+    /* suppressTextSelector.setEditable(true);
     suppressTextSelector.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent evt) {
         UserPrefs.getShared().setPref
             (SUPPRESS_TAGS, suppressTextSelector.getText());
       }
-    });
+    }); */
     grid.add(suppressTextSelector, 1, 1, 1, 1);
     
     selectTextSelector.setText

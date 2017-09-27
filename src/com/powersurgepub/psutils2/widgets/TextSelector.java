@@ -19,7 +19,10 @@ package com.powersurgepub.psutils2.widgets;
   import com.powersurgepub.psutils2.ui.*;
 
   import javafx.beans.value.*;
+  import javafx.geometry.*;
+  import javafx.scene.*;
   import javafx.scene.control.*;
+  import javafx.scene.layout.*;
 
 /**
  A class that can be used to present the user with a popup list from which
@@ -37,15 +40,18 @@ package com.powersurgepub.psutils2.widgets;
  from which the user will choose a value.
  */
 public class TextSelector
-    extends TextField
+    extends GridPane
     implements 
       DataWidget {
   
-  private PopUpList       popUpList     = new PopUpList();
+  private PopUpList       popUpList;
   
   private TextHandler     handler       = null;
   
   private ValueList       listModel     = null;
+  
+  private TextField       textField;
+  private Button          popUpButton;
   
   private StringBuilder   text;
   private int             semicolon = 0;
@@ -55,136 +61,43 @@ public class TextSelector
   private boolean         poppingUp = false;
   
   public TextSelector () {
-    super();
+    buildUI();
+  }
+  
+  /**
+   Build the User Interface. 
+  */
+  private void buildUI() {
     
-    this.focusedProperty().addListener(new ChangeListener<Boolean>() {
-      public void changed(ObservableValue<? extends Boolean> ov,
-          Boolean old_val, Boolean focusGained) {
-        focusChanged(focusGained);
-      }
-    });
-    
-    this.textProperty().addListener(new ChangeListener<String>() {
-      public void changed(ObservableValue<? extends String> ov,
-      String old_val, String new_val) {
-        setPrefix();
-      }
-    });
+    popUpList     = new PopUpList();
 
-    /*
-    addKeyListener(new java.awt.event.KeyAdapter() {
-      public void keyPressed(java.awt.event.KeyEvent evt) {
-        if (popup != null) {
-          if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
-            popUpList.nextItemOnList();
-          }
-          else
-          if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            popUpList.priorItemOnList();
-          }
-        }
-      }
-    });
+    this.setHgap(2);
+    this.setVgap(2);
     
-    addKeyListener(new java.awt.event.KeyAdapter() {
-      public void keyTyped(java.awt.event.KeyEvent evt) {
-          if ((listModel != null)
-              && (listModel.size() > 0)
-              && popup == null) {
-          focusGained();
-        }
-        char c = evt.getKeyChar();
-        if (c == '\r' || c == '\n') {
-          if (! popUpList.isSelectionEmpty()) {
-            setListSelection();
-          }
-        }
-      }
-    });
-    */
+    popUpButton = new Button("+");
+    popUpButton.setOnAction(e -> showPopUp());
+    this.add(popUpButton, 0, 0, 1, 1);
     
-    /*
-    DocumentListener documentListener = new DocumentListener() {
-      public void changedUpdate(DocumentEvent documentEvent) {
-        setPrefix();
-      }
-      public void insertUpdate(DocumentEvent documentEvent) {
-        setPrefix();
-      }
-      public void removeUpdate(DocumentEvent documentEvent) {
-        setPrefix();
-      }
-    };
-    this.getDocument().addDocumentListener(documentListener);
-    */
-  }
-  
-  private void focusChanged(boolean focusGained) {
-    System.out.println("TextSelector.focusChanged");
-    if (focusGained) {
-      System.out.println("  - focus gained");
-      if (listModel != null
-          && listModel.size() > 0
-          && this.getText().length() > 0) {
-        focusGained();
-      }
-    } else {
-      System.out.println("  - focus lost");
-      focusLost();
-      if (handler != null) {
-        handler.textSelectionComplete();
-      }
-    }
-  }
-  
-  public void addTextHandler (TextHandler handler) {
-    this.handler = handler;
-  }
-  
-  public void focusGained() {
+    textField = new TextField();
+    textField.setPrefColumnCount(50);
+    textField.setContextMenu(popUpList);
+    this.add(textField, 1, 0, 1, 1);
+    GridPane.setHgrow(textField, Priority.ALWAYS);
 
-    // Point location = this.getLocationOnScreen();
-    // Dimension dimension = getSize();
-    // popUpList.setLocation (location.x, location.y + dimension.height);
-    // popUpList.setBounds (
-    //     location.x, 
-    //     location.y + dimension.height,
-    //     dimension.width / 2,
-    //     dimension.height * 12);
-    // popUpList.setMinimumSize (new Dimension (dimension.width / 2, dimension.height * 12));
-    // popUpList.setSize (dimension.width / 2, dimension.height * 12);
-    // popUpList.doLayout();
-    // Dimension popUpListSize = new Dimension(dimension.width, 240);
-    // popUpList.setPreferredSize (popUpListSize);
-    // popup = popupFactory.getPopup (this, popUpList,
-    //     location.x, location.y + dimension.height);
-    // popup.show();
-    // popUpList.showList();
-    // popUpList.setAlwaysOnTop (true);
-    // popUpList.setFocusable (false);
-    // this.requestFocusInWindow();
-    
-    // displayingList = false;
-    poppingUp = true;
-    popUpList.show();
-    this.requestFocus();
-    poppingUp = false;
   }
   
-  public void focusLost() {
-    if (poppingUp) {
-      // do nothing
-    }
-    else
-    if (popUpList.isShowing()) {
-      popUpList.hide();
-    }
-    // popup.hide();
-    // popup = null;
+  /**
+   Show the pop up list.
+  */
+  private void showPopUp() {
+    setPrefix();
+    popUpList.show(textField, Side.BOTTOM, 0, 0);
   }
   
-  public void setPrefix () {
-    System.out.println("TextSelector.setPrefix");
+  /**
+   Tailor the contents of the pop up list based on user input so far.  
+  */
+  private void setPrefix () {
     checkText();
     String cat;
     if (start < text.length()) {
@@ -210,7 +123,7 @@ public class TextSelector
     setText (text.toString());
   }
   
-  public void checkText () {
+  private void checkText () {
     text = new StringBuilder (getText());
     semicolon = text.lastIndexOf (";");
     comma = text.lastIndexOf (",");
@@ -228,10 +141,31 @@ public class TextSelector
   }
   
   public void setValueList (ValueList listModel) {
-    System.out.println("TextSelector.setValueList");
     this.listModel = listModel;
     popUpList.setTextSelector (this);
     popUpList.setModel (listModel);
+  }
+  
+  public void addTextHandler (TextHandler handler) {
+    this.handler = handler;
+  }
+  
+  /**
+   Get the data entered by the user, represented as a String. 
+  
+   @return A string representing data entered by the user. 
+  */
+  public String getText() {
+    return textField.getText();
+  }
+  
+  /**
+   Display a string using this widget.
+  
+   @param t The string to be displayed. 
+  */
+  public void setText(String t) {
+    textField.setText(t);
   }
 
 }

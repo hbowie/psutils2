@@ -116,7 +116,7 @@ public class FilePrefs
   private ComboBox    purgeWhenComboBox = new ComboBox();
   private Label       recentLabel       = new Label("Number of Recent Files:");
   private TextField   recentFilesMaxTextField   = new TextField();
-  private Slider      recentFilesMaxSlider      = new Slider(0.0, 50.0, 5.0);
+  private Slider      recentFilesMaxSlider      = new Slider(0.0, 60.0, 5.0);
   private Label       msgToUser         = new Label();
   
    /**

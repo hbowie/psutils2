@@ -161,6 +161,7 @@ public class NoteCollectionModel {
    @return True if ok, false if problems. 
   */
   public boolean openAtStartup(boolean openStartupTags) {
+
     open = false;
     FileSpec lastFileSpec = filePrefs.getStartupFileSpec();
     String lastFolderString = filePrefs.getStartupFilePath();
@@ -271,6 +272,10 @@ public class NoteCollectionModel {
       Note firstNote = sorted.get(0);
       select(firstNote);
     }
+    
+    if (openOK) {
+      master.addRecentFile(fileSpec.getFolder());
+    }
 
     open = openOK;
 
@@ -365,14 +370,14 @@ public class NoteCollectionModel {
   public boolean close() {
     boolean closed = false;
     if (open) {
-      open = false;
-      closed = true;
       fileSpec.setNoteSortParm(sortParm.getParm());
       if (filePrefs != null) {
         filePrefs.handleClose();
       }
     }
     deselect();
+    open = false;
+    closed = true;
     return closed;
   }
   
@@ -456,7 +461,6 @@ public class NoteCollectionModel {
    Called to indicate that the user's selected sort parm has been changed. 
   */
   public void sortParmChanged() {
-    System.out.println("    NoteCollectionModel.sortParmChanged");
     sorted.genSortedList(list);
     if (selectedNote != null) {
       selectedSortKey = selectedNote.getSortKey(sortParm);
@@ -947,8 +951,6 @@ public class NoteCollectionModel {
   */
   public void updateSelection() {
     selectedTitle = selectedNote.getTitle();
-    System.out.println("NoteCollectionModel.updateSelection with title = " 
-        + selectedTitle);
     selectedTags = selectedNote.getTagsAsString();
     selectedUniqueKey = selectedNote.getUniqueKey();
     selectedSortKey = selectedNote.getSortKey(sortParm);
@@ -969,8 +971,7 @@ public class NoteCollectionModel {
    @return True if everything went ok. 
   */
   public boolean modifySelection() {
-    System.out.println("NoteCollectionModel.modifySelection with title = " 
-        + selectedNote.getTitle());
+
     boolean saveOK = true;
     selectedNote.setLastModDateToday();
     saveSelectionAndDeleteOnRename();
@@ -1039,7 +1040,6 @@ public class NoteCollectionModel {
   
   public void modifyMemoryForSelection() {
 
-    System.out.println("NoteCollectionModel.modifyMemoryForSelection");
     sortParm.maintainSeqStats(selectedNote.getSeqValue());
     
     if (uniqueKeyChanged()) {
@@ -1047,12 +1047,8 @@ public class NoteCollectionModel {
       map.add(selectedNote);
     }
     
-    System.out.println("  - Latest   Sort Key = " + selectedNote.getSortKey(sortParm));
-    System.out.println("  - Previous Sort Key = " + selectedSortKey);
     if (sortKeyChanged()) {
-      System.out.println("  - Sort Key Changed");
       boolean removed = sorted.remove(selectedSortKey);
-      System.out.println("  - Removal result = " + String.valueOf(removed));
       if (removed) {
         sorted.add(selectedNote);
       }

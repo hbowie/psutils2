@@ -723,7 +723,7 @@ public class NoteParms {
       // Tags
       case DataFieldDefinition.TAGS_TYPE:
         TextSelector tagsTextSelector = new TextSelector();
-        tagsTextSelector.setEditable(true);
+        // tagsTextSelector.setEditable(true);
         label.setLabelFor(tagsTextSelector);
         grid.add(label, 0, row, 1, 1);
         grid.add(tagsTextSelector, 1, row, 1, 1);

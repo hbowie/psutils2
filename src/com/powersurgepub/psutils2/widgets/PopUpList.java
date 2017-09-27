@@ -45,67 +45,29 @@ package com.powersurgepub.psutils2.widgets;
  @author Herb Bowie
  */
 public class PopUpList 
-    extends Stage {
+    extends ContextMenu {
   
-  private ValueList valueList = null;
+  private String                    prefix = "";
+  private ObservableList<MenuItem>  items;
+  private String                    selectedValue = "";
   
-  private Scene scene;
-  private BorderPane pane;
-  private ListView<String> list;
+  private ValueList                 list = null;
   
-  private TextSelector textSelector;
+  private TextSelector              textSelector = null;
   
   public PopUpList() {
-    super(StageStyle.UTILITY);
-    buildUI();
+    super();
+    items = this.getItems();
   }
   
-  
-  /**
-   Build the User Interface. 
-  */
-  private void buildUI() {
-
-    pane = new BorderPane();
-    list = new ListView<String>();
-
-    list.setMinSize(120, 240);
-    list.setPrefSize(480, 240);
-
-    // listScrollPane.setPreferredSize(new java.awt.Dimension(200, 140));
-
-    // list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-    list.setMaxSize(400, 800);
-    list.getSelectionModel().selectedItemProperty().addListener (
-        (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-      listSelectionMade();
-    });
-
-    pane.setCenter(list);
-    scene = new Scene(pane);
-    this.setScene(scene);
-
-  }
-  
-  
-  private void listSelectionMade() {
-    if (! list.getSelectionModel().isEmpty()) {
-      announceSelection();
-    }
-  }
   /**
    Set the model to be used for the JList. 
    
    @param listModel Model to be used for the JList. 
    */
   public void setModel (ValueList valueList) {
-    this.valueList = valueList;
-    list.getItems().clear();
-    for (int i = 0; i < valueList.size(); i++) {
-      list.getItems().add(valueList.get(i));
-    }
-    // list.setModel (listModel);
-    // list.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
+    this.list = valueList;
+    rebuildMenuItems();
   }
   
   /**
@@ -115,26 +77,48 @@ public class PopUpList
                  match.
    */
   public void setPrefix (String prefix) {
-    if (prefix != null && list.getItems().size() > 0) {
-      int match = 0;
-      boolean matched = false;
-      while (match < list.getItems().size() && (! matched)) {
-        String item = list.getItems().get(match);
-        if (item.startsWith(prefix)) {
-          matched = true;
-        } else {
-          match++;
+    this.prefix = prefix;
+    rebuildMenuItems();
+  }
+  
+  /**
+   Rebuild the context menu value list based on current values of entire
+   list plus the current prefix, if any. 
+  */
+  public void rebuildMenuItems() {
+    items.clear();
+    for (int i = 0; i < list.size(); i++) {
+      String value = list.get(i);
+      boolean matched = true;
+      int j = 0;
+      while (matched 
+          && j < prefix.length()
+          && j < value.length()) {
+        matched = (value.substring(j, j + 1).equalsIgnoreCase(prefix.substring(j, j + 1)));
+        if (matched) {
+          j++;
         }
-      } // end while searching for a match
-      if (match >= list.getItems().size()) {
-        match = 0;
+      } // end of matching scan
+      if (matched) {
+        MenuItem valueItem = new MenuItem();
+        valueItem.setText(value);
+        valueItem.setOnAction(e -> itemSelected(e));
+        items.add(valueItem);
       }
-          
-      // list.getNextMatch (prefix, 0, Position.Bias.Forward);
-      // list.clearSelection();
-      list.getSelectionModel().select(match);
-      list.scrollTo(match);
-      // list.ensureIndexIsVisible (match);
+    } // end of value list
+  } // end method rebuildMenuItems
+  
+  /**
+   Let everyone know that a context menu item was selected.
+  
+   @param e The ActionEvent that occurred. 
+  */
+  private void itemSelected(ActionEvent e) {
+    Object source = e.getSource();
+    if (source instanceof MenuItem) {
+      MenuItem sourceMenuItem = (MenuItem)source;
+      selectedValue = sourceMenuItem.getText();
+      announceSelection();
     }
   }
   
@@ -147,40 +131,30 @@ public class PopUpList
     this.textSelector = textSelector;
   }
   
+  /**
+   Let the text selector know that the user has selected something. 
+  */
   public void announceSelection () {
     if (textSelector != null) {
       textSelector.setListSelection (getSelectedValue());
     }
   }
   
+  /**
+   Get the last value selected (if any).
+  @return 
+  */
   public String getSelectedValue () {
-    if (isSelectionEmpty()) {
-      return "";
-    } else {
-      return list.getSelectionModel().getSelectedItem();
-    }
+    return selectedValue;
   }
   
+  /**
+   See if there is a selection. 
+  
+   @return True if we've got something; false if we're shooting blanks. 
+  */
   public boolean isSelectionEmpty() {
-    return list.getSelectionModel().isEmpty();
-  }
-
-  public void nextItemOnList () {
-    int index = list.getSelectionModel().getSelectedIndex();
-    index++;
-    if (index < list.getItems().size()) {
-      list.getSelectionModel().select(index);
-      list.scrollTo(index);
-    }
-  }
-
-  public void priorItemOnList () {
-    int index = list.getSelectionModel().getSelectedIndex();
-    if (index > 0) {
-      index --;
-      list.getSelectionModel().select(index);
-      list.scrollTo(index);
-    }
+    return (selectedValue == null || selectedValue.length() == 0);
   }
 
 }

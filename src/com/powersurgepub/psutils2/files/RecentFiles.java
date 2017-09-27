@@ -353,15 +353,11 @@ public class RecentFiles {
   */
   public void modRecentFile(String oldTitle, String newTitle) {
 
-    System.out.println("RecentFiles.modRecentFile");
-    System.out.println("  - old title = " + oldTitle);
-    System.out.println("  - new title = " + newTitle);
     boolean found = false;
     int i = 0;
     while (i < files.size() && (! found)) {
       FileSpec fs = get(i);
       if (fs != null && fs.getCollectionTitle().equalsIgnoreCase(oldTitle)) {
-        System.out.println("  - File Spec found at index " + String.valueOf(i));
         found = true;
         fs.setCollectionTitle(newTitle);
       }
@@ -373,9 +369,6 @@ public class RecentFiles {
       i = 0;
       while (i < recentFilesMenu.getItems().size() && (! found)) {
         MenuItem mc = recentFilesMenu.getItems().get(i);
-        System.out.println("  Checking recent file menu item at "
-          + String.valueOf(i)
-          + " with value of " + mc.toString());
         if (mc instanceof MenuItem) {
           MenuItem mi = (MenuItem)mc;
           if (mi.getText().equalsIgnoreCase(oldTitle)) {
