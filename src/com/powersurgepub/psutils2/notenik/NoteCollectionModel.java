@@ -517,9 +517,9 @@ public class NoteCollectionModel {
           if (added) {
             notesLoaded++;
           } else {
-            throw new NoteCollectionException
-              ("Attempt to load from disk a duplicate note with title of " 
-                  + noteFromDisk.getTitle());
+            Logger.getShared().recordEvent(LogEvent.MEDIUM,
+                "Could not load duplicate title found at: " + noteFromDisk.getDiskLocation(),
+                false);
           }
         }
         noteFromDisk = noteIO.readNextNote();

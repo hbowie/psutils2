@@ -45,6 +45,8 @@ public class RecursValue
   public static final int   QUARTERS  = 4;
   public static final int   YEARS     = 5;
   
+  private             boolean weekdays = false;
+  
   private             int dayOfWeek = 0;
   
   private             int dayOfMonth = 0;
@@ -78,6 +80,7 @@ public class RecursValue
     recurs = new StringBuilder();
     interval = 0;
     unit = -1;
+    weekdays = false;
     int i = 0;
     while (i < str.length()) {
       
@@ -108,6 +111,12 @@ public class RecursValue
             || word.equalsIgnoreCase("days") 
             || word.equalsIgnoreCase("daily")) {
           unit = DAYS;
+        }
+        else
+        if (word.equalsIgnoreCase("weekday")
+            || word.equalsIgnoreCase("weekdays")) {
+          unit = DAYS;
+          weekdays = true;
         }
         else
         if (word.equalsIgnoreCase("week") 
@@ -206,6 +215,13 @@ public class RecursValue
       case DAYS:
         workCal.add(Calendar.DATE, interval);
         bumped = true;
+        if (weekdays) {
+          int dow = workCal.get(Calendar.DAY_OF_WEEK);
+          while (dow == Calendar.SATURDAY || dow == Calendar.SUNDAY) {
+            workCal.add(Calendar.DATE, 1);
+            dow = workCal.get(Calendar.DAY_OF_WEEK);
+          }
+        }
         break;
       case WEEKS:
         workCal.add(Calendar.DATE, interval * 7);

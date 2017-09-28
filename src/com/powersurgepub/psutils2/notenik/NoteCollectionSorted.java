@@ -196,8 +196,6 @@ public class NoteCollectionSorted {
    @return True if removed, false if not found. 
   */
   boolean remove (Note noteToRemove) {
-    System.out.println("NoteCollectionSorted.remove note with title = " 
-        + noteToRemove.getTitle());
     return remove(noteToRemove.getSortKey(sortParm));
   }
   
@@ -209,8 +207,6 @@ public class NoteCollectionSorted {
    @return True if note found and removed, false otherwise. 
   */
   boolean remove (String sortKey) {
-    System.out.println("NoteCollectionSorted.remove sork key = " 
-        + sortKey);
     findSortInternal(sortKey);
     if (sortMatch) {
       return remove(sortIndex);
@@ -229,8 +225,6 @@ public class NoteCollectionSorted {
    @return True if note found and removed, false otherwise;
   */
   boolean remove (int i) {
-    System.out.println("NoteCollectionSorted.remove index =  " 
-        + String.valueOf(i));
     if (i < 0 || i >= sortedNotes.size()) {
       return false;
     } else {
