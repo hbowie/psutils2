@@ -272,6 +272,15 @@ public class TagsNodeValue {
         + " tree level = " + String.valueOf (this.getTreeLevel())
         + " " + toString());
   }
+  
+  public void display() {
+    System.out.println("TagsNodeValue data display");
+    System.out.println("  Node Type = " + String.valueOf(nodeType));
+    if (nextNodeForItem == null) {
+      System.out.println("  Next Node for Item = null");
+    }
+    System.out.println("  " + getUserObject().toString());
+  }
 
   /**
    Returns the title of this node. This value is displayed in the Tree Model

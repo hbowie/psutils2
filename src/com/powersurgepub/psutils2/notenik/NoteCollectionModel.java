@@ -27,6 +27,7 @@ package com.powersurgepub.psutils2.notenik;
 
   import java.io.*;
   import java.util.*;
+import javafx.collections.*;
   import javafx.scene.control.*;
 
 /**
@@ -776,6 +777,7 @@ public class NoteCollectionModel {
     boolean sortedOK  = sorted.remove(noteToRemove);
     boolean mapOK     = map.remove(noteToRemove);
     boolean listOK    = list.remove(noteToRemove);
+    tagsView.remove(noteToRemove);
     boolean deleted   = false;
     if (noteToRemove.hasDiskLocation()) {
       String locToDelete = noteToRemove.getDiskLocation();
@@ -801,6 +803,21 @@ public class NoteCollectionModel {
   */
   public TreeView getTree() {
     return tagsView.getTreeView();
+  }
+  
+  /**
+   Expand all the nodes in the tags view. 
+  */
+  public void expandAll() {
+    tagsView.expandAll();
+  }
+  
+  /**
+   Collapse all the nodes in the tags view, except for the first level 
+   beneath the root. 
+  */
+  public void collapseAll() {
+    tagsView.collapseAll();
   }
   
   /**
@@ -1038,7 +1055,7 @@ public class NoteCollectionModel {
     return saveOK;
   }
   
-  public void modifyMemoryForSelection() {
+  private void modifyMemoryForSelection() {
 
     sortParm.maintainSeqStats(selectedNote.getSeqValue());
     

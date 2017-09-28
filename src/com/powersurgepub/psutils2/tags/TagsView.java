@@ -21,6 +21,7 @@ package com.powersurgepub.psutils2.tags;
 
   import java.io.*;
 
+  import javafx.collections.*;
   import javafx.scene.control.*;
   import javafx.scene.control.cell.*;
 
@@ -109,6 +110,44 @@ public class TagsView {
   }
   
   /**
+   Expand all the nodes in the tags view. 
+  */
+  public void expandAll() {
+    expand(rootNode);
+  }
+  
+  public void expand(TreeItem<TagsNodeValue> nodeToExpand) {
+    ObservableList<TreeItem<TagsNodeValue>> kids = nodeToExpand.getChildren();
+    for (int i = 0; i < kids.size(); i++) {
+      TreeItem<TagsNodeValue> nextKid = kids.get(i);
+      expand(nextKid);
+    }
+    if (kids.size() > 0) {
+      nodeToExpand.setExpanded(true);
+    }
+  }
+  
+  /**
+   Collapse all the nodes in the tags view, except for the first level 
+   beneath the root. 
+  */
+  public void collapseAll() {
+    collapse(rootNode);
+  }
+  
+  public void collapse(TreeItem<TagsNodeValue> nodeToCollapse) {
+    ObservableList<TreeItem<TagsNodeValue>> kids = nodeToCollapse.getChildren();
+    for (int i = 0; i < kids.size(); i++) {
+      TreeItem<TagsNodeValue> nextKid = kids.get(i);
+      collapse(nextKid);
+    }
+    if (kids.size() > 0 
+        && nodeToCollapse.getValue().getNodeType() != TagsNodeValue.ROOT) {
+      nodeToCollapse.setExpanded(false);
+    }
+  }
+  
+  /**
     Make sure this view is sorted in the proper sequence
     and contains only selected items.
    */
@@ -136,7 +175,6 @@ public class TagsView {
    *    @param tagged   Item to be deleted.
    */
   public void remove (Taggable tagged) {
-    System.out.println("TagsView.remove");
     if (tagged == null) {
       System.out.println("  - tagged is null");
     }
@@ -144,22 +182,21 @@ public class TagsView {
     TreeItem<TagsNodeValue> treeNode = tagged.getTagsNode();
     if (treeNode == null) {
       System.out.println("  - tags node is null");
-    }
+    } 
     TagsNodeValue nodeNext = null;
     tagged.setTagsNode (null);
     while (treeNode != null) { 
       TagsNodeValue treeNodeValue = treeNode.getValue();
       TreeItem<TagsNodeValue> nextNode = treeNodeValue.getNextNodeForItem();
-      if (nextNode != null) {
-        TagsNodeValue nextNodeValue = nextNode.getValue();  
-        TreeItem<TagsNodeValue> parentNode = treeNode.getParent();
-        if (parentNode != null) {
-          parentNode.getChildren().remove(treeNode);
-        }
+      TreeItem<TagsNodeValue> parentNode = treeNode.getParent();
+      if (parentNode == null) {
+        System.out.println("  - Parent node is null");
+      } else {
+        parentNode.getChildren().remove(treeNode);
       }
       treeNode = nextNode;
-    }
-  }
+    } // end while treeNode not null
+  } // end method remove a taggable object
 
   /**
    Add a taggable item to the tree model.
