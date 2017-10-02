@@ -269,6 +269,14 @@ public class NoteCollectionSorted {
     }
   }
   
+  public SortedNote getSortedNote (int i) {
+    if (i < 0 || i >= sortedNotes.size()) {
+      return null;
+    } else {
+      return sortedNotes.get(i);
+    }
+  }
+  
   
   /**
    Find the position of the given note within the sorted list.

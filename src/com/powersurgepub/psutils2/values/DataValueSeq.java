@@ -52,6 +52,10 @@ public class DataValueSeq
     
   }
   
+  public DataValueSeq(DataValueSeq value) {
+    set(value);
+  }
+  
   /**
    Constructor with a passed value. 
   
@@ -59,6 +63,10 @@ public class DataValueSeq
   */
   public DataValueSeq(String value) {
     set(value);
+  }
+  
+  public void set(DataValueSeq value) {
+    set(value.toString());
   }
   
   /**

@@ -274,9 +274,7 @@ public class MasterCollection {
    @param newTitle The title after the modification. 
   */
   public void modRecentFile(String oldTitle, String newTitle) {
-    System.out.println("MasterCollection.modRecentFile");
-    System.out.println("  - old title = " + oldTitle);
-    System.out.println("  - new title = " + newTitle);
+
     if (! oldTitle.equals(newTitle)) {
       recentFiles.modRecentFile(oldTitle, newTitle);
     }

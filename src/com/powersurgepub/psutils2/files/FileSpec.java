@@ -81,7 +81,7 @@ public class FileSpec {
    Construct a FileSpec without any data.
    */
   public FileSpec () {
- 
+
   }
 
   /**
@@ -90,6 +90,7 @@ public class FileSpec {
    @param path A file path or url, typically.
    */
   public FileSpec (String path) {
+
     setPath(path);
   }
   
@@ -98,6 +99,7 @@ public class FileSpec {
   @param file 
   */
   public FileSpec (File file) {
+
     setFile(file);
   }
 
@@ -169,6 +171,7 @@ public class FileSpec {
    */
   public void saveToRecentPrefs (String prefsQualifier, int recentFileNumber) {
     
+    // System.out.println("  - save to recent prefs for path = " + path);
     // Apend the file number to the keys
     String keySuffix = String.valueOf(recentFileNumber);
 
@@ -799,6 +802,7 @@ public class FileSpec {
       int parm = Integer.parseInt(noteSortParm);
       this.noteSortParm = parm;
     } catch (NumberFormatException e) {
+      System.out.println("  - bad note sort parm");
       // Leave it alone if bad number
     }
   }
@@ -812,7 +816,9 @@ public class FileSpec {
   }
   
   public String getNoteSortParmAsString() {
-    return Integer.toString(noteSortParm);
+    String str = Integer.toString(noteSortParm);
+    // System.out.println("  - get note sort part as string = " + str);
+    return str;
   }
   
   public void setCollectionTitle(String collectionTitle) {

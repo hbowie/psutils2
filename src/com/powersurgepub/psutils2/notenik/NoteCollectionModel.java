@@ -27,7 +27,6 @@ package com.powersurgepub.psutils2.notenik;
 
   import java.io.*;
   import java.util.*;
-import javafx.collections.*;
   import javafx.scene.control.*;
 
 /**
@@ -244,7 +243,7 @@ public class NoteCollectionModel {
     NoteParms templateParms = noteIO.checkForTemplate();
     if (templateParms != null) {
       noteIO = new NoteIO (fileSpec.getFile(), templateParms);
-    }    
+    } 
     sortParm.setParm(fileSpec.getNoteSortParm());
     sorted.genSortedList(list);
     try {
@@ -275,7 +274,7 @@ public class NoteCollectionModel {
     }
     
     if (openOK) {
-      master.addRecentFile(fileSpec.getFolder());
+      this.fileSpec = master.addRecentFile(fileSpec.getFolder());
     }
 
     open = openOK;
@@ -467,6 +466,7 @@ public class NoteCollectionModel {
       selectedSortKey = selectedNote.getSortKey(sortParm);
     }
     view.newViews();
+    fileSpec.setNoteSortParm(sortParm.getParm());
   }
   
   /**
@@ -1267,46 +1267,84 @@ public class NoteCollectionModel {
   */
   public String incrementSeq() {
     
-    String newSeq = "";
-    String oldSortKey = "";
+    DataValueSeq resultSeq = null;
     if (isOpen() && hasSelection()
         && getSortParm().getParm() == NoteSortParm.SORT_BY_SEQ_AND_TITLE) {
       boolean incrementing = true;
       boolean incrementingOnLeft = true;
-      int index = sorted.findSorted(selectedNote);
-      Note incNote = sorted.get(index);
-      if (incNote.getSeqValue().getPositionsToRightOfDecimal() > 0) {
-        incrementingOnLeft = false;
-      }
-      oldSortKey = incNote.getSortKey(sortParm);
-      incNote.incrementSeq(incrementingOnLeft);
-      newSeq = incNote.getSeq();
-      modifyNoteSeq(incNote, oldSortKey);
-      DataValueSeq lastSeq = incNote.getSeqValue();
-      index++;
+      ArrayList<DataValueSeq> newSeqs = new ArrayList<>();
+      int startingIndex = sorted.findSorted(selectedNote);
+      int index = startingIndex;
+      SortedNote incSortedNote;
+      Note incNote;
+      DataValueSeq incSeq;
+      DataValueSeq lastSeq = null;
+      DataValueSeq newSeq;
       while (incrementing && index < sorted.size()) {
-        incNote = sorted.get(index);
-        int result = incNote.getSeqValue().compareTo(lastSeq);
+        
+        // Get needed fields for current note
+        incSortedNote = sorted.getSortedNote(index);
+        incNote = incSortedNote.getNote();
+        incSeq = incNote.getSeqValue();
+
+        // Special logic for first note processed
+        if (index == startingIndex) {
+          lastSeq = new DataValueSeq(incSeq);
+          resultSeq = lastSeq;
+          if (incSeq.getPositionsToRightOfDecimal() > 0) {
+            incrementingOnLeft = false;
+          }
+        }
+        
+        // See if the current sequence is already greater than the last one
+        int result = incSeq.compareTo(lastSeq);
         if (result > 0) {
            if (incrementingOnLeft) {
-             result = incNote.getSeqValue().getLeft().compareTo
-                 (lastSeq.getLeft());
+             result = incSeq.getLeft().compareTo(lastSeq.getLeft());
            }
         }
+        
+        // See if we're done, or need to keep incrementing
         if (result > 0) {
           incrementing = false;
         } else {
-          oldSortKey = incNote.getSortKey(sortParm);
-          incNote.incrementSeq(incrementingOnLeft);
-          modifyNoteSeq(incNote, oldSortKey);
-          lastSeq = incNote.getSeqValue();
           incrementing = true;
+          newSeq = new DataValueSeq(incSeq);
+          newSeq.increment(incrementingOnLeft);
+          newSeqs.add(newSeq);
+          lastSeq = new DataValueSeq(newSeq);
+          if (index == startingIndex) {
+            resultSeq = lastSeq;
+          }
+          index++;
         }
-        index++;
       } // end while incrementing
+        
+      if (index >= sorted.size()) {
+        index--;
+      }
+      
+      // Now apply the new sequences from the top down, in order to
+      // keep notes from changing position in the sorted list.
+      int newSeqIndex = newSeqs.size() - 1;
+      while (index >= startingIndex && newSeqIndex >= 0) {
+        incSortedNote = sorted.getSortedNote(index);
+        incNote = incSortedNote.getNote();
+        newSeq = newSeqs.get(newSeqIndex);
+        String priorSortKey = incNote.getSortKey(sortParm);
+        sorted.remove(priorSortKey);
+        incNote.setSeq(newSeq.toString());
+        incNote.setLastModDateToday();
+        saveNoteAndDeleteOnRename(incNote, incNote.getTitle());
+        sorted.add(incNote);
+        sortParm.maintainSeqStats(newSeq);
+        index--;
+        newSeqIndex--;
+      }
+
       // fireTableDataChanged();
     } 
-    return newSeq;
+    return resultSeq.toString();
   }
   
   /**
