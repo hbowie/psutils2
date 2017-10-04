@@ -70,9 +70,6 @@ public class FilePrefs
   public static final String NOW                          = "now";
   public static final int    NOW_INDEX                    = 1;
   
-  public static final DateFormat  BACKUP_DATE_FORMATTER 
-      = new SimpleDateFormat ("yyyy-MM-dd-HH-mm");
-  
   private             int    purgeInaccessiblePref        = NEVER_INDEX;
   
   private             long   daysBetweenBackups           = 7;
@@ -577,6 +574,10 @@ public class FilePrefs
     }
   }
   
+  public int getBackupsToKeep() {
+    return (int)backupsToKeepSlider.getValue();
+  }
+  
   /**
    Return an integer value extracted from the text field.
   
@@ -856,45 +857,6 @@ public class FilePrefs
   }
   
   /**
-   Get the default file name to be used for backups. 
-  
-   @param primaryFile The file or folder to be backed up.
-  
-   @param ext The intended extension for the backup file. 
-  
-   @return THe suggested name for the backup file. 
-  */
-  public String getBackupFileName(File primaryFile, String ext) {
-    StringBuilder backupFileName = new StringBuilder ();
-    FileName name = new FileName (primaryFile);
-    int numberOfFolders = name.getNumberOfFolders();
-    int i = numberOfFolders - 1;
-    if (i < 0) {
-      i = 0;
-    }
-    while (i <= numberOfFolders) {
-      if (backupFileName.length() > 0) {
-        backupFileName.append (' ');
-      }
-      backupFileName.append (name.getFolder (i));
-      i++;
-    }
-    backupFileName.append (" backup ");
-    backupFileName.append (getBackupDate());
-    if (ext.length() == 0) {
-      // no extension
-    }
-    else
-    if (ext.charAt(0) == '.') {
-      backupFileName.append(ext);
-    } else {
-      backupFileName.append (".");
-      backupFileName.append(ext);
-    }
-    return backupFileName.toString();
-  }
-  
-  /**
    Remove older backup files or folders. 
   
    @param backupFolder The folder containing all the backups.
@@ -902,55 +864,9 @@ public class FilePrefs
   
    @return The number of backups pruned. 
   */
-  public int pruneBackups(File backupFolder, String fileNameWithoutDate) {
-    int pruned = 0;
-    int backupsToKeep = (int)backupsToKeepSlider.getValue();
-    if (backupsToKeep > 0) {
-      ArrayList<String> backups = new ArrayList<String>();
-      String[] dirEntries = backupFolder.list();
-      for (int i = 0; i < dirEntries.length; i++) {
-        String dirEntryName = dirEntries[i];
-        if (dirEntryName.startsWith(fileNameWithoutDate)) {
-          boolean added = false;
-          int j = 0;
-          while ((! added) && (j < backups.size())) {
-            if (dirEntryName.compareTo(backups.get(j)) > 0) {
-              backups.add(j, dirEntryName);
-              added = true;
-            } else {
-              j++;
-            }
-          } // end while looking for insertion point
-          if (! added) {
-            backups.add(dirEntryName);
-          }
-        } // end if file/folder name matches prefix
-      } // end of directory entries
-      while (backups.size() > backupsToKeep) {
-        String toDelete = backups.get(backups.size() - 1);
-        File toDeleteFile = new File (backupFolder, toDelete);
-        if (toDeleteFile.isDirectory()) {
-          FileUtils.deleteFolderContents(toDeleteFile);
-        }
-        toDeleteFile.delete(); 
-        Logger.getShared().recordEvent(LogEvent.NORMAL, 
-            "Pruning older backup: " + toDeleteFile.toString(), 
-            false);
-        pruned++;
-        backups.remove(backups.size() - 1);
-      }
-    } // if we have a backups to keep number
-    return pruned;
-  }
-  
-  /**
-   Return the current date and time formatted in a way that can be 
-   easily appended to a file or folder name. 
-  
-   @return Current date and time. 
-  */
-  public static String getBackupDate() {
-    return BACKUP_DATE_FORMATTER.format (new Date());
+  public int pruneBackups(BackupInfo backupInfo) {
+    backupInfo.setBackupsToKeep((int)backupsToKeepSlider.getValue());
+    return backupInfo.pruneBackups();
   }
   
   public void saveLastBackupDate(

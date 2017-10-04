@@ -22,6 +22,7 @@ package com.powersurgepub.psutils2.files;
   import java.io.*;
   import java.nio.channels.*;
   import java.util.*;
+  import java.util.zip.*;
 
 /**
 /*

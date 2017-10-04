@@ -53,7 +53,7 @@ public class LogWindow
     StackPane logPane = new StackPane();
     logPane.getChildren().add(logTextArea);
     
-    Scene logScene = new Scene(logPane, 300, 250);
+    Scene logScene = new Scene(logPane, 600, 400);
     
     logStage.setScene(logScene);
   }

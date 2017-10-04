@@ -1491,75 +1491,31 @@ public class NoteCollectionModel {
   } // end method syncWithFolder
   
   /**
+   Assemble the info needed for a backup. 
+  
+   @return The assembled info. 
+  */
+  public BackupInfo getBackupInfo() {
+    BackupInfo backupInfo = new BackupInfo();
+    backupInfo.setSource(fileSpec);
+    backupInfo.setToZip();
+    backupInfo.setBackupFolder(getBackupFolder());
+    backupInfo.setBackupsToKeep(filePrefs);
+    return backupInfo;
+  }
+  
+  /**
    Backup without prompting the user. 
   
    @return True if backup was successful. 
   */
-  public boolean backupWithoutPrompt() {
+  public boolean backupZipWithoutPrompt() {
 
-    boolean backedUp = false;
-    
+    BackupInfo backupInfo = getBackupInfo();
     if (open) {
-      FileName urlFileName = new FileName (fileSpec.getFile());
-      File backupFolder = getBackupFolder();
-      String backupFileName 
-          = filePrefs.getBackupFileName(fileSpec.getFile(), urlFileName.getExt());
-      File backupFile = new File 
-          (backupFolder, backupFileName);
-      backedUp = backup (backupFile);
+      backupInfo.backupToZip();
     }
-
-    return backedUp;
-    
-  }
-  
-  /**
-   Backup the notes collection to the indicated location. 
-  
-   @param folderForBackups The backup folder to be used. 
-  
-   @return True if everything was backed up successfully.
-  */
-  public boolean backup(File folderForBackups) {
-    
-    StringBuilder backupPath = new StringBuilder();
-    StringBuilder fileNameWithoutDate = new StringBuilder();
-    try {
-      backupPath.append(folderForBackups.getCanonicalPath());
-    } catch (IOException e) {
-      backupPath.append(folderForBackups.getAbsolutePath());
-    }
-    backupPath.append(File.separator);
-    String noteFileName = fileSpec.getFile().getName();
-    if (noteFileName.equalsIgnoreCase("notes")) {
-      backupPath.append(fileSpec.getFile().getParentFile().getName());
-      backupPath.append(" ");
-      fileNameWithoutDate.append(fileSpec.getFile().getParentFile().getName());
-      fileNameWithoutDate.append(" ");
-    }
-    backupPath.append(fileSpec.getFile().getName());
-    fileNameWithoutDate.append(fileSpec.getFile().getName());
-    backupPath.append(" ");
-    fileNameWithoutDate.append(" ");
-    backupPath.append("backup ");
-    fileNameWithoutDate.append("backup ");
-    backupPath.append(filePrefs.getBackupDate());
-    File backupFolder = new File (backupPath.toString());
-    backupFolder.mkdir();
-    boolean backedUp = FileUtils.copyFolder (fileSpec.getFile(), backupFolder);
-    if (backedUp) {
-      filePrefs.saveLastBackupDate
-          (fileSpec, master.getPrefsQualifier(), 0);
-      logger.recordEvent (LogEvent.NORMAL,
-          "Notes backed up to " + backupFolder.toString(),
-            false);
-      filePrefs.pruneBackups(folderForBackups, fileNameWithoutDate.toString());
-    } else {
-      logger.recordEvent (LogEvent.MEDIUM,
-          "Problem backing up Notes to " + backupFolder.toString(),
-            false);
-    }
-    return backedUp;
+    return backupInfo.backupSuccess();
   }
   
   /**
@@ -1581,6 +1537,7 @@ public class NoteCollectionModel {
   */
   public File getBackupFolder() {
     
+    System.out.println("NoteCollectionModel.getBackupFolder");
     File userHome = home.getUserHome();
     File userDocs = home.getUserDocs();   
     File embeddedBackupFolder = null;    
@@ -1610,6 +1567,7 @@ public class NoteCollectionModel {
     } else {
       backupFolder = userDocs;
     }
+    System.out.println("  - returning " + backupFolder.toString());
     return backupFolder;
   }
   

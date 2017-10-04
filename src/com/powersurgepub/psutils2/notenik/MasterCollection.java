@@ -38,23 +38,23 @@ package com.powersurgepub.psutils2.notenik;
  */
 public class MasterCollection {
   
-  public static final String      MASTER_COLLECTION_KEY   = "master-collection";
+  public static final String            MASTER_COLLECTION_KEY   = "master-collection";
   
-  private             File        masterCollectionFolder = null;
+  private             File              masterCollectionFolder = null;
   
-  private             NoteParms   masterParms;
+  private             NoteParms         masterParms;
   
-  private             RecordDefinition masterDef;
+  private             RecordDefinition  masterDef;
   
-  private             NoteIO      masterIO = null;
+  private             NoteIO            masterIO = null;
   
-  private             RecentFiles recentFiles = null;
+  private             RecentFiles       recentFiles = null;
   
-  private             Menu       recentFilesMenu = null;
+  private             Menu              recentFilesMenu = null;
   
-  private             FileSpecOpener fileSpecOpener = null;
+  private             FileSpecOpener    fileSpecOpener = null;
   
-  private             SimpleDateFormat dateFormatter;
+  private             SimpleDateFormat  dateFormatter;
   
   public MasterCollection() {
     recentFiles = new RecentFiles();
