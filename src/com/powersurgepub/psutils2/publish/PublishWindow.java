@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 - 2016 Herb Bowie
+ * Copyright 2011 - 2017 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -579,6 +579,7 @@ public class PublishWindow
    @param source The folder containing the source data.
    */
   public void openSource(File source) {
+    
     this.source = source;
 
     inputSource = SYSTEM_INPUT;

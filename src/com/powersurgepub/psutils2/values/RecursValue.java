@@ -77,6 +77,7 @@ public class RecursValue
    @param recurs String describing how the date is to recur. 
   */
   public void set (String str) {
+
     recurs = new StringBuilder();
     interval = 0;
     unit = -1;
@@ -151,6 +152,9 @@ public class RecursValue
           int possibleDayOfWeek = StringDate.matchDayOfWeek(word);
           if (possibleDayOfWeek > 0) {
             dayOfWeek = possibleDayOfWeek;
+            if (unit <= NONE) {
+              unit = WEEKS;
+            }
           }
         }
         

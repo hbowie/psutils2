@@ -146,80 +146,82 @@ public class DataValueSeq
     if (onLeft && positionOfFirstDecimal >= 0) {
       i = positionOfFirstDecimal - 1;
     }
-    boolean carryon = true;
-    char c = ' ';
-    while (carryon) {
-      
-      if (i < 0) {
-        if (digits) {
-          c = '0';
+    if (hasData()) {
+      boolean carryon = true;
+      char c = ' ';
+      while (carryon) {
+
+        if (i < 0) {
+          if (digits) {
+            c = '0';
+          } else {
+            c = ' ';
+          }
+          value.insert(0, c);
+          i = 0;
+          positionsToLeftOfDecimal++;
+          if (positionOfFirstDecimal >= 0) {
+            positionOfFirstDecimal++;
+          }
+          if (positionOfLastDecimal >= 0) {
+            positionOfLastDecimal++;
+          }
         } else {
-          c = ' ';
+          c = value.charAt(i);
         }
-        value.insert(0, c);
-        i = 0;
-        positionsToLeftOfDecimal++;
-        if (positionOfFirstDecimal >= 0) {
-          positionOfFirstDecimal++;
-        }
-        if (positionOfLastDecimal >= 0) {
-          positionOfLastDecimal++;
-        }
-      } else {
-        c = value.charAt(i);
-      }
-      int j = 0;
-      boolean found = false;
-      if (Character.isDigit(c)) {
-        while ((! found) && j < DIGITS.length()) {
-          if (c == DIGITS.charAt(j)) {
-            found = true;
-            j++;
-            if (j < DIGITS.length()) {
-              c = DIGITS.charAt(j);
-              value.setCharAt(i, c);
-              carryon = false;
+        int j = 0;
+        boolean found = false;
+        if (Character.isDigit(c)) {
+          while ((! found) && j < DIGITS.length()) {
+            if (c == DIGITS.charAt(j)) {
+              found = true;
+              j++;
+              if (j < DIGITS.length()) {
+                c = DIGITS.charAt(j);
+                value.setCharAt(i, c);
+                carryon = false;
+              } else {
+                j = 0;
+                c = DIGITS.charAt(0);
+                value.setCharAt(i, c);
+              } // end if we're carrying 
             } else {
-              j = 0;
-              c = DIGITS.charAt(0);
-              value.setCharAt(i, c);
-            } // end if we're carrying 
-          } else {
-            j++;
-          } // end of examining this possible match
-        } // end while looking for a matching character
-      }
-      else
-      if (Character.isAlphabetic(c)) {
-        if (Character.isUpperCase(c)) {
-          c = Character.toLowerCase(c);
+              j++;
+            } // end of examining this possible match
+          } // end while looking for a matching character
         }
-        while ((! found) && j < LETTERS.length()) {
-          if (c == LETTERS.charAt(j)) {
-            found = true;
-            j++;
-            if (j < LETTERS.length()) {
-              c = LETTERS.charAt(j);
-              if (uppercase) {
-                c = Character.toUpperCase(c);
-              }
-              value.setCharAt(i, c);
-              carryon = false;
+        else
+        if (Character.isAlphabetic(c)) {
+          if (Character.isUpperCase(c)) {
+            c = Character.toLowerCase(c);
+          }
+          while ((! found) && j < LETTERS.length()) {
+            if (c == LETTERS.charAt(j)) {
+              found = true;
+              j++;
+              if (j < LETTERS.length()) {
+                c = LETTERS.charAt(j);
+                if (uppercase) {
+                  c = Character.toUpperCase(c);
+                }
+                value.setCharAt(i, c);
+                carryon = false;
+              } else {
+                j = 1;
+                c = LETTERS.charAt(1);
+                if (uppercase) {
+                  c = Character.toUpperCase(c);
+                }
+                value.setCharAt(i, c);
+              } // end if we're carrying 
             } else {
-              j = 1;
-              c = LETTERS.charAt(1);
-              if (uppercase) {
-                c = Character.toUpperCase(c);
-              }
-              value.setCharAt(i, c);
-            } // end if we're carrying 
-          } else {
-            j++;
-          } // end of examining this possible match
-        } // end while looking for a matching character
-      } // end of alpha character
-      i--;
-    } // End of incrementing and carrying
+              j++;
+            } // end of examining this possible match
+          } // end while looking for a matching character
+        } // end of alpha character
+        i--;
+      } // End of incrementing and carrying
+    }
     
   } // end of increment method
   

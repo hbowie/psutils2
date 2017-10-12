@@ -17,7 +17,8 @@
 package com.powersurgepub.psutils2.values;
 
   import com.powersurgepub.psutils2.strings.*;
-  import javax.swing.*;
+
+  import javafx.scene.control.*;
 
 /**
  A source for one or more wisdom items.
@@ -105,10 +106,10 @@ public class WisdomSource
   private     String          rightsOwner = "";
   private     String          fileName = UNKNOWN;
 
-  public static void setSourceTypeComboBox (JComboBox box) {
-    box.removeAllItems();
+  public static void setSourceTypeComboBox (ComboBox box) {
+    box.getItems().clear();
     for (int i = 0; i <= SOURCE_TYPE_MAX; i++) {
-      box.addItem (SOURCE_TYPE_LABEL [i]);
+      box.getItems().add(SOURCE_TYPE_LABEL [i]);
     }
   }
   

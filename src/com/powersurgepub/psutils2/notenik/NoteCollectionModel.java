@@ -30,7 +30,7 @@ package com.powersurgepub.psutils2.notenik;
   import javafx.scene.control.*;
 
 /**
- The master data model for a collection of notes. This class coordinates
+ The data model for a collection of notes. This class coordinates
  changes to the collection. Whenever a particular note is modified, the note is
  updated on disk, in its sync folder (where applicable), in memory, and in 
  all lists and indexes maintained by the model. This class replaced 
@@ -1101,7 +1101,7 @@ public class NoteCollectionModel {
   }
   
   public boolean tagsChanged() {
-    return (! selectedNote.getTagsAsString().equalsIgnoreCase(selectedTags));
+    return (! selectedNote.getTagsAsString().equals(selectedTags));
   }
   
   public String getSelectedUniqueKey() {
@@ -1320,9 +1320,7 @@ public class NoteCollectionModel {
         }
       } // end while incrementing
         
-      if (index >= sorted.size()) {
-        index--;
-      }
+      index--;
       
       // Now apply the new sequences from the top down, in order to
       // keep notes from changing position in the sorted list.
@@ -1529,6 +1527,11 @@ public class NoteCollectionModel {
     }
   }
   
+  public void saveLastBackupDate() {
+    
+    fileSpec.setLastBackupDateToNow();
+  }
+  
   /**
    Return the presumptive folder to be used for backups. 
   
@@ -1537,7 +1540,6 @@ public class NoteCollectionModel {
   */
   public File getBackupFolder() {
     
-    System.out.println("NoteCollectionModel.getBackupFolder");
     File userHome = home.getUserHome();
     File userDocs = home.getUserDocs();   
     File embeddedBackupFolder = null;    
@@ -1567,7 +1569,6 @@ public class NoteCollectionModel {
     } else {
       backupFolder = userDocs;
     }
-    System.out.println("  - returning " + backupFolder.toString());
     return backupFolder;
   }
   

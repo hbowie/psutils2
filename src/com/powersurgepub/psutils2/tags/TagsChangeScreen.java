@@ -34,7 +34,7 @@ public class TagsChangeScreen
   
   private   TagsList              findCategories     = new TagsList();
   private   TagsList              replaceCategories  = new TagsList();
-  private   TaggableList          taggableList;
+  // private   TaggableList          taggableList;
   private   TagsChangeAgent       changeAgent;
   
   private   Stage     parent;
@@ -54,6 +54,7 @@ public class TagsChangeScreen
       TagsChangeAgent changeAgent) {
     
     super(StageStyle.UTILITY);
+    System.out.println("TagsChangeScreen constructor");
     if (modal) {
       this.initModality(Modality.APPLICATION_MODAL);
     }
@@ -66,7 +67,7 @@ public class TagsChangeScreen
     // findCategories.setSelectedItem (td.getCategories().getSelectedItem());
     replaceCategories.addAll (tagsList);
     // replaceCategories.setSelectedItem (td.getCategories().getSelectedItem());
-    this.taggableList = taggableList;
+    // this.taggableList = taggableList;
     this.changeAgent = changeAgent;
     buildUI();
   }
@@ -82,11 +83,16 @@ public class TagsChangeScreen
     grid.setVgap(10);
 
     // First row
+    findCategories.setComboBox(findComboBox);
+    findComboBox.setMaxWidth(Double.MAX_VALUE);
     grid.add(findLabel,       0, 0, 1, 1);
     grid.add(findComboBox,    1, 0, 2, 1);
     GridPane.setHgrow(findComboBox, Priority.ALWAYS);
     
     // Second row
+    replaceCategories.setComboBox(replaceComboBox);
+    replaceComboBox.setEditable(true);
+    replaceComboBox.setMaxWidth(Double.MAX_VALUE);
     grid.add(replaceLabel,    0, 1, 1, 1);
     grid.add(replaceComboBox, 1, 1, 2, 1);
     GridPane.setHgrow(replaceComboBox, Priority.ALWAYS);
@@ -113,7 +119,7 @@ public class TagsChangeScreen
     this.setScene(scene);
   }
   
-  private void replaceButtonActionPerformed() {                                              
+  private void replaceButtonActionPerformed() {  
     String find = (String)(findComboBox.getSelectionModel().getSelectedItem());
     String replace = (String)(replaceComboBox.getSelectionModel().getSelectedItem());
     changeAgent.changeAllTags(find, replace);

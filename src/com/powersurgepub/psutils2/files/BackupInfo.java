@@ -362,6 +362,7 @@ public class BackupInfo {
       if (! userChoice.getName().equals(getBackupFileName())) {
         setBackupFile(userChoice);
       }
+      setBackupFolder(userChoice.getParentFile());
     }
     return userChoice;
   }

@@ -237,7 +237,10 @@ public class MasterCollection {
   */
   public FileSpec addRecentFile(File file) {
 
+    // System.out.println("MasterCollection.addRecentFile");
+    // System.out.println("  - File to be added = " + file.toString());
     FileSpec currentFileSpec = recentFiles.addRecentFile (file);
+    // System.out.println("  - Collection Title = " + currentFileSpec.getCollectionTitle());
     Date accessed = currentFileSpec.getLastAccessDate();
     
     // Maintain the Master Collection, if we have one
@@ -249,7 +252,10 @@ public class MasterCollection {
       try {
         existing = masterIO.getNote(recent.getFileName());
       } catch (IOException e) {
-        
+        System.out.println("I/O Exception trying to read existing Master Note");
+      }
+      if (existing == null) {
+        System.out.println("  - Unable to find collection within Master Collection");
       }
       if (existing != null) {
         existing.merge(recent);

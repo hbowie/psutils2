@@ -17,7 +17,7 @@
 package com.powersurgepub.psutils2.prefs;
 
   import com.powersurgepub.psutils2.env.*;
-import com.powersurgepub.psutils2.files.*;
+  import com.powersurgepub.psutils2.files.*;
   import com.powersurgepub.psutils2.ui.*;
 
   import java.util.*;
@@ -191,6 +191,15 @@ public class PrefsJuggler
   */
   public String getTitle() {
     return prefStage.getTitle();
+  }
+  
+  /**
+   Set the title of the prefs window to something other than the default. 
+  
+   @param title The title to use for this prefs window. 
+  */
+  public void setTitle(String title) {
+    prefStage.setTitle(title);
   }
   
   /**
