@@ -27,9 +27,13 @@ package com.powersurgepub.psutils2.links;
 public class URLValidator
     extends Task<Void> {
 
-  private             ItemWithURL            item;
-  private             int                    index = -1;
-  private             URL                    url;
+  private             ItemWithURL             item;
+  private             int                     index = -1;
+  private             URL                     url;
+  private             int                     status = 0;
+  public static final int                       BAD_LINK = -1;
+  public static final int                       GOOD_LINK = 1;
+  public static final int                       UNSURE_LINK = 0;
   
   /** 
     Creates a new instance of WebPage 
@@ -64,6 +68,7 @@ public class URLValidator
           || response == HttpURLConnection.HTTP_INTERNAL_ERROR) {
         // Keep going
       } else {
+        status = BAD_LINK;
         throw new Exception("HTTP Response " + String.valueOf (response)
             + httpHandle.getResponseMessage());
       }
@@ -73,7 +78,9 @@ public class URLValidator
       InputStream file = handle.getInputStream();
       file.close();
     } 
-
+    if (status == UNSURE_LINK) {
+      status = GOOD_LINK;
+    }
     updateProgress(1, 1);
     
     return null;
