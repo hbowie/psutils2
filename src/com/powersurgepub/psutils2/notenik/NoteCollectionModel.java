@@ -173,7 +173,7 @@ public class NoteCollectionModel {
         if (lastFileSpec != null) {
           lastTitle = lastFileSpec.getLastTitle();
         }
-        open (lastFileSpec);
+        open (lastFileSpec, false);
         if (openStartupTags) {
           launchStartupURLs();
         }
@@ -198,7 +198,7 @@ public class NoteCollectionModel {
       String errMsg = folderError(masterFile);
       if (errMsg == null) {
         close();
-        return open (masterSpec);
+        return open (masterSpec, false);
       } else {
         throw new NoteCollectionException("Master Collection Folder: " + errMsg);
       }
@@ -215,7 +215,7 @@ public class NoteCollectionModel {
    @param loadTaggedOnly False to load all notes, true to load only notes
                          with tags. 
   */
-  public void setLoadTaggedOnly(boolean loadTaggedOnly) {
+  private void setLoadTaggedOnly(boolean loadTaggedOnly) {
     this.loadTaggedOnly = loadTaggedOnly;
   }
   
@@ -224,10 +224,11 @@ public class NoteCollectionModel {
   
    @return True if everything worked out ok. 
   */
-  public boolean open(FileSpec fileSpec) {
+  public boolean open(FileSpec fileSpec, boolean taggedOnly) {
     
     boolean openOK = true;
     newCollection();
+    setLoadTaggedOnly(taggedOnly);
     this.fileSpec = fileSpec;
     fileName = new FileName(fileSpec.getFolder());
     if (master.hasMasterCollection()
@@ -280,10 +281,6 @@ public class NoteCollectionModel {
     open = openOK;
 
     return openOK;
-  }
-  
-  public void reloadTaggedOnly() {
-    
   }
   
   /**
@@ -774,6 +771,7 @@ public class NoteCollectionModel {
    @param noteToRemove 
   */
   public boolean remove(Note noteToRemove) {
+
     boolean sortedOK  = sorted.remove(noteToRemove);
     boolean mapOK     = map.remove(noteToRemove);
     boolean listOK    = list.remove(noteToRemove);
@@ -1319,7 +1317,7 @@ public class NoteCollectionModel {
           index++;
         }
       } // end while incrementing
-        
+      
       index--;
       
       // Now apply the new sequences from the top down, in order to

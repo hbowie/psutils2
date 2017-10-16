@@ -277,7 +277,7 @@ public class LinkTweaker
 
 		rowCount++;
     
-    tweakerScene = new Scene(tweakerPane, 300, 250);
+    tweakerScene = new Scene(tweakerPane, 350, 400);
     
     tweakerStage.setScene(tweakerScene);
   } // end method buildUI
