@@ -32,7 +32,7 @@ package com.powersurgepub.psutils2.widgets;
 
 /**
  A control that can serve as a label for a hyperlink, while also offering some
- associated capabilities made available via buttons
+ associated capabilities made available via a drop-down menu.
 
  @author Herb Bowie
  */

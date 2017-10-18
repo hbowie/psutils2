@@ -152,6 +152,20 @@ public class FXUtils {
     menu.getItems().add(sep);
   }
   
+  /**
+   Create a key combination for the given shortcut key, and assign it
+   to the provided menu item. 
+  
+   @param menuItem The menu item needing the shortcut. 
+  
+   @param shortcutKey The key to be used for the shortcut.
+  */
+  public static void assignShortcut(MenuItem menuItem, String shortcutKey) {
+    KeyCombination shortcut
+        = new KeyCharacterCombination(shortcutKey, KeyCombination.SHORTCUT_DOWN);
+    menuItem.setAccelerator(shortcut);
+  }
+  
   public void displayControlAttributes(Control control, String name) {
     System.out.println("FXUtils.displayControlAttributes for " + name);
     System.out.println("  Min Width   = " + String.valueOf(control.getMinWidth()));
