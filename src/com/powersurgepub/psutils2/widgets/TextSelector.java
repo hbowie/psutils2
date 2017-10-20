@@ -22,6 +22,7 @@ package com.powersurgepub.psutils2.widgets;
   import javafx.geometry.*;
   import javafx.scene.*;
   import javafx.scene.control.*;
+  import javafx.scene.input.*;
   import javafx.scene.layout.*;
 
 /**
@@ -81,9 +82,20 @@ public class TextSelector
     textField = new TextField();
     textField.setPrefColumnCount(50);
     textField.setContextMenu(popUpList);
+    textField.setOnKeyTyped(e -> textKeyTyped(e));
     this.add(textField, 1, 0, 1, 1);
     GridPane.setHgrow(textField, Priority.ALWAYS);
 
+  }
+  
+  private void textKeyTyped(KeyEvent e) {
+    
+    String typed = e.getCharacter();
+    if (! typed.equals(KeyEvent.CHAR_UNDEFINED)) {
+      if (typed.equals("'")) {
+        showPopUp();
+      }
+    }
   }
   
   /**
