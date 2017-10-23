@@ -762,7 +762,12 @@ public class TextMergeInput {
     }
     else
     if (textMergeScript.hasCurrentDirectory()) {
-      chooser.setInitialDirectory (textMergeScript.getCurrentDirectory());
+      File currDir = textMergeScript.getCurrentDirectory();
+      if (currDir != null
+          && currDir.exists()
+          && currDir.isDirectory()) {
+        chooser.setInitialDirectory (textMergeScript.getCurrentDirectory());
+      }
     } 
     File result = chooser.showDialog (null);
     if (result != null) {
