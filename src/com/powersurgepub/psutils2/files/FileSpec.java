@@ -839,4 +839,15 @@ public class FileSpec {
     return path;
   }
   
+  /**
+   Determines whether this file spec is the same as a second. 
+  
+   @param spec2 The second file spec to be compared to this one. 
+  
+   @return True if both specs point to the same file. 
+  */
+  public boolean equals(FileSpec spec2) {
+    return (this.file.equals(spec2.getFile()));
+  }
+  
 }
