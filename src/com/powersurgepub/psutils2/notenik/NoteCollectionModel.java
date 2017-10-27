@@ -1618,6 +1618,7 @@ public class NoteCollectionModel {
     templateNote.setAuthor("The Author of the Note");
     templateNote.setRating("5");
     templateNote.setIndex("Index Term");
+    templateNote.setCode("A block of programming code");
     templateNote.setTeaser
       ("A brief sample of the note that will make people want to read more");
     templateNote.setBody("The body of the note");

@@ -106,6 +106,10 @@ public class Note
   private DataField           indexField = null;
   private boolean             indexAdded = false;
   
+  private DataValueStringBuilder codeValue = null;
+  private DataField           codeField;
+  private boolean             codeAdded = false;
+  
   private DataValueStringBuilder teaserValue = null;
   private DataField           teaserField;
   private boolean             teaserAdded = false;
@@ -200,6 +204,10 @@ public class Note
         setIndex(fromValue.toString());
       }
       else
+      if (NoteParms.isCode(fromCommon)) {
+        setCode(fromValue.toString());
+      }
+      else
       if (NoteParms.isTeaser(fromCommon)) {
         setTeaser(fromValue.toString());
       }
@@ -269,6 +277,11 @@ public class Note
     indexValue = new IndexPageValue();
     indexField = new DataField(NoteParms.INDEX_DEF, indexValue);
     indexAdded = false;
+    
+    // Build the Code field
+    codeValue = new DataValueStringBuilder();
+    codeField = new DataField(NoteParms.CODE_DEF, codeValue);
+    codeAdded = false;
     
     // Build the Teaser field
     teaserValue = new DataValueStringBuilder();
@@ -517,6 +530,10 @@ public class Note
     else
     if (commonName.equals(NoteParms.TAGS_COMMON_NAME)) {
       setTags(data);
+    }
+    else
+    if (commonName.equals(NoteParms.CODE_COMMON_NAME)) {
+      setCode(data);
     }
     else
     if (commonName.equals(NoteParms.TEASER_COMMON_NAME)) {
@@ -997,6 +1014,42 @@ public class Note
     } else {
       return "";
     }
+  }
+  
+  public void setCode(String code) {
+    codeValue.set(code);
+    if (! codeAdded) {
+      storeField (recDef, codeField);
+      codeAdded = true;
+    }
+  }
+  
+  public void appendLineToCode(String line) {
+    codeValue.appendLine(line);
+    if (! codeAdded) {
+      storeField (recDef, codeField);
+      codeAdded = true;
+    }
+  }
+  
+  public boolean hasCode() {
+    if (codeAdded && codeValue != null) {
+      return (codeValue.toString().length() > 0);
+    } else {
+      return false;
+    }
+  }
+  
+  public String getCode() {
+    if (hasCode()) {
+      return codeValue.toString();
+    } else {
+      return "";
+    }
+  }
+  
+  public DataValueStringBuilder getCodeAsDataValue() {
+    return codeValue;
   }
   
   public void setTeaser(String teaser) {

@@ -114,6 +114,13 @@ public class DataFactory {
         RecursValue recurs = new RecursValue();
         value = recurs;
         break;
+        
+      // Code
+      case DataFieldDefinition.CODE_TYPE:
+        DataValueStringBuilder code = new DataValueStringBuilder();
+        value = code;
+        break;
+        
       // Simple string
       case DataFieldDefinition.LABEL_TYPE: 
       case DataFieldDefinition.DEFAULT_TYPE:
@@ -155,6 +162,7 @@ public class DataFactory {
         
       // Complex text field  
       case DataFieldDefinition.STRING_BUILDER_TYPE:
+      case DataFieldDefinition.CODE_TYPE:
         ScrollingTextArea scrollingText 
             = new ScrollingTextArea(60, 5, true, true);
         widget = scrollingText;

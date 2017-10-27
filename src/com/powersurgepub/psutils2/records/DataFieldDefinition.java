@@ -60,8 +60,9 @@ public class DataFieldDefinition {
   public static final int     SEQ_TYPE            = 11;
   public static final int     INDEX_TYPE          = 12;
   public static final int     RECURS_TYPE         = 13;
+  public static final int     CODE_TYPE           = 14;
   
-  public static final int     MAX_TYPE            = 13;
+  public static final int     MAX_TYPE            = 14;
   
   /** 
      If two fields of this type are to be combined, is it OK to do 
@@ -197,7 +198,11 @@ public class DataFieldDefinition {
     if (commonName.equals("recurs") 
         || commonName.equals("every")) {
       setType(RECURS_TYPE);
-    } else {
+    }
+    else
+    if (commonName.equals("code")) {
+      setType(CODE_TYPE);
+    }else {
       setType(DEFAULT_TYPE);
     }
   }
@@ -232,6 +237,8 @@ public class DataFieldDefinition {
         return new IndexPageValue();
       case RECURS_TYPE:
         return new RecursValue();
+      case CODE_TYPE:
+        return new DataValueStringBuilder();
       default:
         return new DataValueString();
     }

@@ -424,6 +424,15 @@ public class DataField {
   public DataFieldDefinition getDef () { return def; }
   
   /**
+   Return the common field name for this field. 
+  
+   @return The common name for this field. 
+  */
+  public CommonName getCommonName() {
+    return def.getCommonName();
+  }
+  
+  /**
      Returns the name of the field definition stored in this data field, 
      in its common form.
     

@@ -294,6 +294,11 @@ public class NoteLine {
               builder.setLastStringBuilder(null);
             }
             else
+            if (NoteParms.isCode(metaKeyCommon)) {
+              note.setCode(getMetaData());
+              builder.setLastStringBuilder(note.getCodeAsDataValue());
+            }
+            else
             if (NoteParms.isTeaser(metaKeyCommon)) {
               note.setTeaser(getMetaData());
               builder.setLastStringBuilder(note.getTeaserAsDataValue());

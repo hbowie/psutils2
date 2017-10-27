@@ -860,10 +860,7 @@ public class NoteIO
       if (nextField != null
           && nextField.hasData()) {
         ok = writeFieldName (nextField.getProperName());
-        if (ok 
-            && (nextField.getCommonFormOfName().equals(NoteParms.BODY_COMMON_NAME)
-              || nextField.getCommonFormOfName().equals("comments")
-              || nextField.getCommonFormOfName().equals(NoteParms.TEASER_COMMON_NAME))) {
+        if (ok && NoteParms.saveWithLineBreaks(nextField.getCommonName())) {
           ok = writeLine("");
           if (ok) {
             ok = writeLine(" ");

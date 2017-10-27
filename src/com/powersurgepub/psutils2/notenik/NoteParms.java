@@ -96,6 +96,8 @@ public class NoteParms {
   public static final String  INDEX_FIELD_NAME  = "Index";
   public static final String  INDEX_COMMON_NAME = "index";
   public static final String  MIN_SYS_VERSION_FIELD_NAME = "Minimum System Version";
+  public static final String  CODE_FIELD_NAME   = "Code";
+  public static final String  CODE_COMMON_NAME  = "code";
   
   public static final String  COMPLETE_PATH     = "Complete Path";
   public static final String  BASE_PATH         = "Base Path";
@@ -163,6 +165,8 @@ public class NoteParms {
       = new DataFieldDefinition (INDEX_FIELD_NAME);
   public static final DataFieldDefinition RECURS_DEF
       = new DataFieldDefinition (RECURS_FIELD_NAME);
+  public static final DataFieldDefinition CODE_DEF
+      = new DataFieldDefinition (CODE_FIELD_NAME);
   
   public static final boolean  SLASH_TO_SEPARATE = false;
   
@@ -199,6 +203,7 @@ public class NoteParms {
     SEQ_DEF.setType    (DataFieldDefinition.SEQ_TYPE);
     INDEX_DEF.setType  (DataFieldDefinition.INDEX_TYPE);
     RECURS_DEF.setType (DataFieldDefinition.RECURS_TYPE);
+    CODE_DEF.setType   (DataFieldDefinition.CODE_TYPE);
   }
   
   public NoteParms () {
@@ -399,6 +404,7 @@ public class NoteParms {
         recDef.addColumn(LINK_DEF);
         recDef.addColumn(RATING_DEF);
         recDef.addColumn(INDEX_DEF);
+        recDef.addColumn(CODE_DEF);
         recDef.addColumn(TEASER_DEF);
         recDef.addColumn(BODY_DEF);
       }
@@ -498,6 +504,10 @@ public class NoteParms {
        return 10;
     }
     else
+    if (isCode(commonName)) {
+      return 95;
+    }
+    else
     if (isTeaser(commonName)) {
       return 98;
     }
@@ -585,6 +595,9 @@ public class NoteParms {
     if (isIndex(commonName)) {
       return INDEX_DEF;
     }
+    if (isCode(commonName)) {
+      return CODE_DEF;
+    }
     
     if (notesExpanded()) {
       return null;
@@ -603,6 +616,13 @@ public class NoteParms {
       return recDef.getDef(columnNumber);
     }
     
+  }
+  
+  public static boolean saveWithLineBreaks(CommonName commonName) {
+    return (isBody(commonName)
+        || isTeaser(commonName)
+        || isCode(commonName)
+        || commonName.equals("comments"));
   }
   
   public static boolean isTitle(CommonName commonName) {
@@ -661,6 +681,10 @@ public class NoteParms {
   
   public static boolean isIndex(CommonName commonName) {
     return (commonName.getCommonForm().equals(INDEX_COMMON_NAME));
+  }
+  
+  public static boolean isCode(CommonName commonName) {
+    return (commonName.getCommonForm().equals(CODE_COMMON_NAME));
   }
   
   public static boolean isTeaser(CommonName commonName) {
@@ -758,8 +782,10 @@ public class NoteParms {
         
       // Complex text field  
       case DataFieldDefinition.STRING_BUILDER_TYPE:
+      case DataFieldDefinition.CODE_TYPE:
         ScrollingTextArea scrollingText;
-        if (fieldName.equals(BODY_FIELD_NAME)) {
+        if (fieldName.equals(BODY_FIELD_NAME)
+            || fieldName.equals(CODE_FIELD_NAME)) {
           scrollingText = new ScrollingTextArea(60, 20, true, true);
           scrollingText.setMaxHeight(Double.MAX_VALUE);
         } else {
