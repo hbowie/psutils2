@@ -71,7 +71,8 @@ public class TextMergeInputNotenik
       dataSource = new NoteIndexIO(chosenFile, inputType);
     } else {
       NoteIO noteIO = new NoteIO(chosenFile, inputType);
-      NoteParms templateParms = noteIO.checkForTemplate();
+      NoteCollectionTemplate template = new NoteCollectionTemplate(chosenFile);
+      NoteParms templateParms = template.getNoteParms();
       if (templateParms != null) {
         noteIO = new NoteIO (chosenFile, templateParms);
       }

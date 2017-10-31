@@ -23,6 +23,7 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.tags.*;
   import com.powersurgepub.psutils2.textio.*;
+  import com.powersurgepub.psutils2.ui.*;
   import com.powersurgepub.psutils2.values.*;
 
   import java.io.*;
@@ -39,6 +40,8 @@ package com.powersurgepub.psutils2.notenik;
  @author Herb Bowie
  */
 public class NoteCollectionModel {
+  
+  private             NoteCollectionTemplate  template = null;
   
   private             NoteCollectionView      view;
   
@@ -173,7 +176,8 @@ public class NoteCollectionModel {
         if (lastFileSpec != null) {
           lastTitle = lastFileSpec.getLastTitle();
         }
-        open (lastFileSpec, false);
+        openStart (lastFileSpec, false);
+        openFinish();
         if (openStartupTags) {
           launchStartupURLs();
         }
@@ -198,7 +202,8 @@ public class NoteCollectionModel {
       String errMsg = folderError(masterFile);
       if (errMsg == null) {
         close();
-        return open (masterSpec, false);
+        openStart(masterSpec, false);
+        return openFinish ();
       } else {
         throw new NoteCollectionException("Master Collection Folder: " + errMsg);
       }
@@ -224,9 +229,8 @@ public class NoteCollectionModel {
   
    @return True if everything worked out ok. 
   */
-  public boolean open(FileSpec fileSpec, boolean taggedOnly) {
+  public void openStart(FileSpec fileSpec, boolean taggedOnly) {
     
-    boolean openOK = true;
     newCollection();
     setLoadTaggedOnly(taggedOnly);
     this.fileSpec = fileSpec;
@@ -241,7 +245,13 @@ public class NoteCollectionModel {
     logNormal("Opening folder " + fileSpec.getFile().toString());
     noteIO = new NoteIO(fileSpec.getFile(), NoteParms.NOTES_ONLY_TYPE);
     
-    NoteParms templateParms = noteIO.checkForTemplate();
+    template = new NoteCollectionTemplate(fileSpec.getFile());
+  }
+  
+  public boolean openFinish() {
+    
+    boolean openOK = true;
+    NoteParms templateParms = template.getNoteParms();
     if (templateParms != null) {
       noteIO = new NoteIO (fileSpec.getFile(), templateParms);
     } 
@@ -281,6 +291,10 @@ public class NoteCollectionModel {
     open = openOK;
 
     return openOK;
+  }
+  
+  public NoteCollectionTemplate getTemplate() {
+    return template;
   }
   
   /**
@@ -1593,42 +1607,6 @@ public class NoteCollectionModel {
       backupFolder = userDocs;
     }
     return backupFolder;
-  }
-  
-  /**
-   Generate a default template in the target folder, using the preferred
-   file extension for whatever collection is currently open. 
-  
-   @param targetFolder The folder to contain the new template file. 
-  */
-  public void generateTemplate(File targetFolder) {
-    NoteParms templateParms = new NoteParms(NoteParms.NOTES_EXPANDED_TYPE);
-    RecordDefinition recDef = templateParms.getRecDef();
-    Note templateNote = new Note(recDef);
-    templateNote.setTitle("The unique title for this note");
-    templateNote.setTags("One or more tags, separated by commas");
-    templateNote.setLink("http://anyurl.com");
-    templateNote.setStatus("One of a number of states");
-    templateNote.setType("The type of note");
-    templateNote.setSeq("Rev Letter or Version Number");
-    StringDate today = new StringDate();
-    today.set(StringDate.getTodayYMD());
-    templateNote.setDate(today);
-    templateNote.setRecurs("Every Week");
-    templateNote.setAuthor("The Author of the Note");
-    templateNote.setRating("5");
-    templateNote.setIndex("Index Term");
-    templateNote.setCode("A block of programming code");
-    templateNote.setTeaser
-      ("A brief sample of the note that will make people want to read more");
-    templateNote.setBody("The body of the note");
-    String ext = NoteParms.DEFAULT_FILE_EXT;
-    if (noteIO != null) {
-      ext = noteIO.getNoteParms().getPreferredFileExt();
-    }
-    File templateFile = new File(targetFolder, "template." + ext);
-    NoteIO templateIO = new NoteIO(targetFolder);
-    templateIO.save(templateNote, templateFile, true);
   }
   
   public void logException(Exception e) {
