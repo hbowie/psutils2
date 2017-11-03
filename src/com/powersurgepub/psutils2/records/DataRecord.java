@@ -16,7 +16,7 @@
 
 package com.powersurgepub.psutils2.records;
 
-import com.powersurgepub.psutils2.links.ItemWithURL;
+  import com.powersurgepub.psutils2.links.*;
   import com.powersurgepub.psutils2.list.*;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.tags.*;

@@ -844,6 +844,25 @@ public class DataField {
   }
   
   /**
+   Given both a column index and a field name, first check the field at this
+   index to see if it has the right name; if not, then look up the correct
+   field by name.
+  
+   @param columnNumber The presumptive column number. 
+   @param inName The field name. 
+  
+   @return The data field with a matching field name. 
+  */
+  public DataField getField(int columnNumber, String inName) {
+    CommonName inNameCommon = new CommonName(inName);
+    DataField workField = getField(columnNumber);
+    if (! workField.getCommonFormOfName().equals(inNameCommon.getCommonForm())) {
+      workField = getField(inName);
+    }
+    return workField;
+  }
+  
+  /**
      Returns the entire data field.
     
      @return Data field, including definition and data,

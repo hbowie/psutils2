@@ -271,7 +271,6 @@ public class RecentFiles {
     if (filePrefs != null) {
       filePrefs.addRecentFileAtTop(recentFile);
     }
-    
     for (int i = 1; i < files.size(); i++) {
       if (get(i).getPath().equals(recentFile.getPath())) {
         recentFile.merge(get(i));
@@ -297,7 +296,6 @@ public class RecentFiles {
    */
   public FileSpec addNotSoRecentFile (FileSpec notSoRecentFile) {
 
- 
     files.add (1, notSoRecentFile);
     if (recentFilesMenu != null) {
       recentFilesMenu.getItems().add(1, createMenuItem(notSoRecentFile));
@@ -305,7 +303,7 @@ public class RecentFiles {
     if (filePrefs != null) {
       filePrefs.addNotSoRecentFile(notSoRecentFile);
     }
-    for (int i = 1; i < files.size(); i++) {
+    for (int i = 2; i < files.size(); i++) {
       if (get(i).getPath().equals(notSoRecentFile.getPath())) {
         notSoRecentFile.merge(get(i));
         removeFile (i);

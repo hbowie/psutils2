@@ -171,7 +171,6 @@ public class FileSpec {
    */
   public void saveToRecentPrefs (String prefsQualifier, int recentFileNumber) {
     
-    // System.out.println("  - save to recent prefs for path = " + path);
     // Apend the file number to the keys
     String keySuffix = String.valueOf(recentFileNumber);
 
@@ -817,7 +816,6 @@ public class FileSpec {
   
   public String getNoteSortParmAsString() {
     String str = Integer.toString(noteSortParm);
-    // System.out.println("  - get note sort part as string = " + str);
     return str;
   }
   

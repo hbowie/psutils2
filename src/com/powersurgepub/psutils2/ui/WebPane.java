@@ -17,7 +17,7 @@
 package com.powersurgepub.psutils2.ui;
 
   import com.powersurgepub.psutils2.basic.*;
-import com.powersurgepub.psutils2.env.*;
+  import com.powersurgepub.psutils2.env.*;
   import com.powersurgepub.psutils2.markup.*;
 
   import java.text.*;
@@ -36,6 +36,7 @@ public class WebPane {
   
   private StringBuilder page;
   private String        link = "";
+  private WebLauncher   launcher = null;
   
   private MdToHTML      mdToHTML;
   
@@ -78,6 +79,23 @@ public class WebPane {
       @Override
       public void handle(ActionEvent evt) {
         Home.getShared().openURL(link);
+      }
+    });
+    webPane.add(launchButton, 1, 1, 1, 1);
+  }
+  
+  public void setLauncher(
+      String link, 
+      String launchButtonTitle, 
+      WebLauncher launcher) {
+    
+    this.link = link;
+    this.launcher = launcher;
+    launchButton = new Button(launchButtonTitle);
+    launchButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent evt) {
+        launcher.launchButtonPressed(link);
       }
     });
     webPane.add(launchButton, 1, 1, 1, 1);

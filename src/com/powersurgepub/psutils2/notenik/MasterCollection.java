@@ -237,17 +237,13 @@ public class MasterCollection {
   */
   public FileSpec addRecentFile(File file) {
 
-    // System.out.println("MasterCollection.addRecentFile");
-    // System.out.println("  - File to be added = " + file.toString());
     FileSpec currentFileSpec = recentFiles.addRecentFile (file);
-    // System.out.println("  - Collection Title = " + currentFileSpec.getCollectionTitle());
     Date accessed = currentFileSpec.getLastAccessDate();
     
     // Maintain the Master Collection, if we have one
     if (hasMasterCollection()) {
       Note recent = new Note(masterDef, currentFileSpec.getCollectionTitle());
       recent.setLink(file);
-      
       Note existing = null;
       try {
         existing = masterIO.getNote(recent.getFileName());
