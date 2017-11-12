@@ -676,6 +676,12 @@ public class StringDate
     }
   } 
   
+  /**
+   Format the date in a dd MMM yyyy format, using as many elements of the date
+   as are available. 
+  
+   @return Date in dd MMM yyyy format. 
+  */
   public String getCommon() {
     StringBuilder str = new StringBuilder();
     
@@ -693,7 +699,7 @@ public class StringDate
     if (mm.length() > 0) {
       try {
         int mmIndex = Integer.parseInt(mm);
-        if (mmIndex >= 0 && mmIndex < 12) {
+        if (mmIndex > 0 && mmIndex <= 12) {
           String mmName = MONTH_NAMES[mmIndex - 1];
           if (mmName.length() >= 3) {
             str.append(mmName.substring(0, 3));
@@ -716,6 +722,25 @@ public class StringDate
     } else {
       return cal.getTime();
     }
+  }
+  
+  /**
+   Bump this date up by one day and return the result as a simple string. Does
+   not modify the date stored within this object. 
+  
+   @return A string representation of the bumped date, or null, if we don't 
+           actually have a completely good date to start with. 
+  */
+  public String increment() {
+    String resultDate = null;
+    Calendar workCal = getCalendar();
+    if (workCal != null) {
+      workCal.add(Calendar.DATE, 1);
+      StringDate workStr = new StringDate();
+      workStr.set(workCal.getTime());
+      resultDate = workStr.toString();
+    }
+    return resultDate;
   }
   
   /**

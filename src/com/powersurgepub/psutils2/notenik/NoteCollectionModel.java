@@ -1358,31 +1358,6 @@ public class NoteCollectionModel {
   }
   
   /**
-   Bump up the selection's date by one day. 
-  
-   @return The adjusted date value. 
-  */
-  public String incrementDate() {
-    
-    String resultDate = null;
-    if (isOpen() && hasSelection()
-        && getSelection().hasDate()) {
-      Note selNote = getSelection();
-      String priorSortKey = selNote.getSortKey(sortParm);
-      sorted.remove(priorSortKey);
-      StringDate workStr = selNote.getDate();
-      Calendar workCal = workStr.getCalendar();
-      workCal.add(Calendar.DATE, 1);
-      workStr.set(workCal.getTime());
-      resultDate = workStr.toString();
-      selNote.setLastModDateToday();
-      saveNoteAndDeleteOnRename(selNote, selNote.getTitle());
-      sorted.add(selNote);
-    } 
-    return resultDate;
-  }
-  
-  /**
    Record any changes to the Note's sequence value. 
   
    @param modifiedNote The note whose sequence key has changed. 
