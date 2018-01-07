@@ -79,6 +79,8 @@ public class NoteCollectionModel {
   
   private             String                  oldSeq = "";
   
+  private             boolean                 quoteCollection = false;
+  
   /**
    Create a new Model. This should be done whenever we're switching from one 
    Notes Collection to another. 
@@ -246,6 +248,7 @@ public class NoteCollectionModel {
     noteIO = new NoteIO(fileSpec.getFile(), NoteParms.NOTES_ONLY_TYPE);
     
     template = new NoteCollectionTemplate(fileSpec.getFile());
+    quoteCollection = template.isQuoteTemplate();
   }
   
   public boolean openFinish() {

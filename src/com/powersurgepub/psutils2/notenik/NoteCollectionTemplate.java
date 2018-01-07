@@ -55,6 +55,8 @@ public class NoteCollectionTemplate
   
   private     String              fileExt = "txt";
   
+  private     boolean             quoteTemplate = false;
+  
   private     Label               fileExtLabel;
   
   private     ComboBox<String>    fileExtComboBox;
@@ -205,6 +207,9 @@ public class NoteCollectionTemplate
         RecordDefinition recDef = templateIO.getRecDef();
         for (int i = 0; i < recDef.getNumberOfFields(); i++) {
           DataFieldDefinition fieldDef = recDef.getDef(i);
+          if (fieldDef.getProperName().equalsIgnoreCase(NoteParms.AUTHOR_INFO)) {
+            quoteTemplate = true;
+          }
           logNormal("  " + String.valueOf(i + 1) + ". " 
               + fieldDef.getProperName() + " ("
               + fieldDef.getCommonName() + ") type = " 
@@ -392,6 +397,10 @@ public class NoteCollectionTemplate
   
   public NoteParms getNoteParms() {
     return templateParms;
+  }
+  
+  public boolean isQuoteTemplate() {
+    return quoteTemplate;
   }
   
   public void displayWindow() {

@@ -130,6 +130,7 @@ public class NoteParms {
   public static final String  WORK_TYPE         = "Work Type";
   public static final String  WORK_MINOR_TITLE  = "Work Minor Title";
   public static final String  WORK_IDENTIFIER   = "Work ID";
+  public static final String  WORK_LINK         = "Work Link";
   public static final String  WORK_PAGE_NUMBERS = "Work Pages";
   public static final String  WORK_RIGHTS       = "Work Rights";
   public static final String  WORK_RIGHTS_HOLDER = "Work Rights Holder";
