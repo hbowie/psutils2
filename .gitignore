@@ -4,3 +4,6 @@ dist
 /build.xml
 /manifest.mf
 /nbproject/
+/.idea
+/out
+/target

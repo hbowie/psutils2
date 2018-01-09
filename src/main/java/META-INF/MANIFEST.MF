@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Class-Path: openhtmltopdf-pdfbox-0.0.1-RC9.jar openhtmltopdf-jsoup-dom
+ -converter-0.0.1-RC9.jar xercesImpl-2.2.1.jar commons-logging-1.2.jar
+  flexmark-pdf-converter-0.28.24.jar Saxon-HE-9.7.0-21.jar autolink-0.
+ 6.0.jar flexmark-ext-abbreviation-0.28.24.jar flexmark-ext-escaped-ch
+ aracter-0.28.24.jar pdfbox-2.0.4.jar flexmark-ext-autolink-0.28.24.ja
+ r flexmark-ext-youtube-embedded-0.28.24.jar icu4j-58.1.jar flexmark-e
+ xt-wikilink-0.28.24.jar log4j-1.2.14.jar flexmark-youtrack-converter-
+ 0.28.24.jar flexmark-ext-attributes-0.28.24.jar flexmark-ext-gfm-tabl
+ es-0.28.24.jar flexmark-ext-ins-0.28.24.jar fontbox-2.0.4.jar flexmar
+ k-ext-tables-0.28.24.jar flexmark-util-0.28.24.jar openhtmltopdf-core
+ -0.0.1-RC9.jar flexmark-ext-emoji-0.28.24.jar flexmark-html-parser-0.
+ 28.24.jar flexmark-ext-yaml-front-matter-0.28.24.jar flexmark-all-0.2
+ 8.24.jar flexmark-ext-gfm-tasklist-0.28.24.jar flexmark-profile-pegdo
+ wn-0.28.24.jar flexmark-ext-aside-0.28.24.jar flexmark-ext-anchorlink
+ -0.28.24.jar flexmark-ext-footnotes-0.28.24.jar flexmark-ext-superscr
+ ipt-0.28.24.jar flexmark-ext-typographic-0.28.24.jar flexmark-formatt
+ er-0.28.24.jar flexmark-ext-gfm-issues-0.28.24.jar flexmark-ext-gfm-u
+ sers-0.28.24.jar flexmark-ext-jekyll-tag-0.28.24.jar flexmark-0.28.24
+ .jar flexmark-ext-enumerated-reference-0.28.24.jar flexmark-ext-toc-0
+ .28.24.jar flexmark-jira-converter-0.28.24.jar jxl-2.6.12.jar flexmar
+ k-ext-definition-0.28.24.jar flexmark-ext-gfm-strikethrough-0.28.24.j
+ ar flexmark-ext-xwiki-macros-0.28.24.jar flexmark-ext-jekyll-front-ma
+ tter-0.28.24.jar openhtmltopdf-rtl-support-0.0.1-RC9.jar jsoup-1.10.2
+ .jar
+
