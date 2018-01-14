@@ -31,19 +31,20 @@ package com.powersurgepub.psutils2.notenik;
  */
 public class NoteCollectionSorted {
   
-  private NoteSortParm                        sortParm = null;
-  private NoteCollectionList                  notes = null;
+  private NoteSortParm                          sortParm = null;
+  private NoteCollectionList                    notes = null;
   
-  private ObservableList<SortedNote>          sortedNotes = null;
-  private int                                 sortIndex = -1;
-  private boolean                             sortMatch = false;
+  private ObservableList<SortedNote>            sortedNotes = null;
+  private int                                   sortIndex = -1;
+  private boolean                               sortMatch = false;
   
-  private TableView<SortedNote>               noteTable = null;
-  private TableColumn<SortedNote, String>     doneColumn = null;
-  private TableColumn<SortedNote, SortedDate> dateColumn = null;
-  private TableColumn<SortedNote, SortedSeq>  seqColumn = null;
-  private TableColumn<SortedNote, String>     titleColumn = null;
-  
+  private TableView<SortedNote>                 noteTable = null;
+  private TableColumn<SortedNote, String>       doneColumn = null;
+  private TableColumn<SortedNote, SortedDate>   dateColumn = null;
+  private TableColumn<SortedNote, SortedSeq>    seqColumn = null;
+  private TableColumn<SortedNote, String>       titleColumn = null;
+  private TableColumn<SortedNote, SortedAuthor> authorColumn = null;
+
   /**
    Construct the object. 
   
@@ -95,6 +96,11 @@ public class NoteCollectionSorted {
     titleColumn.setCellValueFactory(
         new PropertyValueFactory<SortedNote, String>("title")
     );
+
+    // Build the Author Column
+    authorColumn = new TableColumn<SortedNote, SortedAuthor>("Author");
+    authorColumn.setPrefWidth(300);
+    authorColumn.setCellValueFactory(new PropertyValueFactory<SortedNote, SortedAuthor>("author"));
 
   }
   
@@ -154,6 +160,10 @@ public class NoteCollectionSorted {
         noteTable.getColumns().addAll(titleColumn);
         noteTable.getSortOrder().addAll(titleColumn);
         break;
+      case NoteSortParm.SORT_BY_AUTHOR:
+        noteTable.getColumns().addAll(authorColumn, titleColumn);
+        noteTable.getSortOrder().addAll(authorColumn, titleColumn);
+        break;
       default:
         break;
     }
@@ -162,8 +172,7 @@ public class NoteCollectionSorted {
   /**
    Add a new sorted note to the list of sorted, filtered notes. 
    
-   @param index Pointing to the position in the Notes List containing the 
-                note to be added. 
+   @param newNote The note to be added.
    */
   void add (Note newNote) {
 

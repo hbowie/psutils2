@@ -69,6 +69,8 @@ public class StringDate
       = new SimpleDateFormat("EEE dd-MMM-yyyy");
   public     static final     SimpleDateFormat  COMMON_FORMAT
       = new SimpleDateFormat("dd MMM yyyy");
+  public     static final     SimpleDateFormat  YMDHMS_FORMAT
+      = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   public     static final     String            NEXT_YEAR = "next year";
   private    static final     Calendar          TODAY = Calendar.getInstance();
   private    static final     String            TODAY_YMD;
@@ -111,6 +113,16 @@ public class StringDate
   */
   public static String getTodayYMD() {
     return TODAY_YMD;
+  }
+
+  /**
+    Get today's date and time in a sortable format.
+
+    @return String representing current date and time in a sortable format.
+   */
+  public static String getNowYMDHMS() {
+    Calendar now = Calendar.getInstance();
+    return YMDHMS_FORMAT.format(now.getTime());
   }
   
   /**

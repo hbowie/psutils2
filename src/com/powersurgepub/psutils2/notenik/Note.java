@@ -334,7 +334,7 @@ public class Note
   /**
    Compare this Note object to another, using the titles for comparison.
   
-   @param The second object to compare to this one.
+   @param obj2 The second object to compare to this one.
   
    @return A number less than zero if this object is less than the second,
            a number greater than zero if this object is greater than the second,
@@ -352,7 +352,7 @@ public class Note
   /**
    Compare this Note object to another, using the titles for comparison.
   
-   @param The second object to compare to this one.
+   @param note2 The second object to compare to this one.
   
    @return A number less than zero if this object is less than the second,
            a number greater than zero if this object is greater than the second,
@@ -417,6 +417,8 @@ public class Note
         return (
             seqValue.toPaddedString('0', 8, '0', 4) + 
             titleValue.getLowerHyphens());
+      case NoteSortParm.SORT_BY_AUTHOR:
+        return (this.getAuthorLastNameFirst() + titleValue.getLowerHyphens());
       default:
         return 
             titleValue.getLowerHyphens();
@@ -623,6 +625,14 @@ public class Note
       return "";
     }
   }
+
+  public String getAuthorLastNameFirst() {
+	  if (authorAdded && authorValue != null) {
+	    return authorValue.getCompleteNameLastNamesFirst();
+      } else {
+	    return "";
+      }
+  }
   
   public void setType(String type) {
     typeValue.set(type);
@@ -812,6 +822,15 @@ public class Note
     } else {
       return "";
     }
+  }
+
+  public void setDateAddedToNow() {
+    DataFieldDefinition fieldDef = new DataFieldDefinition(NoteParms.DATE_ADDED);
+    fieldDef.setType(DataFieldDefinition.DATE_TYPE);
+    StringDate dataValue = new StringDate();
+    dataValue.set(StringDate.getNowYMDHMS());
+    DataField dataField = new DataField (fieldDef, dataValue);
+    storeField(recDef, dataField);
   }
   
   public void setRecurs(String recurs) {

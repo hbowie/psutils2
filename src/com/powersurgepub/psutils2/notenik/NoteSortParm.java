@@ -33,6 +33,7 @@ public class NoteSortParm {
   public static final int SORT_BY_SEQ_AND_TITLE = 1;
   public static final int SORT_TASKS_BY_DATE    = 2;
   public static final int SORT_TASKS_BY_SEQ     = 3;
+  public static final int SORT_BY_AUTHOR        = 4;
   
   private NoteCollectionModel model = null;
   
@@ -44,23 +45,33 @@ public class NoteSortParm {
     "Title",
     "Seq + Title",
     "Tasks by Date",
-    "Tasks by Seq"
+    "Tasks by Seq",
+    "Author"
   };
   
   private String[] keys = {
     "1",
     "2",
     "3",
-    "4"
+    "4",
+    "5"
   };
   
   private int maxPositionsToLeftOfDecimal = 0;
   private int maxPositionsToRightOfDecimal = 0;
   
+  /**
+   Construct a new set of sort parameters. 
+  */
   public NoteSortParm() {
 
   }
   
+  /**
+   Change the sort fields based on the passed index. 
+  
+   @param parm 
+  */
   public void setParm(int parm) {
 
     if (parm < 0 || parm >= labels.length) {

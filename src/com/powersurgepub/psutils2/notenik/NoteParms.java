@@ -137,6 +137,8 @@ public class NoteParms {
   public static final String  PUBLISHER         = "Publisher";
   public static final String  PUBLISHER_CITY    = "Publisher City";
   public static final String  SEQUENCE          = "Sequence";
+
+  public static final String  DATE_ADDED        = "Date Added";
   
   public static final int     UNKNOWN_FIELD_SEQ = 50;
   
@@ -458,6 +460,13 @@ public class NoteParms {
     }
 
     return recDef;
+  }
+
+  /**
+    Add a date added column to the record definition.
+   */
+  public void addDateAddedColumn() {
+    recDef.addColumn(DATE_ADDED);
   }
   
   public static int getNormalSeq(CommonName commonName) {

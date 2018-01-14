@@ -28,9 +28,10 @@ package com.powersurgepub.psutils2.notenik;
  */
 public class SortedNote {
   
-  private Note        note;
-  private SortedDate  sortedDate;
-  private SortedSeq   sortedSeq;
+  private Note          note;
+  private SortedDate    sortedDate;
+  private SortedSeq     sortedSeq;
+  private SortedAuthor  sortedAuthor;
   
   private SimpleStringProperty done;
   private SimpleStringProperty title;
@@ -38,9 +39,9 @@ public class SortedNote {
   
   public SortedNote(Note note, NoteSortParm sortParm) {
     this.note = note;
-    done = new SimpleStringProperty(this, "", "Done");
-    title = new SimpleStringProperty(this, "", "Title");
-    sortKey = new SimpleStringProperty(this, "", "SortKey");
+    done = new SimpleStringProperty(this, "Done", "");
+    title = new SimpleStringProperty(this, "Title", "");
+    sortKey = new SimpleStringProperty(this, "SortKey", "");
     genKeys(sortParm);
   }
   
@@ -49,6 +50,7 @@ public class SortedNote {
     sortedDate = new SortedDate(note.getDate());
     sortedSeq = new SortedSeq(note.getSeqValue());
     title.set(note.getTitle());
+    sortedAuthor = new SortedAuthor(note.getAuthor());
     sortKey.set(note.getSortKey(sortParm));
   }
   
@@ -85,6 +87,8 @@ public class SortedNote {
   public SortedSeq getSeq() {
     return sortedSeq;
   }
+
+  public SortedAuthor getAuthor() { return sortedAuthor; }
   
   public String getTitle() {
     return title.get();
