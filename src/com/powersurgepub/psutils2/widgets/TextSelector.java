@@ -44,6 +44,8 @@ public class TextSelector
     extends GridPane
     implements 
       DataWidget {
+
+  private boolean         handlesMultipleValues = false;
   
   private PopUpList       popUpList;
   
@@ -87,6 +89,23 @@ public class TextSelector
     GridPane.setHgrow(textField, Priority.ALWAYS);
 
   }
+
+  /**
+   Can this field handle multiple values, or only one?
+
+   @param handlesMultipleValues True if we should allow multiple values, false otherwise.
+   */
+  public void setHandlesMultipleValues(boolean handlesMultipleValues) {
+    this.handlesMultipleValues = handlesMultipleValues;
+  }
+
+  public boolean handlesMultipleValues() {
+    return handlesMultipleValues;
+  }
+
+  public boolean oneValueOnly() {
+    return (! handlesMultipleValues);
+  }
   
   private void textKeyTyped(KeyEvent e) {
     
@@ -127,7 +146,7 @@ public class TextSelector
   
   public void setListSelection (String value) {
     checkText();
-    if (start < text.length()) {
+    if (start < text.length() || oneValueOnly()) {
       text.replace (start, text.length(), value);
     } else {
       text.append (value);
@@ -136,19 +155,23 @@ public class TextSelector
   }
   
   private void checkText () {
-    text = new StringBuilder (getText());
-    semicolon = text.lastIndexOf (";");
-    comma = text.lastIndexOf (",");
-    start = comma;
-    if (semicolon > comma) {
-      start = semicolon;
-    }
-    if (start < 0) {
+    text = new StringBuilder(getText());
+    if (oneValueOnly()) {
       start = 0;
-    } 
-    while (start < text.length()
-        && (! Character.isLetter (text.charAt (start)))) {
-      start++;
+    } else {
+      semicolon = text.lastIndexOf(";");
+      comma = text.lastIndexOf(",");
+      start = comma;
+      if (semicolon > comma) {
+        start = semicolon;
+      }
+      if (start < 0) {
+        start = 0;
+      }
+      while (start < text.length()
+          && (!Character.isLetter(text.charAt(start)))) {
+        start++;
+      }
     }
   }
   

@@ -37,7 +37,7 @@ public class Author
   
   private   StringBuilder  lastName      = new StringBuilder();
   private   StringBuilder  firstName     = new StringBuilder();
-  private   ArrayList     authors       = new ArrayList();
+  private   ArrayList      authors       = new ArrayList();
   private static final String[] suffix = {
     "jr",
     "sr",
@@ -114,7 +114,7 @@ public class Author
    */
   public void setCompleteName (String completeName) {
     // Check to see if the string contains multiple names
-    // System.out.println ("Author setCompleteName (" + completeName + ")");
+    authors = new ArrayList();
     boolean ok = true;
     if (completeName.length() > 150) {
       ok = false;

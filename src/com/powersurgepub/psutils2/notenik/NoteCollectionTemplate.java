@@ -97,6 +97,8 @@ public class NoteCollectionTemplate
       = new NoteCollectionField(NoteParms.TEASER_DEF);
   private     NoteCollectionField bodyField 
       = new NoteCollectionField(NoteParms.BODY_DEF);
+  private     NoteCollectionField dateAddedField
+      = new NoteCollectionField (NoteParms.DATE_ADDED_DEF);
   
   /**
    A new Template object should be constructed for each new
@@ -131,6 +133,7 @@ public class NoteCollectionTemplate
     fields.add(codeField);
     fields.add(teaserField);
     fields.add(bodyField);
+    fields.add(dateAddedField);
     
     titleField.setSelected(true);
     titleField.setDisable(true);
@@ -381,6 +384,9 @@ public class NoteCollectionTemplate
     }
     if (this.bodyField.isSelected()) {
       templateNote.setBody("The body of the note");
+    }
+    if (this.dateAddedField.isSelected()) {
+      templateNote.setDateAdded(StringDate.getNowYMDHMS());
     }
     if (fileExtComboBox != null) {
       String selectedFileExt 

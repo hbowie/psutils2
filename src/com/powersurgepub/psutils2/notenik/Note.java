@@ -22,9 +22,7 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.records.*;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.tags.*;
-  import com.powersurgepub.psutils2.ui.*;
   import com.powersurgepub.psutils2.values.*;
-  import com.powersurgepub.psutils2.widgets.*;
 
   import java.io.*;
   import java.text.*;
@@ -105,6 +103,10 @@ public class Note
   private IndexPageValue      indexValue = null;
   private DataField           indexField = null;
   private boolean             indexAdded = false;
+
+  private StringDate          dateAddedValue = null;
+  private DataField           dateAddedField = null;
+  private boolean             dateAddedAdded = false;
   
   private DataValueStringBuilder codeValue = null;
   private DataField           codeField;
@@ -204,6 +206,10 @@ public class Note
         setIndex(fromValue.toString());
       }
       else
+        if (NoteParms.isDateAdded(fromCommon)) {
+          setDateAdded(fromValue.toString());
+      }
+      else
       if (NoteParms.isCode(fromCommon)) {
         setCode(fromValue.toString());
       }
@@ -277,6 +283,12 @@ public class Note
     indexValue = new IndexPageValue();
     indexField = new DataField(NoteParms.INDEX_DEF, indexValue);
     indexAdded = false;
+
+    // Build the Date Added field
+    dateAddedValue = new StringDate();
+    dateAddedValue.set(StringDate.getNowYMDHMS());
+    dateAddedField = new DataField(NoteParms.DATE_ADDED_DEF, dateAddedValue);
+    dateAddedAdded = false;
     
     // Build the Code field
     codeValue = new DataValueStringBuilder();
@@ -525,6 +537,10 @@ public class Note
     if (commonName.equals(NoteParms.RECURS_COMMON_NAME)) {
       setRecurs(data);
     }
+    else
+      if (commonName.equals(NoteParms.DATE_ADDED_COMMON_NAME)) {
+        setDateAdded(data);
+      }
     else
     if (commonName.equals(NoteParms.LINK_COMMON_NAME)) {
       setLink(data);
@@ -825,7 +841,7 @@ public class Note
   }
 
   public void setDateAddedToNow() {
-    DataFieldDefinition fieldDef = new DataFieldDefinition(NoteParms.DATE_ADDED);
+    DataFieldDefinition fieldDef = new DataFieldDefinition(NoteParms.DATE_ADDED_FIELD_NAME);
     fieldDef.setType(DataFieldDefinition.DATE_TYPE);
     StringDate dataValue = new StringDate();
     dataValue.set(StringDate.getNowYMDHMS());
@@ -949,6 +965,26 @@ public class Note
     } else {
       return "";
     }
+  }
+
+  public void setDateAdded(String dateAdded) {
+    dateAddedValue.set(dateAdded);
+    if (! dateAddedAdded) {
+      storeField (recDef, dateAddedField);
+      dateAddedAdded = true;
+    }
+  }
+
+  public boolean hasDateAdded() {
+    return (dateAddedAdded && dateAddedValue != null && dateAddedValue.hasData());
+  }
+
+  public StringDate getDateAdded() {
+    return dateAddedValue;
+  }
+
+  public String getDateAddedAsString() {
+    return dateAddedValue.toString();
   }
   
   public void setLink(File file) {

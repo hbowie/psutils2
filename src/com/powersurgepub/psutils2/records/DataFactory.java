@@ -87,6 +87,7 @@ public class DataFactory {
         
       // Date
       case DataFieldDefinition.DATE_TYPE:
+      case DataFieldDefinition.DATE_ADDED_TYPE:
         StringDate date = new StringDate();
         value = date;
         break;
@@ -178,6 +179,11 @@ public class DataFactory {
       case DataFieldDefinition.DATE_TYPE:
         DateWidget dateWidget = new DateWidget();
         widget = dateWidget;
+        break;
+
+      case DataFieldDefinition.DATE_ADDED_TYPE:
+        LabelWidget dateAddedWidget = new LabelWidget();
+        widget = dateAddedWidget;
         break;
         
       // Single-line Text Field  

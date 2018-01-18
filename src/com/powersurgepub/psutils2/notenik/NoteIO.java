@@ -20,6 +20,7 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.logging.*;
   import com.powersurgepub.psutils2.records.*;
   import com.powersurgepub.psutils2.textio.*;
+  import com.powersurgepub.psutils2.values.StringDate;
 
   import java.io.*;
   import java.util.*;
@@ -632,6 +633,10 @@ public class NoteIO
         line = inBuffered.readLine();
       }
       inBuffered.close();
+      if (! note.hasDateAdded()) {
+        // Use the last modified date as a default value for the Date Added field
+        note.setDateAdded(StringDate.YMDHMS_FORMAT.format(lastModDate));
+      }
     }
     
     return note;

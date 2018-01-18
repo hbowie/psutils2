@@ -18,12 +18,10 @@ package com.powersurgepub.psutils2.notenik;
 
   import com.powersurgepub.psutils2.records.*;
   import com.powersurgepub.psutils2.strings.*;
-  import com.powersurgepub.psutils2.ui.*;
   import com.powersurgepub.psutils2.values.*;
   import com.powersurgepub.psutils2.widgets.*;
 
   import java.text.*;
-  import java.util.*;
 
   import javafx.geometry.*;
   import javafx.scene.control.*;
@@ -98,6 +96,8 @@ public class NoteParms {
   public static final String  MIN_SYS_VERSION_FIELD_NAME = "Minimum System Version";
   public static final String  CODE_FIELD_NAME   = "Code";
   public static final String  CODE_COMMON_NAME  = "code";
+  public static final String  DATE_ADDED_FIELD_NAME = "Date Added";
+  public static final String  DATE_ADDED_COMMON_NAME = "dateadded";
   
   public static final String  COMPLETE_PATH     = "Complete Path";
   public static final String  BASE_PATH         = "Base Path";
@@ -137,8 +137,6 @@ public class NoteParms {
   public static final String  PUBLISHER         = "Publisher";
   public static final String  PUBLISHER_CITY    = "Publisher City";
   public static final String  SEQUENCE          = "Sequence";
-
-  public static final String  DATE_ADDED        = "Date Added";
   
   public static final int     UNKNOWN_FIELD_SEQ = 50;
   
@@ -170,6 +168,8 @@ public class NoteParms {
       = new DataFieldDefinition (RECURS_FIELD_NAME);
   public static final DataFieldDefinition CODE_DEF
       = new DataFieldDefinition (CODE_FIELD_NAME);
+  public static final DataFieldDefinition DATE_ADDED_DEF
+      = new DataFieldDefinition(DATE_ADDED_FIELD_NAME);
   
   public static final boolean  SLASH_TO_SEPARATE = false;
   
@@ -197,7 +197,7 @@ public class NoteParms {
     LINK_DEF.setType   (DataFieldDefinition.LINK_TYPE);
     TAGS_DEF.setType   (DataFieldDefinition.TAGS_TYPE);
     BODY_DEF.setType   (DataFieldDefinition.STRING_BUILDER_TYPE);
-    AUTHOR_DEF.setType (DataFieldDefinition.STRING_TYPE);
+    AUTHOR_DEF.setType (DataFieldDefinition.AUTHOR_TYPE);
     DATE_DEF.setType   (DataFieldDefinition.DATE_TYPE);
     STATUS_DEF.setType (DataFieldDefinition.STATUS_TYPE);
     RATING_DEF.setType (DataFieldDefinition.RATING_TYPE);
@@ -207,6 +207,7 @@ public class NoteParms {
     INDEX_DEF.setType  (DataFieldDefinition.INDEX_TYPE);
     RECURS_DEF.setType (DataFieldDefinition.RECURS_TYPE);
     CODE_DEF.setType   (DataFieldDefinition.CODE_TYPE);
+    DATE_ADDED_DEF.setType (DataFieldDefinition.DATE_ADDED_TYPE);
   }
   
   public NoteParms () {
@@ -466,7 +467,7 @@ public class NoteParms {
     Add a date added column to the record definition.
    */
   public void addDateAddedColumn() {
-    recDef.addColumn(DATE_ADDED);
+    recDef.addColumn(DATE_ADDED_DEF);
   }
   
   public static int getNormalSeq(CommonName commonName) {
@@ -513,6 +514,10 @@ public class NoteParms {
     if (isIndex(commonName)) {
        return 10;
     }
+    else
+      if (isDateAdded(commonName)) {
+        return 11;
+      }
     else
     if (isCode(commonName)) {
       return 95;
@@ -572,6 +577,9 @@ public class NoteParms {
     }
     if (isBody(commonName)) {
       return BODY_DEF;
+    }
+    if (isDateAdded(commonName)) {
+      return DATE_ADDED_DEF;
     }
     
     if (notesOnly()) {
@@ -692,6 +700,10 @@ public class NoteParms {
   public static boolean isIndex(CommonName commonName) {
     return (commonName.getCommonForm().equals(INDEX_COMMON_NAME));
   }
+
+  public static boolean isDateAdded(CommonName commonName) {
+    return (commonName.getCommonForm().equals(DATE_ADDED_COMMON_NAME));
+  }
   
   public static boolean isCode(CommonName commonName) {
     return (commonName.getCommonForm().equals(CODE_COMMON_NAME));
@@ -728,12 +740,12 @@ public class NoteParms {
   }
   
   /**
-   Create a new Swing component that can be used to display and optionally
+   Create a new FX component that can be used to display and optionally
    update a data field.
   
    @param fieldDef The definition of the type of field.
    @param grid     The GridPane object to be used to place this component.
-   @param row      The row number on which this field is to be place. 
+   @param row      The row number on which this field is to be placed.
   
    @return         The data widget that was created. 
   */
@@ -819,6 +831,17 @@ public class NoteParms {
         widgetWithLabel.setLabel(label);
         widgetWithLabel.setWidget(labelWidget);
         break;
+
+      // Author
+      case DataFieldDefinition.AUTHOR_TYPE:
+        TextSelector authorTextSelector = new TextSelector();
+        label.setLabelFor(authorTextSelector);
+        grid.add(label, 0, row, 1, 1);
+        grid.add(authorTextSelector, 1, row, 1, 1);
+        GridPane.setHgrow(authorTextSelector, Priority.ALWAYS);
+        widgetWithLabel.setLabel(label);
+        widgetWithLabel.setWidget(authorTextSelector);
+        break;
         
       // Date field
       case DataFieldDefinition.DATE_TYPE:
@@ -829,6 +852,17 @@ public class NoteParms {
         GridPane.setHgrow(dateWidget, Priority.ALWAYS);
         widgetWithLabel.setLabel(label);
         widgetWithLabel.setWidget(dateWidget);
+        break;
+
+        // Date Added field
+      case DataFieldDefinition.DATE_ADDED_TYPE:
+        LabelWidget dateAddedWidget = new LabelWidget();
+        label.setLabelFor(dateAddedWidget);
+        grid.add(label, 0, row);
+        grid.add(dateAddedWidget, 1, row);
+        GridPane.setHgrow(dateAddedWidget, Priority.ALWAYS);
+        widgetWithLabel.setLabel(label);
+        widgetWithLabel.setWidget(dateAddedWidget);
         break;
         
       // Single-line Text Field  

@@ -61,8 +61,9 @@ public class DataFieldDefinition {
   public static final int     INDEX_TYPE          = 12;
   public static final int     RECURS_TYPE         = 13;
   public static final int     CODE_TYPE           = 14;
+  public static final int     DATE_ADDED_TYPE     = 15;
   
-  public static final int     MAX_TYPE            = 14;
+  public static final int     MAX_TYPE            = 15;
   
   /** 
      If two fields of this type are to be combined, is it OK to do 
@@ -182,6 +183,10 @@ public class DataFieldDefinition {
       setType(AUTHOR_TYPE);
     } 
     else
+      if (commonName.equals("dateadded")) {
+        setType(DATE_ADDED_TYPE);
+      }
+      else
     if (commonName.equals("date")
         || commonName.contains("date")) {
       setType(DATE_TYPE);
@@ -407,7 +412,7 @@ public class DataFieldDefinition {
     
     @return calculated field value, or original value if not a calculated field.
     
-    @param DataRecord Record containing this field.
+    @param dataRec Record containing this field.
    */
   public String calculate (DataRecord dataRec) {
     if (lookupTable != null) {

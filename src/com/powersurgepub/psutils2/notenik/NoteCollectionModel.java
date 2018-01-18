@@ -67,6 +67,7 @@ public class NoteCollectionModel {
   private             NoteCollectionSorted    sorted;
   private             TagsList                tagsList;
   private             TagsView                tagsView;
+  private             AuthorList               authorList;
   
   private             Note                    selectedNote = null;
   private             int                     selectedSortIndex = 0;
@@ -117,13 +118,15 @@ public class NoteCollectionModel {
     noteIO    = new NoteIO();
     loadTaggedOnly = false;
     
-    list      = new NoteCollectionList();
-    map       = new NoteCollectionMap();
-    sorted    = new NoteCollectionSorted(sortParm);
-    tagsList  = new TagsList();
-    tagsView  = new TagsView();
+    list       = new NoteCollectionList();
+    map        = new NoteCollectionMap();
+    sorted     = new NoteCollectionSorted(sortParm);
+    tagsList   = new TagsList();
+    tagsView   = new TagsView();
+    authorList = new AuthorList();
     
     tagsList.registerValue("");
+    authorList.registerValue("");
     
     open = false;
     fileSpec = null;
@@ -641,6 +644,7 @@ public class NoteCollectionModel {
       sorted.add(newNote);
       tagsList.add(newNote);
       tagsView.add(newNote);
+      authorList.add(newNote);
       added = true;
     }
     return added;
@@ -869,6 +873,8 @@ public class NoteCollectionModel {
   public TagsView getTagsModel () {
     return tagsView;
   }
+
+  public AuthorList getAuthorList () { return authorList; }
   
   /* ============================================================================
    *  
@@ -1063,6 +1069,7 @@ public class NoteCollectionModel {
         || tagsChanged) {
       tagsList.modify(note);
       tagsView.modify(note);
+      authorList.modify(note);
     } 
     if (editingMasterCollection) {
       master.modRecentFile(priorTitle, note.getTitle());
@@ -1091,6 +1098,7 @@ public class NoteCollectionModel {
         || tagsChanged()) {
       tagsList.modify(selectedNote);
       tagsView.modify(selectedNote);
+      authorList.modify(selectedNote);
     } 
     
   }
@@ -1160,8 +1168,6 @@ public class NoteCollectionModel {
   /**
    Does the selected note already exist on disk?
   
-   @param localPath The path that would be used for the note. 
-  
    @return True if a note already exists on disk  at this location. 
   */
   public boolean selectedExists () {
@@ -1170,9 +1176,7 @@ public class NoteCollectionModel {
   
   /**
    Save the selected note, and if it now has a new disk location, 
-   delete the file at the old disk location. 
-  
-   @param note The note to be saved. 
+   delete the file at the old disk location.
   */
   public void saveSelectionAndDeleteOnRename() {
     saveNoteAndDeleteOnRename(selectedNote, selectedTitle);
@@ -1182,7 +1186,7 @@ public class NoteCollectionModel {
    Save the note, and if it now has a new disk location, 
    delete the file at the old disk location. 
   
-   @param note The note to be saved. 
+   @param noteToSave The note to be saved.
   */
   public void saveNoteAndDeleteOnRename(Note noteToSave, String oldTitle) {
     String oldDiskLocation = noteToSave.getDiskLocation();

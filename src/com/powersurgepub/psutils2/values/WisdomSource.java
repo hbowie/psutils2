@@ -48,7 +48,7 @@ public class WisdomSource
   private String name = UNKNOWN;
   
 	/** Type of item. */
-	private    	int          		sourceType = 0;
+  private    	int          		sourceType = 0;
   public  final static int      UNKNOWN_TYPE    = 0;
   public  final static int      ARTICLE         = 1;
   public  final static int      BOOK            = 2;
@@ -62,36 +62,38 @@ public class WisdomSource
   public  final static int      POEM            = 10;
   public  final static int      PREFACE         = 11;
   public  final static int      REMARKS         = 12;
-  public  final static int      SONG            = 13;
-  public  final static int      SPEECH          = 14;
-  public  final static int      STORY           = 15;
-  public  final static int      TV_SHOW         = 16;
-  public  final static int      WEBLOG          = 17;
-  public  final static int      WEBPAGE         = 18;
-  public  final static int      SOURCE_TYPE_MAX = 18;
-  
+  public  final static int      SERMON          = 13;
+  public  final static int      SONG            = 14;
+  public  final static int      SPEECH          = 15;
+  public  final static int      STORY           = 16;
+  public  final static int      TV_SHOW         = 17;
+  public  final static int      WEBLOG          = 18;
+  public  final static int      WEBPAGE         = 19;
+  public  final static int      SOURCE_TYPE_MAX = 19;
+
   public  final static String[] SOURCE_TYPE_LABEL = {
-    "unknown",
-    "Article",
-    "Book",
-    "CD",
-    "Conference",
-    "Essay",
-    "Film",
-    "Interview",
-    "Lecture",
-    "Letter",
-    "Play",
-    "Poem",
-    "Preface",
-    "Remarks",
-    "Song",
-    "Speech",
-    "Story",
-    "Television Show",
-    "Video",
-    "Web Log",
-    "Web Page"
+      "unknown",
+      "Article",
+      "Book",
+      "CD",
+      "Conference",
+      "Essay",
+      "Film",
+      "Interview",
+      "Lecture",
+      "Letter",
+      "Play",
+      "Poem",
+      "Preface",
+      "Remarks",
+      "Sermon",
+      "Song",
+      "Speech",
+      "Story",
+      "Television Show",
+      "Video",
+      "Web Log",
+      "Web Page"
   };
   
   private String minorTitle = "";
