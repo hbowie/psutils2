@@ -98,6 +98,8 @@ public class NoteParms {
   public static final String  CODE_COMMON_NAME  = "code";
   public static final String  DATE_ADDED_FIELD_NAME = "Date Added";
   public static final String  DATE_ADDED_COMMON_NAME = "dateadded";
+  public static final String  WORK_TITLE_FIELD_NAME = "Work Title";
+  public static final String  WORK_TITLE_COMMON_NAME = "worktitle";
   
   public static final String  COMPLETE_PATH     = "Complete Path";
   public static final String  BASE_PATH         = "Base Path";
@@ -125,8 +127,7 @@ public class NoteParms {
   
   public static final String  AUTHOR_INFO       = "Author Info";
   public static final String  AUTHOR_LINK       = "Author Link";
-  
-  public static final String  WORK_TITLE        = "Work Title";
+
   public static final String  WORK_TYPE         = "Work Type";
   public static final String  WORK_MINOR_TITLE  = "Work Minor Title";
   public static final String  WORK_IDENTIFIER   = "Work ID";
@@ -170,6 +171,8 @@ public class NoteParms {
       = new DataFieldDefinition (CODE_FIELD_NAME);
   public static final DataFieldDefinition DATE_ADDED_DEF
       = new DataFieldDefinition(DATE_ADDED_FIELD_NAME);
+  public static final DataFieldDefinition WORK_TITLE_DEF
+      = new DataFieldDefinition(WORK_TITLE_FIELD_NAME);
   
   public static final boolean  SLASH_TO_SEPARATE = false;
   
@@ -208,6 +211,7 @@ public class NoteParms {
     RECURS_DEF.setType (DataFieldDefinition.RECURS_TYPE);
     CODE_DEF.setType   (DataFieldDefinition.CODE_TYPE);
     DATE_ADDED_DEF.setType (DataFieldDefinition.DATE_ADDED_TYPE);
+    WORK_TITLE_DEF.setType (DataFieldDefinition.WORK_TYPE);
   }
   
   public NoteParms () {
@@ -445,7 +449,7 @@ public class NoteParms {
         recDef.addColumn(AUTHOR_DEF);
         recDef.addColumn(AUTHOR_INFO);
         recDef.addColumn(AUTHOR_LINK);
-        recDef.addColumn(WORK_TITLE);
+        recDef.addColumn(WORK_TITLE_DEF);
         recDef.addColumn(WORK_TYPE);
         recDef.addColumn(DATE_DEF);
         recDef.addColumn(WORK_MINOR_TITLE);
@@ -515,8 +519,12 @@ public class NoteParms {
        return 10;
     }
     else
-      if (isDateAdded(commonName)) {
+      if (isWorkTitle(commonName)) {
         return 11;
+      }
+    else
+      if (isDateAdded(commonName)) {
+        return 12;
       }
     else
     if (isCode(commonName)) {
@@ -616,6 +624,9 @@ public class NoteParms {
     if (isCode(commonName)) {
       return CODE_DEF;
     }
+    if (isWorkTitle(commonName)) {
+      return WORK_TITLE_DEF;
+    }
     
     if (notesExpanded()) {
       return null;
@@ -663,6 +674,10 @@ public class NoteParms {
     return (commonName.getCommonForm().equals(AUTHOR_COMMON_NAME)
         || commonName.getCommonForm().equalsIgnoreCase(BY)
         || commonName.getCommonForm().equalsIgnoreCase(CREATOR));
+  }
+
+  public static boolean isWorkTitle(CommonName commonName) {
+    return (commonName.getCommonForm().equalsIgnoreCase(WORK_TITLE_COMMON_NAME));
   }
   
   public static boolean isLink(CommonName commonName) {
@@ -841,6 +856,17 @@ public class NoteParms {
         GridPane.setHgrow(authorTextSelector, Priority.ALWAYS);
         widgetWithLabel.setLabel(label);
         widgetWithLabel.setWidget(authorTextSelector);
+        break;
+
+        // Work Title
+      case DataFieldDefinition.WORK_TYPE:
+        TextSelector workTitleTextSelector = new TextSelector();
+        label.setLabelFor(workTitleTextSelector);
+        grid.add(label, 0, row, 1, 1);
+        grid.add(workTitleTextSelector, 1, row, 1, 1);
+        GridPane.setHgrow(workTitleTextSelector, Priority.ALWAYS);
+        widgetWithLabel.setLabel(label);
+        widgetWithLabel.setWidget(workTitleTextSelector);
         break;
         
       // Date field

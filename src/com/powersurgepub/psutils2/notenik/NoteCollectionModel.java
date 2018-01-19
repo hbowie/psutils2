@@ -67,7 +67,8 @@ public class NoteCollectionModel {
   private             NoteCollectionSorted    sorted;
   private             TagsList                tagsList;
   private             TagsView                tagsView;
-  private             AuthorList               authorList;
+  private             AuthorList              authorList;
+  private             WorkList                workList;
   
   private             Note                    selectedNote = null;
   private             int                     selectedSortIndex = 0;
@@ -124,9 +125,11 @@ public class NoteCollectionModel {
     tagsList   = new TagsList();
     tagsView   = new TagsView();
     authorList = new AuthorList();
+    workList   = new WorkList();
     
     tagsList.registerValue("");
     authorList.registerValue("");
+    workList.registerValue("");
     
     open = false;
     fileSpec = null;
@@ -645,6 +648,7 @@ public class NoteCollectionModel {
       tagsList.add(newNote);
       tagsView.add(newNote);
       authorList.add(newNote);
+      workList.add(newNote);
       added = true;
     }
     return added;
@@ -875,6 +879,8 @@ public class NoteCollectionModel {
   }
 
   public AuthorList getAuthorList () { return authorList; }
+
+  public WorkList getWorkList () { return workList; }
   
   /* ============================================================================
    *  
@@ -1070,7 +1076,8 @@ public class NoteCollectionModel {
       tagsList.modify(note);
       tagsView.modify(note);
       authorList.modify(note);
-    } 
+    }
+    workList.modify(note);
     if (editingMasterCollection) {
       master.modRecentFile(priorTitle, note.getTitle());
     }
@@ -1099,7 +1106,9 @@ public class NoteCollectionModel {
       tagsList.modify(selectedNote);
       tagsView.modify(selectedNote);
       authorList.modify(selectedNote);
-    } 
+    }
+
+    workList.modify(selectedNote);
     
   }
   

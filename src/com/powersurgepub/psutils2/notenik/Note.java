@@ -75,6 +75,10 @@ public class Note
   private Author              authorValue = null;
   private DataField           authorField = null;
   private boolean             authorAdded = false;
+
+  private Work                workValue = null;
+  private DataField           workField = null;
+  private boolean             workAdded = false;
   
   private ItemStatus          statusValue = null;
   private DataField           statusField = null;
@@ -178,6 +182,10 @@ public class Note
         setAuthor(fromValue.toString());
       }
       else
+        if (NoteParms.isWorkTitle(fromCommon)) {
+          setWorkTitle(fromValue.toString());
+        }
+      else
       if (NoteParms.isDate(fromCommon)) {
         setDate(fromValue.toString());
       }
@@ -238,6 +246,11 @@ public class Note
     authorValue = new Author();
     authorField = new DataField(NoteParms.AUTHOR_DEF, authorValue);
     authorAdded = false;
+
+    // Build the Work field
+    workValue = new Work();
+    workField = new DataField(NoteParms.WORK_TITLE_DEF, workValue);
+    workAdded = false;
     
     // Build the Type field
     typeValue = new DataValueString();
@@ -518,6 +531,10 @@ public class Note
       setAuthor(data);
     }
     else
+      if (commonName.equals(NoteParms.WORK_TITLE_COMMON_NAME)) {
+        setWorkTitle(data);
+      }
+    else
     if (commonName.equalsIgnoreCase(NoteParms.TYPE_COMMON_NAME)) {
       setType(data);
     }
@@ -648,6 +665,30 @@ public class Note
       } else {
 	    return "";
       }
+  }
+
+  public void setWorkTitle(String workTitle) {
+	  workValue.setTitle(workTitle);
+	  if (! workAdded) {
+	    storeField(recDef, workField);
+	    workAdded = true;
+    }
+  }
+
+  public boolean hasWorkTitle() {
+	  return (workAdded && workValue != null && workValue.hasTitle());
+  }
+
+  public Work getWork() {
+	  return workValue;
+  }
+
+  public String getWorkTitle() {
+	  if (workAdded && workValue != null) {
+	    return workValue.getTitle();
+    } else {
+	    return "";
+    }
   }
   
   public void setType(String type) {

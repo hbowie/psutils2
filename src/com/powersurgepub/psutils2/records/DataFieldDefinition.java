@@ -62,8 +62,9 @@ public class DataFieldDefinition {
   public static final int     RECURS_TYPE         = 13;
   public static final int     CODE_TYPE           = 14;
   public static final int     DATE_ADDED_TYPE     = 15;
+  public static final int     WORK_TYPE           = 16;
   
-  public static final int     MAX_TYPE            = 15;
+  public static final int     MAX_TYPE            = 16;
   
   /** 
      If two fields of this type are to be combined, is it OK to do 
@@ -207,6 +208,11 @@ public class DataFieldDefinition {
     else
     if (commonName.equals("code")) {
       setType(CODE_TYPE);
+    }
+    else
+      if (commonName.equals("work")
+          || commonName.equals("worktitle")) {
+      setType(WORK_TYPE);
     }else {
       setType(DEFAULT_TYPE);
     }

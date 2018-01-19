@@ -84,6 +84,12 @@ public class DataFactory {
         Author author = new Author();
         value = author;
         break;
+
+        // Work
+      case DataFieldDefinition.WORK_TYPE:
+        Work work = new Work();
+        value = work;
+        break;
         
       // Date
       case DataFieldDefinition.DATE_TYPE:

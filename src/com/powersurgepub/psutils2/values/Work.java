@@ -21,9 +21,9 @@ package com.powersurgepub.psutils2.values;
   import javafx.scene.control.*;
 
 /**
- A source for one or more wisdom items.
+ A work of art, or some other human creation.
  */
-public class WisdomSource 
+public class Work
       implements
         DataValue{
   
@@ -115,11 +115,11 @@ public class WisdomSource
     }
   }
   
-  /** Creates a new instance of WisdomSource */
-  public WisdomSource() {
+  /** Creates a new instance of Work */
+  public Work() {
   }
   
-  public WisdomSource(String name) {
+  public Work(String name) {
     this.name = name;
     deriveFileName();
   }
@@ -452,7 +452,7 @@ public class WisdomSource
     return fileName;
   }
   
-  public String merge (WisdomSource source2) {
+  public String merge (Work source2) {
     CommaList updatedFields = new CommaList();
     
     if (this.equals (source2)) {
@@ -505,7 +505,7 @@ public class WisdomSource
     return updatedFields.toString();
   }
   
-  public boolean equals (WisdomSource source2) {
+  public boolean equals (Work source2) {
     return (getName().equals (source2.getName())
         && (! isUnknown()));
   }
