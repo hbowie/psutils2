@@ -119,7 +119,7 @@ public class NoteIO
   /**
      Constructs a NoteIO object.
     
-     @param  inPathFile Directory path to be read.
+     @param  fileOrFolder Directory path to be read.
    */
   public NoteIO (File fileOrFolder, int inType) {
     if (fileOrFolder.isDirectory()) {

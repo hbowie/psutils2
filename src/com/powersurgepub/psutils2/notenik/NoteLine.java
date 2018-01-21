@@ -336,7 +336,7 @@ public class NoteLine {
               }
               DataValueStringBuilder dataValue = new DataValueStringBuilder(getMetaData());
               DataField dataField = new DataField (fieldDef, dataValue);
-              note.storeField(note.getRecDef(), dataField);
+              note.setField(fieldDef.getProperName(), dataValue.toString());
               builder.setLastStringBuilder(dataValue);
             }
             contentStored = true;

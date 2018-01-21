@@ -55,6 +55,22 @@ public class DataRecord
   public DataRecord () {
     
   }
+
+  /**
+    Copies the fields from a second data record to this one, using a
+    shallow copy.
+
+    @param copyDef The record definition to be used for this data record.
+    @param copyRec The data record containing the fields to be copies.
+   */
+  public void copyFields(RecordDefinition copyDef, DataRecord copyRec) {
+    int copyIndex = 0;
+    while (copyIndex < copyRec.getNumberOfFields()) {
+      DataField copyField = copyRec.getField(copyIndex);
+      storeField(copyDef, copyField.getProperName(), copyField.getData());
+      copyIndex++;
+    }
+  }
   
 
   

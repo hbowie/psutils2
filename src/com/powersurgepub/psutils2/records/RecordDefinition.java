@@ -81,6 +81,21 @@ public class RecordDefinition {
   public RecordDefinition (RecordDefinition inRec) {
     this (inRec.getDict());
   }
+
+  /**
+    Copy the Data Field Definitions from another record definition into this one.
+
+    @param inRec The Record Definition containing the desired data field definitions.
+   */
+  public void copyDefs(RecordDefinition inRec) {
+    this.dict = inRec.getDict();
+    int inRecIndex = 0;
+    while (inRecIndex < inRec.getNumberOfFields()) {
+      DataFieldDefinition inDef = inRec.getDef(inRecIndex);
+      putColumn(inDef);
+      inRecIndex++;
+    }
+  }
   
   /**
      Merges a second RecordDefinition into this one, combining the 

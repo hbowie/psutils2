@@ -582,6 +582,39 @@ public class Note
       DataValueStringBuilder dataValue = new DataValueStringBuilder(data);
       DataField dataField = new DataField (fieldDef, dataValue);
       storeField(recDef, dataField);
+      if (workAdded) {
+        if (commonName.equals(NoteParms.WORK_TYPE_COMMON_NAME)) {
+          workValue.setType(data);
+        }
+        else
+          if (commonName.equals(NoteParms.WORK_MINOR_TITLE_COMMON_NAME)) {
+            workValue.setMinorTitle(data);
+          }
+          else
+            if (commonName.equals(NoteParms.WORK_IDENTIFIER_COMMON_NAME)) {
+              workValue.setID(data);
+            }
+            else
+              if (commonName.equals(NoteParms.WORK_LINK_COMMON_NAME)) {
+                workValue.setLink(data);
+              }
+              else
+                if (commonName.equals(NoteParms.WORK_RIGHTS_COMMON_NAME)) {
+                  workValue.setRights(data);
+                }
+                else
+                  if (commonName.equals(NoteParms.WORK_RIGHTS_HOLDER_COMMON_NAME)) {
+                    workValue.setRightsOwner(data);
+                  }
+                  else
+                    if (commonName.equals(NoteParms.PUBLISHER_COMMON_NAME)) {
+                      workValue.setPublisher(data);
+                    }
+                    else
+                      if (commonName.equals(NoteParms.PUBLISHER_CITY_COMMON_NAME)) {
+                        workValue.setCity(data);
+                      }
+      }
     }
   }
   

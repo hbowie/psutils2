@@ -129,15 +129,29 @@ public class NoteParms {
   public static final String  AUTHOR_LINK       = "Author Link";
 
   public static final String  WORK_TYPE         = "Work Type";
+  public static final String  WORK_TYPE_COMMON_NAME = "worktype";
   public static final String  WORK_MINOR_TITLE  = "Work Minor Title";
+  public static final String  WORK_MINOR_TITLE_COMMON_NAME = "workminortitle";
   public static final String  WORK_IDENTIFIER   = "Work ID";
+  public static final String  WORK_IDENTIFIER_COMMON_NAME = "workid";
   public static final String  WORK_LINK         = "Work Link";
+  public static final String  WORK_LINK_COMMON_NAME = "worklink";
   public static final String  WORK_PAGE_NUMBERS = "Work Pages";
   public static final String  WORK_RIGHTS       = "Work Rights";
+  public static final String  WORK_RIGHTS_COMMON_NAME = "workrights";
   public static final String  WORK_RIGHTS_HOLDER = "Work Rights Holder";
+  public static final String  WORK_RIGHTS_HOLDER_COMMON_NAME = "workrightsholder";
   public static final String  PUBLISHER         = "Publisher";
+  public static final String  PUBLISHER_COMMON_NAME = "publisher";
   public static final String  PUBLISHER_CITY    = "Publisher City";
+  public static final String  PUBLISHER_CITY_COMMON_NAME = "publishercity";
   public static final String  SEQUENCE          = "Sequence";
+
+  public static final String  AUTHOR_LAST_NAME_FIRST = "Author Last Name First";
+  public static final String  AUTHOR_FILE_NAME  = "Author File Name";
+  public static final String  AUTHOR_WIKIMEDIA_PAGE = "Author Wikimedia Page";
+  public static final String  WORK_HTML_LINE    = "Work HTML Line";
+  public static final String  WORK_RIGHTS_HTML_LINE = "Work Rights HTML Line";
   
   public static final int     UNKNOWN_FIELD_SEQ = 50;
   

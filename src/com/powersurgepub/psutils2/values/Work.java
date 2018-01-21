@@ -533,7 +533,7 @@ public class Work
 
    @return
    */
-  public String getSourceLine (String pages) {
+  public String getHTMLLine (String pages) {
     StringBuilder line = new StringBuilder();
 
     // Identify the source type
