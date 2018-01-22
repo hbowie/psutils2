@@ -191,6 +191,11 @@ public class DataFactory {
         LabelWidget dateAddedWidget = new LabelWidget();
         widget = dateAddedWidget;
         break;
+
+      case DataFieldDefinition.PICK_FROM_LIST:
+        TextSelector pickerWidget = new TextSelector();
+        widget = pickerWidget;
+        break;
         
       // Single-line Text Field  
       case DataFieldDefinition.DEFAULT_TYPE:

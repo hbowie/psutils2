@@ -18,6 +18,7 @@ package com.powersurgepub.psutils2.records;
 
   import com.powersurgepub.psutils2.index.*;
   import com.powersurgepub.psutils2.logging.*;
+  import com.powersurgepub.psutils2.notenik.NoteParms;
   import com.powersurgepub.psutils2.strings.*;
   import com.powersurgepub.psutils2.tags.*;
   import com.powersurgepub.psutils2.values.*;
@@ -63,8 +64,9 @@ public class DataFieldDefinition {
   public static final int     CODE_TYPE           = 14;
   public static final int     DATE_ADDED_TYPE     = 15;
   public static final int     WORK_TYPE           = 16;
+  public static final int     PICK_FROM_LIST      = 17;
   
-  public static final int     MAX_TYPE            = 16;
+  public static final int     MAX_TYPE            = 17;
   
   /** 
      If two fields of this type are to be combined, is it OK to do 
@@ -212,8 +214,12 @@ public class DataFieldDefinition {
     else
       if (commonName.equals("work")
           || commonName.equals("worktitle")) {
-      setType(WORK_TYPE);
-    }else {
+        setType(WORK_TYPE);
+      }
+      else
+        if (commonName.equals(NoteParms.WORK_TYPE_COMMON_NAME)) {
+          setType(PICK_FROM_LIST);
+    } else {
       setType(DEFAULT_TYPE);
     }
   }

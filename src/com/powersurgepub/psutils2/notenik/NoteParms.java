@@ -882,6 +882,17 @@ public class NoteParms {
         widgetWithLabel.setLabel(label);
         widgetWithLabel.setWidget(workTitleTextSelector);
         break;
+
+      case DataFieldDefinition.PICK_FROM_LIST:
+        // Generic Text Selector
+        TextSelector textSelector = new TextSelector();
+        label.setLabelFor(textSelector);
+        grid.add(label, 0, row, 1, 1);
+        grid.add(textSelector, 1, row, 1, 1);
+        GridPane.setHgrow(textSelector, Priority.ALWAYS);
+        widgetWithLabel.setLabel(label);
+        widgetWithLabel.setWidget(textSelector);
+        break;
         
       // Date field
       case DataFieldDefinition.DATE_TYPE:

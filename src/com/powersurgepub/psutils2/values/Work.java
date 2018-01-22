@@ -18,6 +18,7 @@ package com.powersurgepub.psutils2.values;
 
   import com.powersurgepub.psutils2.strings.*;
 
+  import com.powersurgepub.psutils2.ui.ValueList;
   import javafx.scene.control.*;
 
 /**
@@ -58,18 +59,20 @@ public class Work
   public  final static int      INTERVIEW       = 6;
   public  final static int      LECTURE         = 7;
   public  final static int      LETTER          = 8;
-  public  final static int      PLAY            = 9;
-  public  final static int      POEM            = 10;
-  public  final static int      PREFACE         = 11;
-  public  final static int      REMARKS         = 12;
-  public  final static int      SERMON          = 13;
-  public  final static int      SONG            = 14;
-  public  final static int      SPEECH          = 15;
-  public  final static int      STORY           = 16;
-  public  final static int      TV_SHOW         = 17;
-  public  final static int      WEBLOG          = 18;
-  public  final static int      WEBPAGE         = 19;
-  public  final static int      SOURCE_TYPE_MAX = 19;
+  public  final static int      PAPER           = 9;
+  public  final static int      PLAY            = 10;
+  public  final static int      POEM            = 11;
+  public  final static int      PREFACE         = 12;
+  public  final static int      PRESENTATION    = 13;
+  public  final static int      REMARKS         = 14;
+  public  final static int      SERMON          = 15;
+  public  final static int      SONG            = 16;
+  public  final static int      SPEECH          = 17;
+  public  final static int      STORY           = 18;
+  public  final static int      TV_SHOW         = 19;
+  public  final static int      WEBLOG          = 20;
+  public  final static int      WEBPAGE         = 21;
+  public  final static int      SOURCE_TYPE_MAX = 21;
 
   public  final static String[] SOURCE_TYPE_LABEL = {
       "unknown",
@@ -82,9 +85,11 @@ public class Work
       "Interview",
       "Lecture",
       "Letter",
+      "Paper",
       "Play",
       "Poem",
       "Preface",
+      "Presentation",
       "Remarks",
       "Sermon",
       "Song",
@@ -114,6 +119,20 @@ public class Work
       box.getItems().add(SOURCE_TYPE_LABEL [i]);
     }
   }
+
+  /**
+    Generate a value list for all of the possible work/source types. The generated value list would normally
+    be supplied to a text selector widget.
+
+    @return A new value list containing all of the possible work/source types.
+   */
+  public static ValueList getWorkTypeValueList() {
+    ValueList workTypes = new ValueList();
+    for (int i = 0; i <= SOURCE_TYPE_MAX; i++) {
+      workTypes.addElement(SOURCE_TYPE_LABEL [i]);
+    }
+    return workTypes;
+  }
   
   /** Creates a new instance of Work */
   public Work() {
@@ -127,7 +146,7 @@ public class Work
   /**
    Set the value from a String. 
   
-   @param value The value as a string. 
+   @param name The value as a string.
   */
   public void set(String name) {
     setName(name);
