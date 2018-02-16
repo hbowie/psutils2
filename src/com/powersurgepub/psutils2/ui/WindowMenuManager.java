@@ -184,7 +184,7 @@ public class WindowMenuManager {
   /**
     Action listener for recent file menu items.
 
-    @param evt = Action event.
+    @param event = Action event.
    */
   private void windowMenuItemActionPerformed(ActionEvent event) {
     MenuItem mItem = (MenuItem) event.getSource();
