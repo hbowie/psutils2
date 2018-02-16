@@ -67,6 +67,7 @@ public class MarkdownLine {
       
       // Let's analyze the front of the line for white space
       // and punctuation.
+      boolean lookForLists = true;
       int spaceCount = 0;
       char c = ' ';
       char c2 = ' ';
@@ -105,6 +106,7 @@ public class MarkdownLine {
           leadingSymbol.setType(c);
           addLeadingSymbol();
           first++;
+          lookForLists = false;
         }
         else
           
@@ -115,11 +117,12 @@ public class MarkdownLine {
             last--;
           }
           first++;
+          lookForLists = false;
         }
         else
           
         // Check for unordered list
-        if (c2 == ' '
+        if (lookForLists && c2 == ' '
             && (c == '*' || c == '-' || c == '+')) {
           leadingSymbol.setUnorderedListItem();
           addLeadingSymbol();
@@ -128,7 +131,7 @@ public class MarkdownLine {
         else
           
         // Check for ordered list
-        if (c2 == '.' && Character.isDigit(c)) {
+        if (lookForLists && c2 == '.' && Character.isDigit(c)) {
           leadingSymbol.setOrderedListItem();
           addLeadingSymbol();
           first++;
@@ -360,7 +363,10 @@ public class MarkdownLine {
           && (! Character.isWhitespace(line.charAt(h + 1)))) {
         id.append("-");
       }
-      if (Character.isLetter(ch)
+      else if (ch == '-') {
+        id.append(ch);
+      }
+      else if (Character.isLetter(ch)
           || Character.isDigit(ch)) {
         id.append(Character.toLowerCase(ch));
       } // end if we have a letter or a digit in the heading
