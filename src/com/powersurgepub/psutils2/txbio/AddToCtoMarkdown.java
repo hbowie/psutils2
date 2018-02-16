@@ -15,6 +15,7 @@
  */
 package com.powersurgepub.psutils2.txbio;
 
+  import com.powersurgepub.psutils2.logging.*;
   import com.powersurgepub.psutils2.mkdown.*;
   import com.powersurgepub.psutils2.textio.*;
 
@@ -47,14 +48,13 @@ public class AddToCtoMarkdown
    @param startHeadingLevel The heading level at which to start generating 
           table of contents entries. This should be the numerically lowest level.
    @param endHeadingLevel The last (numerically highest) heading level for which
-          table of contents entries should be generated. 
-   @throws TransformException If an error occurs. 
+          table of contents entries should be generated.
   */
   public void transformNow(TextLineReader reader, TextLineWriter lineWriter,
       int startHeadingLevel, int endHeadingLevel) 
       // throws TransformException 
       {
-    // System.out.println("AddToCtoMarkdown.transformNow");
+
     this.reader = reader;
     this.lineWriter = lineWriter;
     
@@ -79,8 +79,6 @@ public class AddToCtoMarkdown
       mdLine = mdParser.getNextLine();
     } // end while more markdown lines to process
     
-    // System.out.println("- " + String.valueOf(headings.size()) + " headings found");
-    
     reader.close();
     
     // Second pass -- write output, inserting Table of Contents. 
@@ -100,7 +98,8 @@ public class AddToCtoMarkdown
     }
     lastHeadingLevel = 1;
     mdLine = mdParser.getNextLine();
-    
+
+    boolean tocHeadingFound = false;
     while (mdLine != null) {    
       if (mdLine.getHeadingLevel() > 0) {
         // Heading Line
@@ -111,7 +110,7 @@ public class AddToCtoMarkdown
         
         if (mdLine.isTableOfContentsHeading()) {
           // Generate Table of Contents following table of contents heading
-          // System.out.println("- Table of Contents Heading found");
+          tocHeadingFound = true;
           // writer.writeLine("");
           writer.startDiv("", "toc");
           writer.startUnorderedList("");
@@ -175,6 +174,10 @@ public class AddToCtoMarkdown
       
       mdLine = mdParser.getNextLine();
     } // end while more markdown lines to process
+
+    if (! tocHeadingFound) {
+      Logger.getShared().recordEvent(LogEvent.MEDIUM, "No Table of Contents Heading found", false);
+    }
     
     reader.close();
     writer.close(); 
