@@ -821,14 +821,25 @@ public class NoteParms {
         
       // Status  
       case DataFieldDefinition.STATUS_TYPE:
-        ComboBoxWidget statusText = new ComboBoxWidget();
-        label.setLabelFor(statusText);
-        itemStatusConfig.populateComboBox(statusText);
+        DataWidget statusWidget;
+        if (itemStatusConfig.getAvailableValues() == 2) {
+          CheckBoxWidget checkBoxWidget = new CheckBoxWidget();
+          checkBoxWidget.setStringValues(itemStatusConfig.getClosedString(), itemStatusConfig.getLabel(0));
+          label.setLabelFor(checkBoxWidget);
+          grid.add(checkBoxWidget, 1, row);
+          GridPane.setHgrow(checkBoxWidget, Priority.ALWAYS);
+          statusWidget = checkBoxWidget;
+        } else {
+          ComboBoxWidget statusText = new ComboBoxWidget();
+          itemStatusConfig.populateComboBox(statusText);
+          label.setLabelFor(statusText);
+          grid.add(statusText, 1, row);
+          GridPane.setHgrow(statusText, Priority.ALWAYS);
+          statusWidget = statusText;
+        }
         grid.add(label, 0, row);
-        grid.add(statusText, 1, row);
-        GridPane.setHgrow(statusText, Priority.ALWAYS);
         widgetWithLabel.setLabel(label);
-        widgetWithLabel.setWidget(statusText);
+        widgetWithLabel.setWidget(statusWidget);
         break;
         
       // Complex text field  
