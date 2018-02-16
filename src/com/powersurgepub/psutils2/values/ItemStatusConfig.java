@@ -41,6 +41,8 @@ public class ItemStatusConfig {
   private static ItemStatusConfig sharedConfig = null;
   
   private ArrayList<ItemStatusValue> values;
+
+  private int availableValues = 10;
   
   private int statusLow = 0;
   private int statusHigh = 9;
@@ -103,6 +105,7 @@ public class ItemStatusConfig {
     char c = ' ';
     int num = -1;
     String val = "";
+    int valuesIndex = 0;
     // Process all Integer + String pairs
     while (i < statusValues.length()) {
       // Process next Integer + String pair
@@ -169,7 +172,25 @@ public class ItemStatusConfig {
                 statusValues.substring(startNum, endNum) + 
                 " is not in the range 0 - 9");
           } else {
-            values.set(num, new ItemStatusValue(val));
+            // Disable any intervening value entries not specified in the list
+            while (valuesIndex < num) {
+              ItemStatusValue skippedValue = values.get(valuesIndex);
+              skippedValue.setAvailable(false);
+              valuesIndex++;
+            }
+
+            ItemStatusValue value = new ItemStatusValue();
+            if (val.equalsIgnoreCase("unused")
+                || val.equalsIgnoreCase("not used")
+                || val.equalsIgnoreCase("not available")
+                || val.equalsIgnoreCase("unavailable")) {
+              value.setAvailable(false);
+              value.set(String.valueOf(num) + ": unused");
+            } else {
+              value.set(val);
+            }
+            values.set(num, value);
+            valuesIndex++;
           }
         } catch (NumberFormatException ex) {
           System.out.println (
@@ -179,8 +200,27 @@ public class ItemStatusConfig {
         }
       } // End if we have both a number and a string
     } // End while processing status values
+    countAvailableValues();
+  } // End of set method
 
-  } // End of set methiod
+  /**
+   See how many of the possible values have actually been deemed available.
+   */
+  private void countAvailableValues() {
+    availableValues = 0;
+    for (int i = 0; i < values.size(); i++) {
+      if (values.get(i).isAvailable()) {
+        availableValues++;
+      }
+    }
+  }
+
+  /**
+   Get the number of values actually available for assignment.
+
+   @return The number of status values that are actually available.
+   */
+  public int getAvailableValues() { return availableValues; }
   
   /**
    Look for an Item Status Value that matches the passed label, using only
@@ -224,7 +264,7 @@ public class ItemStatusConfig {
       index = PENDING;
     }
     else
-    if (firstChar == 'c') {
+    if (firstChar == 'c' || firstChar == 'd') {
       index = CLOSED;
     }
     
