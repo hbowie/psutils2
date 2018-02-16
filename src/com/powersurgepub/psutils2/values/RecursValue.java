@@ -261,6 +261,10 @@ public class RecursValue
     }
     return StringDate.COMMON_FORMAT.format(workCal.getTime());
   }
+
+  public int getUnit() { return unit; }
+
+  public int getInterval() { return interval; };
   
   /**
    Does this value have any data stored in it? 
