@@ -35,18 +35,18 @@ public class StringDate
   };
   
   public static final     String[] MONTH_NAMES = {
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
   };
   
   public static final     String[] DAY_OF_WEEK_NAMES = {
