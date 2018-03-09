@@ -40,7 +40,8 @@ package com.powersurgepub.psutils2.textmerge;
 
  @author Herb Bowie
  */
-public class TextMergeTemplate {
+public class TextMergeTemplate
+      implements TextMergeResetter {
 
   private     Window              ownerWindow = null;
   private     DataRecList         list = null;
@@ -121,6 +122,15 @@ public class TextMergeTemplate {
     templateFolder = Home.getShared().getUserHome();
 
     setListOptions();
+  }
+
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset() {
+
   }
 
   public void setList (DataRecList list) {

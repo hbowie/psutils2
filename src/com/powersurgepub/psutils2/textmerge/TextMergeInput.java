@@ -45,7 +45,8 @@ package com.powersurgepub.psutils2.textmerge;
 
  @author Herb Bowie
  */
-public class TextMergeInput {
+public class TextMergeInput
+      implements TextMergeResetter {
   
   private   static  final String  MIME_TYPE = "mimetype";
   
@@ -260,6 +261,14 @@ public class TextMergeInput {
     } else {
       openEmpty();
     }
+  }
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset() {
+
   }
 
   public void setList (DataRecList dataRecList) {
@@ -741,7 +750,9 @@ public class TextMergeInput {
       chooseAndOpenDirectory();
     }
     else
-    if (inputModule instanceof TextMergeInputNotenik) {
+    if (inputModule instanceof TextMergeInputNotenik
+        || inputModule instanceof TextMergeInputDirectory
+        || inputModule instanceof TextMergeInputDirEntry) {
       chooseAndOpenDirectory();
     } else {
       chooseAndOpenFile();

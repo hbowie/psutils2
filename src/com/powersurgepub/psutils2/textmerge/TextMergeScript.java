@@ -41,7 +41,7 @@ package com.powersurgepub.psutils2.textmerge;
   @author Herb Bowie
  */
 public class TextMergeScript
-    implements FileSpecOpener {
+    implements FileSpecOpener, TextMergeResetter {
 
   /** Default file extension for script files. */
   public		static	final String  SCRIPT_EXT       = "tcz";
@@ -49,6 +49,10 @@ public class TextMergeScript
   public    static  final String  AUTOPLAY         = "autoplay";
   
   private     Window              ownerWindow;
+
+  private     TextMergeController textMergeController;
+
+  private     int                 scriptsPlayed = 0;
 
   private     boolean             quietMode = true;
   private     boolean             tabSet = false;
@@ -128,9 +132,10 @@ public class TextMergeScript
   private     String              easyPlay = "";
   private     File                easyPlayFolder = null;
 
-  public TextMergeScript (Window ownerWindow, DataRecList list) {
+  public TextMergeScript (Window ownerWindow, DataRecList list, TextMergeController textMergeController) {
     this.ownerWindow = ownerWindow;
     this.list = list;
+    this.textMergeController = textMergeController;
     setListOptions();
   }
 
@@ -480,10 +485,26 @@ public class TextMergeScript
 		scriptTab.setClosable(false);
   } // end method buildUI
 
+  /**
+   Clear the script text.
+   */
+  private void resetScriptText() {
+    scriptText = new StringBuilder();
+    scriptTextArea.setText(scriptText.toString());
+  }
+
 	private void appendScriptText(String text) {
 		scriptText.append(text);
 		scriptTextArea.setText(scriptText.toString());
 	}
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset() {
+    resetScriptText();
+  }
 
 
   private void setListOptions() {
@@ -946,7 +967,7 @@ public class TextMergeScript
   /**
     Standard way to respond to a request to open a file.
 
-    @param file File to be opened by this application.
+    @param fileSpec File to be opened by this application.
    */
   public void handleOpenFile (FileSpec fileSpec) {
     playScript (fileSpec.getFile());
@@ -964,6 +985,9 @@ public class TextMergeScript
      Plays back a script file that has already been recorded.
    */
   private void playScript() {
+    if (scriptsPlayed > 0) {
+      textMergeController.textMergeReset();
+    }
     Logger.getShared().recordEvent (LogEvent.NORMAL,
         "Playing script " + inScript.toString(),
         false);
@@ -1061,6 +1085,7 @@ public class TextMergeScript
     } // end while more script commands
     inScript.close();
     scriptPlaying = false;
+    scriptsPlayed++;
     appendScriptText ("Playback stopped" + GlobalConstants.LINE_FEED_STRING);
     resetOptions();
     setScriptReplayControls();

@@ -37,7 +37,8 @@ package com.powersurgepub.psutils2.textmerge;
 
  @author Herb Bowie
  */
-public class TextMergeOutput {
+public class TextMergeOutput
+      implements TextMergeResetter {
 
   private     Window              ownerWindow = null;
   private     DataRecList         list = null;
@@ -95,6 +96,15 @@ public class TextMergeOutput {
     this.list = list;
     this.textMergeController = textMergeController;
     this.textMergeScript = textMergeScript;
+  }
+
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset() {
+
   }
 
   public void setList (DataRecList list) {

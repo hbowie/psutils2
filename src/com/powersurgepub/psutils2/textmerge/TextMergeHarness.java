@@ -79,7 +79,6 @@ public class TextMergeHarness
      Play a script.
    
      @param script    Name of script file to be played.
-     @param logOutput Output destination for log messages.
    */
 	public static void playScript (String script) {
     TextMergeHarness textMerge = TextMergeHarness.getShared();
@@ -142,6 +141,13 @@ public class TextMergeHarness
       textMergeScript.setScriptExecutor(executor);
     }
   }
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset() {
+  }
   
   public void enableInputModule(boolean inputModule) {
     this.inputModule = inputModule;
@@ -159,7 +165,7 @@ public class TextMergeHarness
     }
     
     if (textMergeScript == null) {
-      textMergeScript   = new TextMergeScript(passedWindow, list);
+      textMergeScript   = new TextMergeScript(passedWindow, list, this);
 
       if (list instanceof DataRecList) {
         if (controller == null) {

@@ -40,5 +40,12 @@ public interface TextMergeController {
            available. 
   */
   public boolean isListAvailable();
+
+
+  /**
+   Let's reset as many variables as we can to restore the
+   text merge state to its original condition.
+   */
+  public void textMergeReset();
   
 }
