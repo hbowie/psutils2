@@ -215,7 +215,7 @@ public class TemplateLine {
      
      @param inString   this is the text line itself
      
-     @param inTemplate  this is the Template object to which this line
+     @param templateUtil   this is the Template object to which this line
                         belongs.
    */
   public TemplateLine (String inString, TemplateUtil templateUtil) {
