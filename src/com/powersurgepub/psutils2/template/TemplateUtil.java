@@ -887,7 +887,7 @@ public class TemplateUtil {
   /**
      Includes the contents of the named include file into the output file stream. 
     
-     @param includeFileName Name of the text file to be included.
+     @param includeFileNameStr Name of the text file to be included.
      @param includeParm     Optional parameter to modify how the include
                             file is processed. 
                             * copy - indicates the include file should be copied
@@ -1252,6 +1252,11 @@ public class TemplateUtil {
           boolean linkedTags = false;
           boolean replaceAgain = false;
           boolean summary = false;
+          boolean vary = false;
+          char varyDelim = ' ';
+          StringBuilder varyBuf = new StringBuilder();
+          String varyFrom = "";
+          String varyTo = "";
           String formatString;
           
           boolean demarcation = false;
@@ -1268,6 +1273,22 @@ public class TemplateUtil {
               char workChar = str.charAt (i);
               if (formatStringFound) {
                 formatStringBuf.append (workChar);
+              } else
+              if (vary) {
+                if (varyDelim == ' ') {
+                  varyDelim = workChar;
+                } else
+                if (workChar == varyDelim && varyBuf.length() > 1) {
+                  varyFrom = varyBuf.toString();
+                  varyBuf = new StringBuilder();
+                  varyTo = "";
+                } else {
+                  varyBuf.append(workChar);
+                  varyTo = varyBuf.toString();
+                }
+              } else
+              if (Character.toLowerCase(workChar) == 'v') {
+                vary = true;
               } else
               if (Character.toLowerCase (workChar) == 'c') {
                 demarcation = true;
@@ -1599,6 +1620,23 @@ public class TemplateUtil {
           if (emailPunctuation) {
             replaceData = emailQuotes(replaceData);
           }
+
+          if (vary && (varyFrom.length() > 0)) {
+            StringBuilder varyStr = new StringBuilder(replaceData);
+            int i = 0;
+            while ((i >= 0) && (i < varyStr.length())) {
+              int start = i;
+              i = varyStr.indexOf(varyFrom, start);
+              if (i < 0) {
+                // We're done
+              } else {
+                varyStr.delete(i, (i + varyFrom.length()));
+                varyStr.insert(i, varyTo);
+                i = i + varyTo.length();
+              }
+            } // End while searching for variances
+            replaceData = varyStr.toString();
+          } // End if we found a variance modifier
           
           // now perform the variable replacement
           if (replaceData != null) {
