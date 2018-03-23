@@ -206,12 +206,16 @@ public class NoteCollectionTemplate
       }
       
       int highestFieldPosition = 0;
+      boolean dateAddedExplicit = false;
       if (templateFound) {
         RecordDefinition recDef = templateIO.getRecDef();
         for (int i = 0; i < recDef.getNumberOfFields(); i++) {
           DataFieldDefinition fieldDef = recDef.getDef(i);
           if (fieldDef.getProperName().equalsIgnoreCase(NoteParms.AUTHOR_INFO)) {
             quoteTemplate = true;
+          }
+          if (fieldDef.getProperName().equalsIgnoreCase(NoteParms.DATE_ADDED_FIELD_NAME)) {
+            dateAddedExplicit = true;
           }
           logNormal("  " + String.valueOf(i + 1) + ". " 
               + fieldDef.getProperName() + " ("
@@ -245,6 +249,7 @@ public class NoteCollectionTemplate
         templateParms = new NoteParms(NoteParms.DEFINED_TYPE);
         templateParms.setRecDef(templateIO.getRecDef());
         templateParms.setPreferredFileExt(fileExt);
+        templateParms.setDateAddedExplicit(dateAddedExplicit);
         templateParms.setItemStatusConfig(templateIO.getNoteParms().getItemStatusConfig());
       } // end if template found
     }// end if ok

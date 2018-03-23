@@ -214,8 +214,8 @@ public class Note
         setIndex(fromValue.toString());
       }
       else
-        if (NoteParms.isDateAdded(fromCommon)) {
-          setDateAdded(fromValue.toString());
+      if (NoteParms.isDateAdded(fromCommon)) {
+        setDateAdded(fromValue.toString());
       }
       else
       if (NoteParms.isCode(fromCommon)) {

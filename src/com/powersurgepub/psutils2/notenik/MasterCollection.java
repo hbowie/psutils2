@@ -92,8 +92,9 @@ public class MasterCollection {
   /**
    Let's load all available info about recently opened collections. 
   */
-  public void load() {
-    recentFiles.loadFromPrefs();
+  public void load(boolean purgeRecentFilesAtStartup) {
+
+    recentFiles.loadFromPrefs(purgeRecentFilesAtStartup);
     
     if (hasMasterCollection()) {
       try {
@@ -102,13 +103,23 @@ public class MasterCollection {
         while (note != null) {
           File noteLinkFile = note.getLinkAsFile();
           if (noteLinkFile != null) {
-            FileSpec spec = recentFiles.get(note.getLinkAsFile());
-            if (spec == null) {
-              spec = new FileSpec(note.getLinkAsFile());
-              spec.setCollectionTitle(note.getTitle());
-              recentFiles.addNotSoRecentFile(spec);
+            if (purgeRecentFilesAtStartup && (! noteLinkFile.exists())) {
+              File noteFile = new File(note.getDiskLocation());
+              noteFile.delete();
             } else {
-              recentFiles.modRecentFile(noteLinkFile, note.getTitle());
+              FileSpec spec = recentFiles.get(note.getLinkAsFile());
+              if (spec == null) {
+                spec = new FileSpec(note.getLinkAsFile());
+                spec.setCollectionTitle(note.getTitle());
+                spec.setMasterNoteMatched(true);
+                recentFiles.addNotSoRecentFile(spec);
+              } else if (spec.isMasterNoteMatched()) {
+                File noteFile = new File(note.getDiskLocation());
+                noteFile.delete();
+              } else {
+                spec.setMasterNoteMatched(true);
+                recentFiles.modRecentFile(noteLinkFile, note.getTitle());
+              }
             }
           }
           note = masterIO.readNextNote();
@@ -120,7 +131,10 @@ public class MasterCollection {
       }
     }
   }
-  
+
+  /**
+    Purge files that don't exist.
+   */
   public void purgeInaccessibleFiles() {
     recentFiles.purgeInaccessibleFiles();
   }

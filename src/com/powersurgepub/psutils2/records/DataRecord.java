@@ -123,7 +123,7 @@ public class DataRecord
      @return Column number of field added or updated.
     
      @param  recDef Definition to be used for this record.
-     @param  name   Name of the field to be added or updated.
+     @param  fieldDef   Name of the field to be added or updated.
      @param  data   Data value to be added or updated.
    */
   public int storeField (RecordDefinition recDef, DataFieldDefinition fieldDef, String data) {
@@ -163,8 +163,7 @@ public class DataRecord
      @return Column number of field added or updated.
     
      @param  recDef Definition to be used for this record.
-     @param  name   Name of the field to be added or updated.
-     @param  data   Data value to be added or updated.
+     @param  field   Name and data of the field to be added or updated.
    */
   public int storeField (RecordDefinition recDef, DataField field) {
 
@@ -464,7 +463,7 @@ public class DataRecord
   /**
    Compare this ClubEvent object to another, using the key field(s) for comparison.
  
-   @param The second object to compare to this one.
+   @param obj2 The second object to compare to this one.
  
    @return A number less than zero if this object is less than the second,
            a number greater than zero if this object is greater than the second,
@@ -480,7 +479,7 @@ public class DataRecord
   /**
    Compare one item to another, for sequencing purposes.
 
-   @param  The second object to be compared to this one.
+   @param  obj2 The second object to be compared to this one.
    @return A negative number if this item is less than the passed
            item, zero if they are equal, or a positive number if
            this item is greater.

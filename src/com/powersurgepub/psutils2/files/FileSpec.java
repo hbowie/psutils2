@@ -76,6 +76,7 @@ public class FileSpec {
   private             String syncPrefix = "";
   private             String lastTitle = "";
   private             int    noteSortParm = 0;
+  private             boolean masterNoteMatched = false;
 
   /**
    Construct a FileSpec without any data.
@@ -831,6 +832,14 @@ public class FileSpec {
   
   public String getCollectionTitle() {
     return collectionTitle;
+  }
+
+  public void setMasterNoteMatched(boolean masterNoteMatched) {
+    this.masterNoteMatched = masterNoteMatched;
+  }
+
+  public boolean isMasterNoteMatched() {
+    return masterNoteMatched;
   }
   
   public String toString() {

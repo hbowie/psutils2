@@ -390,6 +390,17 @@ public class FilePrefs
     purgeInaccessiblePref 
         = purgeWhenComboBox.getSelectionModel().getSelectedIndex();
   }
+
+  /**
+   Set a new essential file spec.
+
+   @param essentialFileSpec
+   */
+  public void setEssentialFileSpec (FileSpec essentialFileSpec) {
+    essentialPath = essentialFileSpec.getPath();
+    setEssentialSelection();
+    UserPrefs.getShared().setPref(ESSENTIAL_PATH, essentialPath);
+  }
   
   /**
    Set the essential combo box selection to reflect the current value of 
@@ -721,7 +732,7 @@ public class FilePrefs
   /**
    Set combo box index programmatically. 
   
-   @param specified index
+   @param i specified index
   */
   private void setEssentialIndex(int i) {
     essentialUserSelection = false;
@@ -859,8 +870,7 @@ public class FilePrefs
   /**
    Remove older backup files or folders. 
   
-   @param backupFolder The folder containing all the backups.
-   @param fileNameWithoutDate The file name, without any date. 
+   @param backupInfo The folder containing all the backups.
   
    @return The number of backups pruned. 
   */

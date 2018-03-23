@@ -60,6 +60,8 @@ public class NoteParms {
   
   public static final String  DEFAULT_FILE_EXT = "txt";
   private    String           preferredFileExt    = DEFAULT_FILE_EXT;
+
+  private    boolean          dateAddedExplicit = false;
   
   private    boolean          metadataAsMarkdown = true;
   
@@ -297,6 +299,24 @@ public class NoteParms {
   */
   public boolean isTemplate() {
     return isTemplate;
+  }
+
+  /**
+   Should we maintain an explicit date added for this collection of notes?
+
+   @param dataAddedExplicit Yes or no; true or false.
+   */
+  public void setDateAddedExplicit(boolean dataAddedExplicit) {
+    this.dateAddedExplicit = dataAddedExplicit;
+  }
+
+  /**
+   Should we maintain an explicit date added for this collection of notes?
+
+   @return True if yes; false if no.
+   */
+  public boolean isDateAddedExplicit() {
+    return dateAddedExplicit;
   }
   
   /**

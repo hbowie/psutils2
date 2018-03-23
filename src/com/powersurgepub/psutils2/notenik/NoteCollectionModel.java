@@ -207,6 +207,9 @@ public class NoteCollectionModel {
     if (master.hasMasterCollection()) {
       File masterFile = master.getMasterCollectionFolder();
       FileSpec masterSpec = master.getFileSpec(masterFile);
+      if (masterSpec == null) {
+        masterSpec = new FileSpec(masterFile);
+      }
       String errMsg = folderError(masterFile);
       if (errMsg == null) {
         close();
@@ -233,9 +236,7 @@ public class NoteCollectionModel {
   }
   
   /**
-   Open a collection. 
-  
-   @return True if everything worked out ok. 
+   Begin opening a collection.
   */
   public void openStart(FileSpec fileSpec, boolean taggedOnly) {
     
@@ -256,7 +257,12 @@ public class NoteCollectionModel {
     template = new NoteCollectionTemplate(fileSpec.getFile());
     quoteCollection = template.isQuoteTemplate();
   }
-  
+
+  /**
+   Finish opening a collection.
+
+   @return True if everything worked out ok.
+   */
   public boolean openFinish() {
     
     boolean openOK = true;
@@ -610,6 +616,9 @@ public class NoteCollectionModel {
     Note newNote = new Note(getRecDef());
     int newID = list.size();
     newNote.setCollectionID(newID);
+    if (noteIO.getNoteParms().isDateAddedExplicit()) {
+      newNote.setDateAdded(StringDate.getNowYMDHMS());
+    }
     return newNote;
   }
   

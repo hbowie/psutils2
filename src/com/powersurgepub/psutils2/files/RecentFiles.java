@@ -133,38 +133,46 @@ public class RecentFiles {
   /**
    Load the recent files from the user's preferences.
    */
-  public void loadFromPrefs () {
-    
+  public void loadFromPrefs (boolean purgeRecentFilesAtStartup) {
+
     int j = 0;
     for (int i = 0; i < recentFilesMax; i++) {
       FileSpec recentFile = new FileSpec();
       recentFile.loadFromRecentPrefs(prefsQualifier, i);
       if (recentFile.hasPath()) {
-        int k = 0;
-        boolean found = false;
-        while (k < files.size() && (! found)) {
-          if (recentFile.getPath().equals(get(k).getPath())) {
-            found = true;
-          } else {
-            k++;
+        if (purgeRecentFilesAtStartup && (! recentFile.exists())) {
+          // System.out.println("  " + recentFile.toString() + " dropped because it no longer exists");
+        } else {
+          int k = 0;
+          boolean found = false;
+          while (k < files.size() && (!found)) {
+            if (recentFile.getPath().equals(get(k).getPath())) {
+              found = true;
+            } else {
+              k++;
+            }
           }
-        }
-        if (! found) {
-          files.add(recentFile);
-  
-          if (recentFilesMenu != null) {
-            recentFilesMenu.getItems().add (j, createMenuItem(recentFile));
-          }
-          j++;
+          if (!found) {
+            files.add(recentFile);
 
-          if (filePrefs != null) {
-            filePrefs.addRecentFileAtEnd(recentFile);
+            if (recentFilesMenu != null) {
+              recentFilesMenu.getItems().add(j, createMenuItem(recentFile));
+            }
+            j++;
+
+            if (filePrefs != null) {
+              filePrefs.addRecentFileAtEnd(recentFile);
+            }
           }
-        }
-      }
-    }
+        } // end if file exists or we want to load it anyway
+      } // end if the file spec has a path
+    } // end for each recent file
+
   }
-  
+
+  /**
+   Purge files that don't exist.
+   */
   public void purgeInaccessibleFiles () {
     
     int i = 0;
@@ -256,9 +264,8 @@ public class RecentFiles {
   /**
    Add a file that's been recently used.
 
-   @param type   A string indicating the type of file or data store.
-   @param path   The path of the file or data store.
-   @param format The format of the data within the data store. 
+   @param recentFile   The spec for the file.
+
    */
   public FileSpec addRecentFile (FileSpec recentFile) {
 

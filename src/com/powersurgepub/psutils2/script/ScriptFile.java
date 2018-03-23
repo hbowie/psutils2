@@ -69,9 +69,9 @@ public class ScriptFile {
   /**
      A constructor that accepts a path and file name.
     
-     @param path      A path to the directory containing the file.
+     @param inPath      A path to the directory containing the file.
     
-     @param fileName  The file name itself (without path info).
+     @param inFileName  The file name itself (without path info).
    
      @param templateLibrary The location of the template library.
    */

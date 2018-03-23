@@ -91,6 +91,7 @@ public class TextMergeInput
   private     TextMergeInputMetaMarkdown inMarkdown = new TextMergeInputMetaMarkdown();
   private     TextMergeInputNotenik inNotenik = new TextMergeInputNotenik();
   private     TextMergeInputMacApps inMacApps = new TextMergeInputMacApps();
+  private     TextMergeInputVCard   inVCard   = new TextMergeInputVCard();
   
   private     int                   inputModuleIndex = 0;
   
@@ -230,6 +231,7 @@ public class TextMergeInput
     insertAt = addInputModule(inNotenik, insertAt);
     // insertAt = addInputModule(inOutline, insertAt);
     // insertAt = addInputModule(inMail, insertAt);
+    insertAt = addInputModule(inVCard, insertAt);
     insertAt = addInputModule(inXML, insertAt);
     // insertAt = addInputModule(inYAML, insertAt);
     insertAt = addInputModule(inYojimbo, insertAt);

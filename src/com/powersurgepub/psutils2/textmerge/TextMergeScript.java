@@ -353,7 +353,7 @@ public class TextMergeScript
     recentScriptsMenu = new Menu ("Play Recent Script");
     scriptMenu.getItems().add(recentScriptsMenu);
     recentScripts = new RecentFiles("recentscript");
-    recentScripts.loadFromPrefs();
+    recentScripts.loadFromPrefs(false);
     recentScripts.setRecentFilesMax(10);
     recentScripts.registerMenu(recentScriptsMenu, this);
 

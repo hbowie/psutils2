@@ -459,6 +459,8 @@ public class NoteIO
         if (nextDirEntry.equalsIgnoreCase("templates")
             || nextDirEntry.equalsIgnoreCase("publish")
             || nextDirEntry.equalsIgnoreCase("reports")
+            || nextDirEntry.equalsIgnoreCase("files")
+            || nextDirEntry.equalsIgnoreCase("images")
             || currDirDepth >= maxDepth) {
           // skip
         } else {
