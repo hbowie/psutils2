@@ -35,6 +35,9 @@ public class BackupInfo {
   
   public static final DateFormat  BACKUP_DATE_FORMATTER 
       = new SimpleDateFormat ("yyyy-MM-dd-HH-mm");
+  public static final DateFormat  LOG_DATE_FORMATTER
+      = new SimpleDateFormat("yyyy MMM dd HH:mm");
+  public static final String      LOG_FILE_NAME = "- Backup Log.txt";
   
   private Date          date = new Date();
   
@@ -47,6 +50,9 @@ public class BackupInfo {
   private int           backupsToKeep = 0;
   private boolean       okSoFar = true;
   private boolean       backupSuccess = false;
+
+  private ArrayList<String> logLines = new ArrayList<String>();
+  private File          logFile = null;
   
   /**
    Construct a new occurrence. The backup date and time are set at this point. 
@@ -133,7 +139,35 @@ public class BackupInfo {
    @param backupFolder The folder in which the backup is to be stored. 
   */
   public void setBackupFolder(File backupFolder) {
+
     this.backupFolder = backupFolder;
+    if (backupFolder != null
+      && backupFolder.exists()
+      && backupFolder.isDirectory()
+      && backupFolder.canRead()
+      && backupFolder.canWrite()) {
+      logFile = new File(backupFolder, LOG_FILE_NAME);
+      if (logFile != null
+          && logFile.exists()
+          && logFile.isFile()
+          && logFile.canRead()
+          && logFile.canWrite()) {
+        try {
+          FileReader fileReader = new FileReader(logFile);
+          BufferedReader reader = new BufferedReader(fileReader);
+          String line = reader.readLine();
+          while (line != null) {
+            logLines.add(line);
+            line = reader.readLine();
+          }
+          reader.close();
+        } catch (IOException e) {
+          System.out.println("I/O Error reading input log file");
+        }
+      }
+    }
+
+
   }
   
   /**
@@ -203,7 +237,8 @@ public class BackupInfo {
     if (okSoFar) {
       try {
         String sourcePath = source.getAbsolutePath();
-        FileOutputStream fileOut = new FileOutputStream(getBackupFile());
+        File backupFile = getBackupFile();
+        FileOutputStream fileOut = new FileOutputStream(backupFile);
         ZipOutputStream  zipOut  = new ZipOutputStream(fileOut);
         ArrayList<File> fromDirList = new ArrayList<>();
         fromDirList.add (source);
@@ -250,6 +285,10 @@ public class BackupInfo {
         zipOut.close();
         fileOut.close();
         backupSuccess = true;
+        Date rightNow = new Date();
+        logLines.add(0,
+            LOG_DATE_FORMATTER.format(rightNow) +
+                " Backed Up To " + backupFile.toString());
       } catch (IOException e) {
         okSoFar = false;
         Logger.getShared().recordEvent(LogEvent.MEDIUM, 
@@ -300,9 +339,34 @@ public class BackupInfo {
             false);
         pruned++;
         backups.remove(backups.size() - 1);
+        Date rightNow = new Date();
+        logLines.add(0,
+            LOG_DATE_FORMATTER.format(rightNow) +
+            " Deleted " + toDeleteFile.toString());
       }
     } // if we have a backups to keep number
     return pruned;
+  }
+
+  /**
+   Backup task(s) complete.
+   */
+  public void backupsComplete() {
+    if (logFile != null) {
+      try {
+        FileWriter fileWriter = new FileWriter(logFile);
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+        int i = 0;
+        while (i < 100 && i < logLines.size()) {
+          writer.write(logLines.get(i));
+          writer.newLine();
+          i++;
+        }
+        writer.close();
+      } catch (IOException e) {
+        System.out.println("I/O Exception writing backup log");
+      }
+    }
   }
   
   /**

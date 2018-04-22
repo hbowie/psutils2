@@ -1549,6 +1549,12 @@ public class NoteCollectionModel {
     BackupInfo backupInfo = getBackupInfo();
     if (open) {
       backupInfo.backupToZip();
+      if (backupInfo.okSoFar()) {
+        setBackupFolder(backupInfo.getBackupFolder());
+        saveLastBackupDate();
+        backupInfo.pruneBackups();
+        backupInfo.backupsComplete();
+      }
     }
     return backupInfo.backupSuccess();
   }
@@ -1592,7 +1598,14 @@ public class NoteCollectionModel {
         lastBackupFolder = new File(lastBackupFolderStr);
       }
     }
+
+    File masterBackupFolder = filePrefs.getMasterBackupFolder();
+
     File backupFolder;
+    if (goodFolder(masterBackupFolder)) {
+      backupFolder = masterBackupFolder;
+    }
+    else
     if (goodFolder(lastBackupFolder)) {
       backupFolder = lastBackupFolder;
     }

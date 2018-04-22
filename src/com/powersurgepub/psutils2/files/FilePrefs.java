@@ -35,7 +35,14 @@ package com.powersurgepub.psutils2.files;
   import javafx.stage.*;
 
 /**
- 
+ This class provides a UI that can used to update various preferences concerning the
+ handling of files.
+
+ This class also loads and stores the file preferences to provide
+ persistence between sessions.
+
+ This class also provides access to these file preferences, for use by other classes.
+
  @author Herb Bowie
  */
 public class FilePrefs 
@@ -48,6 +55,8 @@ public class FilePrefs
   public static final String AUTOMATIC_BACKUPS            = "automatic-backups";
   public static final String LAST_BACKUP_DATE             = "last-backup-date";
   public static final String NO_DATE                      = "no-date";
+
+  public static final String MASTER_BACKUP_FOLDER         = "master-backup-folder";
   
   public static final String BACKUPS_TO_KEEP              = "backups-to-keep";
   
@@ -83,6 +92,8 @@ public class FilePrefs
   private static  FilePrefs        filePrefs = null;
   
   private         AppToBackup       appToBackup;
+
+  private         Window            refWindow;
   
   private         RecentFiles       recentFiles = null;
   
@@ -102,6 +113,11 @@ public class FilePrefs
   private RadioButton manualBackupsButton = new RadioButton("Manual Only");
   private RadioButton occasionalBackupsButton = new RadioButton("Occasional Suggestions");
   private RadioButton automaticBackupsButton = new RadioButton("Automatic Backups");
+
+  private Label       backupFolderLabel     = new Label("Master Backup Folder:");
+  private Button      backupFolderButton    = new Button("Select...");
+  private TextField   backupFolderTextField = new TextField("");
+
   private Label       backupsToKeepLabel    = new Label("Backups to Keep:");
   private TextField   backupsToKeepTextField  = new TextField();
   private Slider      backupsToKeepSlider     = new Slider(0.0, 25.0, 5.0);
@@ -123,9 +139,9 @@ public class FilePrefs
 
   @return A single, shared instance of FilePrefs.
  */
-  public static FilePrefs getShared(AppToBackup appToBackup) {
+  public static FilePrefs getShared(AppToBackup appToBackup, Window refWindow) {
     if (filePrefs == null) {
-      filePrefs = new FilePrefs(appToBackup);
+      filePrefs = new FilePrefs(appToBackup, refWindow);
     }
     return filePrefs;
   }
@@ -143,17 +159,19 @@ public class FilePrefs
   }
   
   /** Creates new form FilePrefs */
-  public FilePrefs(AppToBackup appToBackup) {
+  public FilePrefs(AppToBackup appToBackup, Window refWindow) {
     
     this.appToBackup = appToBackup;
+    this.refWindow = refWindow;
     
     // Set spacing between components
     grid.setPadding(new Insets(10));
     grid.setHgap(10);
     grid.setVgap(10);
    
-    // First row
-    grid.add(backupFrequencyLabel, 0, 0, 1, 1);
+    // Backup Frequency
+    int rowIndex = 0;
+    grid.add(backupFrequencyLabel, 0, rowIndex, 1, 1);
     
     manualBackupsButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -181,16 +199,27 @@ public class FilePrefs
     
     backupFrequencyGroup.getToggles().addAll
       (manualBackupsButton, occasionalBackupsButton, automaticBackupsButton);
-    grid.add(manualBackupsButton, 1, 0, 2, 1);
+    grid.add(manualBackupsButton, 1, rowIndex, 2, 1);
+    rowIndex++;
     
-    // Second Row
-    grid.add(occasionalBackupsButton, 1, 1, 2, 1);
+    // Occasional Backups
+    grid.add(occasionalBackupsButton, 1, rowIndex, 2, 1);
+    rowIndex++;
     
-    // Third Row
-    grid.add(automaticBackupsButton, 1, 2, 2, 1);
+    // Automatic Backups
+    grid.add(automaticBackupsButton, 1, rowIndex, 2, 1);
+    rowIndex++;
+
+    // Master Backups Folder
+    grid.add(backupFolderLabel, 0, rowIndex, 1, 1);
+    grid.add(backupFolderButton, 1, rowIndex, 1, 1);
+    backupFolderButton.setOnAction(e -> selectMasterBackupFolder());
+    grid.add(backupFolderTextField, 2, rowIndex, 1, 1);
+    GridPane.setHgrow(backupFolderTextField, Priority.ALWAYS);
+    rowIndex++;
     
-    // Fourth Row
-    grid.add(backupsToKeepLabel, 0, 3, 1, 1);
+    // Number of Backups to Keep
+    grid.add(backupsToKeepLabel, 0, rowIndex, 1, 1);
     backupsToKeepTextField.setAlignment(Pos.CENTER_RIGHT);
     backupsToKeepTextField.setPrefColumnCount(5);
     backupsToKeepTextField.setText("5");
@@ -208,7 +237,7 @@ public class FilePrefs
           backupsToKeepTextFieldFocusChanged(newValue);
     });
 
-    grid.add(backupsToKeepTextField, 1, 3, 1, 1);
+    grid.add(backupsToKeepTextField, 1, rowIndex, 1, 1);
     
     backupsToKeepSlider.setShowTickLabels(true);
     backupsToKeepSlider.setShowTickMarks(true);
@@ -224,11 +253,12 @@ public class FilePrefs
       }
     });
 
-    grid.add(backupsToKeepSlider, 2, 3, 1, 1);
+    grid.add(backupsToKeepSlider, 2, rowIndex, 1, 1);
     GridPane.setHgrow(backupsToKeepSlider, Priority.ALWAYS);
+    rowIndex++;
     
-    // Fifth Row
-    grid.add(startupLabel, 0, 4, 1, 1);
+    // What to Open at Startup
+    grid.add(startupLabel, 0, rowIndex, 1, 1);
     startupComboBox.getItems().addAll("Nothing", "Last File Opened");
     startupComboBox.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -236,10 +266,11 @@ public class FilePrefs
         startupComboBoxActionPerformed(evt);
       }
     });
-    grid.add(startupComboBox, 1, 4, 2, 1);
+    grid.add(startupComboBox, 1, rowIndex, 2, 1);
+    rowIndex++;
     
-    // Sixth Row
-    grid.add(essentialLabel, 0, 5, 1, 1);
+    // Essential Shortcut Assignment
+    grid.add(essentialLabel, 0, rowIndex, 1, 1);
     essentialComboBox.getItems().add("Nothing");
     essentialComboBox.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -247,10 +278,11 @@ public class FilePrefs
         essentialComboBoxActionPerformed(evt);
       }
     });
-    grid.add(essentialComboBox, 1, 5, 2, 1);
+    grid.add(essentialComboBox, 1, rowIndex, 2, 1);
+    rowIndex++;
     
-    // Seventh Row
-    grid.add(purgeWhenLabel, 0, 6, 1, 1);
+    // When to Purge Inaccessible Files
+    grid.add(purgeWhenLabel, 0, rowIndex, 1, 1);
     purgeWhenComboBox.getItems().addAll("Never", "Now", "At startup");
     purgeWhenComboBox.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -258,10 +290,11 @@ public class FilePrefs
         purgeWhenComboBoxActionPerformed(evt);
       }
     });
-    grid.add(purgeWhenComboBox, 1, 6, 2, 1);
+    grid.add(purgeWhenComboBox, 1, rowIndex, 2, 1);
+    rowIndex++;
     
-    // Eighth Row
-    grid.add(recentLabel, 0, 7, 1, 1);
+    // Number of Recent Files to Keep
+    grid.add(recentLabel, 0, rowIndex, 1, 1);
     recentFilesMaxTextField.setAlignment(Pos.CENTER_RIGHT);
     recentFilesMaxTextField.setPrefColumnCount(5);
     recentFilesMaxTextField.setText("5");
@@ -279,7 +312,7 @@ public class FilePrefs
         (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
           recentFilesMaxTextFieldFocusChanged(newValue);
     });
-    grid.add(recentFilesMaxTextField, 1, 7, 1, 1);
+    grid.add(recentFilesMaxTextField, 1, rowIndex, 1, 1);
     
     recentFilesMaxSlider.setShowTickLabels(true);
     recentFilesMaxSlider.setShowTickMarks(true);
@@ -295,11 +328,13 @@ public class FilePrefs
       }
     });
     
-    grid.add(recentFilesMaxSlider, 2, 7, 1, 1);
+    grid.add(recentFilesMaxSlider, 2, rowIndex, 1, 1);
     GridPane.setHgrow(recentFilesMaxSlider, Priority.ALWAYS);
+    rowIndex++;
     
-    // Ninth Row
-    grid.add(msgToUser, 0, 8, 3, 1);
+    // Message to User
+    grid.add(msgToUser, 0, rowIndex, 3, 1);
+    rowIndex++;
     
     tab.setContent(grid);
     tab.setClosable(false);
@@ -330,6 +365,12 @@ public class FilePrefs
       automaticBackupsButton.setSelected(true);
     } else {
       occasionalBackupsButton.setSelected(true);
+    }
+
+    // Load Master Backup Folder
+    String masterBackupFolder = UserPrefs.getShared().getPref(MASTER_BACKUP_FOLDER, "");
+    if (masterBackupFolder != null && masterBackupFolder.length() > 0) {
+      backupFolderTextField.setText(masterBackupFolder);
     }
     
     // Load number of backups to keep
@@ -527,6 +568,74 @@ public class FilePrefs
     }
     essentialUserSelection = true;
   }
+
+  /**
+   Let the user tell us where to keep all the backup files.
+   */
+  private void selectMasterBackupFolder() {
+    DirectoryChooser folderChooser = new DirectoryChooser();
+    folderChooser.setTitle("Specify Location for Master Backup Folder");
+    /* if (textMergeScript.hasCurrentDirectory()) {
+      folderChooser.setInitialDirectory (textMergeScript.getCurrentDirectory());
+    } */
+    File masterBackup = folderChooser.showDialog(refWindow);
+    if (masterBackup != null) {
+      backupFolderTextField.setText(masterBackup.toString());
+      UserPrefs.getShared().setPref(MASTER_BACKUP_FOLDER, masterBackup.toString());
+    }
+  }
+
+  /**
+   Do we have a good Master Backup Folder?
+
+   @return True if yes, false otherwise.
+   */
+  public boolean hasMasterBackupFolder() {
+    String masterBackupFolderStr = backupFolderTextField.getText();
+    if (masterBackupFolderStr == null) {
+      return false;
+    } else if (masterBackupFolderStr.length() == 0) {
+      return false;
+    } else {
+      File masterBackupFolder = new File(masterBackupFolderStr);
+      if (masterBackupFolder.exists()
+          && masterBackupFolder.isDirectory()
+          && masterBackupFolder.canRead()
+          && masterBackupFolder.canWrite()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  /**
+   Get the Master Backup Folder, or null if we don't have one.
+
+   @return The Master Backup Folder, or null if we don't have one.
+   */
+  public File getMasterBackupFolder() {
+    String masterBackupFolderStr = backupFolderTextField.getText();
+    if (masterBackupFolderStr == null) {
+      return null;
+    } else if (masterBackupFolderStr.length() == 0) {
+      return null;
+    } else {
+      File masterBackupFolder = new File(masterBackupFolderStr);
+      if (masterBackupFolder.exists()
+        && masterBackupFolder.isDirectory()
+        && masterBackupFolder.canRead()
+        && masterBackupFolder.canWrite()) {
+        return masterBackupFolder;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public String getMasterBackupFolderString() {
+    return backupFolderTextField.getText();
+  }
   
   /**
    Set everything to the given value, if they're not already equal,
@@ -569,7 +678,7 @@ public class FilePrefs
    Set everything to the given value, if they're not already equal,
    and if the input is in an acceptable range. 
   
-   @param recentFilesMax The new value to be used. 
+   @param backupsToKeep The new value to be used.
   
    @return The resulting value after the update (if any). 
   */
@@ -1070,6 +1179,9 @@ private void automaticBackupsButtonActionPerformed(ActionEvent evt) {
     } else {
       UserPrefs.getShared().setPref(BACKUP_FREQUENCY, OCCASIONAL_BACKUPS);
     }
+
+    // Save Master Backup Folder
+    UserPrefs.getShared().setPref(MASTER_BACKUP_FOLDER, backupFolderTextField.getText());
     
     // Save backups to keep
     UserPrefs.getShared().setPref
