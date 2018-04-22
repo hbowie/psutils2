@@ -217,7 +217,9 @@ public class DateWidget
         editor.setDateToToday();
       }
       // editor.setLocationRelativeTo (stage);
-      editor.showAndWait();
+      if (! editor.isShowing()) {
+        editor.showAndWait();
+      }
       // if (editor.isModified()) {
       //   modified = true;
       //   date.setTime(editor.getDate().getTime());
