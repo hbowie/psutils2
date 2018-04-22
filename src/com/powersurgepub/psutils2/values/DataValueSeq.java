@@ -101,6 +101,10 @@ public class DataValueSeq
         // drop spaces and other white space
       }
       else
+      if (c == '$') {
+        this.value.append(c);
+      }
+      else
       if (Character.isAlphabetic(c)) {
         this.value.append(c);
         letters = true;
