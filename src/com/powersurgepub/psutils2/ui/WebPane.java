@@ -35,7 +35,7 @@ package com.powersurgepub.psutils2.ui;
 public class WebPane {
   
   private StringBuilder page;
-  private String        link = "";
+
   private WebLauncher   launcher = null;
   
   private MdToHTML      mdToHTML;
@@ -47,7 +47,7 @@ public class WebPane {
   private WebView       webView;
   private WebEngine     webEngine;
   private Button        reloadButton;
-  private Button        launchButton;
+  private Button        launchButton = null;
   
   public WebPane() {
     initPage();
@@ -62,6 +62,7 @@ public class WebPane {
     webPane.add(webView, 0, 0, 2, 1);
     GridPane.setVgrow(webView, Priority.ALWAYS);
     GridPane.setHgrow(webView, Priority.ALWAYS);
+
     reloadButton = new Button("Reload");
     reloadButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -70,35 +71,69 @@ public class WebPane {
       }
     });
     webPane.add(reloadButton, 0, 1, 1, 1);
+
+    launchButton = new Button("Launch Link");
+    launchButton.setDisable(true);
+    webPane.add(launchButton, 1, 1, 1, 1);
   }
   
   public void setLaunchLink(String link) {
-    this.link = link;
-    launchButton = new Button("Launch Link");
-    launchButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent evt) {
-        Home.getShared().openURL(link);
-      }
-    });
-    webPane.add(launchButton, 1, 1, 1, 1);
+    launchButton.setText("Launch Link");
+    if (link != null && link.length() > 0) {
+      launchButton.setDisable(false);
+      launchButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          Home.getShared().openURL(link);
+        }
+      });
+    } else {
+      launchButton.setDisable(true);
+      launchButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          // No action
+        }
+      });
+    }
+  }
+
+  public void noLink() {
+    if (launchButton != null) {
+      launchButton.setDisable(true);
+      launchButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          // No action
+        }
+      });
+    }
   }
   
   public void setLauncher(
       String link, 
       String launchButtonTitle, 
       WebLauncher launcher) {
-    
-    this.link = link;
+
     this.launcher = launcher;
-    launchButton = new Button(launchButtonTitle);
-    launchButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent evt) {
-        launcher.launchButtonPressed(link);
-      }
-    });
-    webPane.add(launchButton, 1, 1, 1, 1);
+    launchButton.setText(launchButtonTitle);
+    if (link != null && link.length() > 0) {
+      launchButton.setDisable(false);
+      launchButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          launcher.launchButtonPressed(link);
+        }
+      });
+    } else {
+      launchButton.setDisable(true);
+      launchButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent evt) {
+          // No action
+        }
+      });
+    }
   }
   
   public void initPage() {
