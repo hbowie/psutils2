@@ -24,7 +24,6 @@ package com.powersurgepub.psutils2.widgets;
   import java.io.*;
   import java.net.*;
 
-  import javafx.event.*;
   import javafx.geometry.*;
   import javafx.scene.control.*;
   import javafx.scene.layout.*;
@@ -42,7 +41,8 @@ public class LinkLabel
   private MenuBar               linkMenuBar;
   private Menu                  linkMenu;
   private MenuItem              tweakMenuItem;
-  private MenuItem              diskMenuItem;
+  private MenuItem              diskFileMenuItem;
+  private MenuItem              folderMenuItem;
   private MenuItem              launchMenuItem;
   private TextArea              linkText     = null;
   private LinkTweakerInterface  linkTweaker = null;
@@ -71,9 +71,13 @@ public class LinkLabel
     tweakMenuItem.setOnAction(e -> tweak());
     linkMenu.getItems().add(tweakMenuItem);
     
-    diskMenuItem = new MenuItem("Disk File...");
-    diskMenuItem.setOnAction(e -> selectFromDisk());
-    linkMenu.getItems().add(diskMenuItem);
+    diskFileMenuItem = new MenuItem("Disk File...");
+    diskFileMenuItem.setOnAction(e -> selectFromDisk());
+    linkMenu.getItems().add(diskFileMenuItem);
+
+    folderMenuItem = new MenuItem("Folder...");
+    folderMenuItem.setOnAction(e -> selectFolderFromDisk());
+    linkMenu.getItems().add(folderMenuItem);
     
     launchMenuItem = new MenuItem("Launch...");
     launchMenuItem.setOnAction(e -> launch());
@@ -119,8 +123,11 @@ public class LinkLabel
       WindowMenuManager.getShared().makeVisible(linkTweakerWindow);
     }
   }
-  
-  public void selectFromDisk() {
+
+  /**
+   Select a file from disk.
+   */
+  private void selectFromDisk() {
 
     if (linkText != null) {
       FileChooser chooser = new FileChooser ();
@@ -141,6 +148,33 @@ public class LinkLabel
           System.out.println("Malformed URL Exception");
         }
       }    
+    }
+  }
+
+  /**
+   Select a folder from disk.
+   */
+  private void selectFolderFromDisk() {
+
+    if (linkText != null) {
+      DirectoryChooser chooser = new DirectoryChooser ();
+      chooser.setTitle ("Select Folder as URL");
+      String syncFolderStr = null;
+      File syncFolder = null;
+      File homeDir = Home.getShared().getUserHome();
+      if (homeDir != null) {
+        chooser.setInitialDirectory (homeDir);
+      }
+      File result = chooser.showDialog (window);
+      if (result != null) {
+        try {
+          String webPage = result.toURI().toURL().toString();
+          String tweaked = StringUtils.tweakAnyLink(webPage, false, false, false, "");
+          linkText.setText (tweaked);
+        } catch (MalformedURLException e) {
+          System.out.println("Malformed URL Exception");
+        }
+      }
     }
   }
   
