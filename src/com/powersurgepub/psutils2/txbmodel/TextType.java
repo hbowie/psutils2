@@ -17,7 +17,7 @@
 package com.powersurgepub.psutils2.txbmodel;
 
 /**
- Represents a particular type of data stored in a TextBlocs node.
+ Represents a particular type of data stored in a TextData node.
  A type may also be referred to as a tag (especially when used as part of a
  markup language.
 

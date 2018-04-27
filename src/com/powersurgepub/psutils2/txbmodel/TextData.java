@@ -321,9 +321,16 @@ public class TextData {
       addChild (attrNode);
     }
   }
-  
+
+  /**
+   Add a child to this node, and maintain a count of child tags for this parent.
+
+   @param childNode child to be added.
+   */
   public void addChild(TreeItem<TextData> childNode) {
-    if (node != null) {
+    if (node == null) {
+      System.out.println("TextData.addChild but no TreeItem node for parent");
+    } else {
       node.getChildren().add(childNode);
       if (childNode.getValue().isTag()) {
         incrementChildTagCount();

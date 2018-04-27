@@ -37,8 +37,7 @@ package com.powersurgepub.psutils2.txbio;
 
  */
 
-public class HTMLFile 
-  // extends XTextFile
+public class HTMLFile
     implements DataSource {
     
   public  final static String   ANCHOR = "Description";
@@ -326,7 +325,6 @@ public class HTMLFile
     
     // If this is markdown, then convert it to HTML before going any farther
     if (context.isMarkdown()) {
-      // System.out.println("HTMLFIle.openForInput with context of Markdown");
       if (inFile == null && inURL != null) {
         mdReader = new MetaMarkdownReader(inURL, 
             MetaMarkdownReader.MARKDOWN_TYPE);
@@ -349,7 +347,6 @@ public class HTMLFile
         textLineReader = new StringLineReader(mdReader.getHTML());
         mdReader.close();
         mdReader = null;
-        // System.out.println("  Markdown to HTML complete");
       }
     }
     
@@ -679,12 +676,10 @@ public class HTMLFile
     // return results
 		if (htmlChar.character == '>') {			
       getNextCharacter();
-      // System.out.println ("HTMLFile.readTag tag: " + tag.toString());
       return tag;
     }
     else 
     if (tag.getPrecedingText().length() > 0) {
-      // System.out.println ("HTMLFile.readTag tag: " + tag.toString());
       return tag;
 		} 
     else {
@@ -1446,7 +1441,7 @@ public class HTMLFile
   /**
    Close an open definition tag (dt or dd) while parsing Textile.
 
-   @param lastDefChar The character that started the last span of characters.
+   @param last The character that started the last span of characters.
    @return The appropriate XHTML
    */
   private String closeDefinitionTag (char last) {

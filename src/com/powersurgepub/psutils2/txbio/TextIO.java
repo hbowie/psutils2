@@ -1,5 +1,5 @@
 /*
- * Copyright 1999 - 2013 Herb Bowie
+ * Copyright 1999 - 2018 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ package com.powersurgepub.psutils2.txbio;
  <p>
  Upon initial construction, available types are registered from
  known i/o modules. Each i/o module declares the types that it supports. Later
- requests to load or store data of a certain type then makes use of the
+ requests to load or store data of a certain type then make use of the
  available modules.
  */
 public class TextIO {
@@ -78,7 +78,7 @@ public class TextIO {
                 that an input file is to be processed. Anything else indicates
                 output.
 
-   @param preferFragments True if HTML fragments are preferred for output.
+   @param Fragments True if HTML fragments are preferred for output.
 
    @return The IO Type for the given parameters, or null if none could be found.
    */
@@ -187,6 +187,7 @@ public class TextIO {
   
   public boolean store (TextTree tree, TextLineWriter lineWriter, TextIOType type,
       boolean epub, String epubSite) {
+
     writer = new TextWriter (lineWriter);
     boolean ok = writer.openForOutput ();
     TextIOModule iomod = type.getModule();

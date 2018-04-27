@@ -131,22 +131,12 @@ public class TextIOhtml
         while (tag != null) {
           
           // Process any text that immediately preceded this tag
-          // System.out.println ("TAG");
-          // System.out.println ("Preceding text: " + tag.getPrecedingText());
-          // System.out.println ("Name:           " + tag.getName());
-          // System.out.println ("Ending?         " + String.valueOf (tag.isEnding()));
           Enumeration attributes = tag.getAttributes();
           if (attributes.hasMoreElements()) {
-            // System.out.println ("Attributes: ");
             while (attributes.hasMoreElements()) {
               HTMLAttribute attr = (HTMLAttribute)attributes.nextElement();
-              if (attr != null) {
-                // System.out.println
-                //     ("  name=" + attr.getName() + " value=" + attr.getValue());
-              } // end if 
             } // end while more attributes
           } // end if any attributes
-          // System.out.println (" ");
           if (tag.getPrecedingText().length() > 0) {
             characters (tag.getPrecedingText());
           }
@@ -186,7 +176,7 @@ public class TextIOhtml
    Handle the beginning of a new element when parsing XML.
    */
   public void startElement (HTMLTag tag) {
-    
+
     if (tag.hasName()
         && tag.getName().equals(TextType.PRE)) {
       preformatted = true;
@@ -228,13 +218,14 @@ public class TextIOhtml
 
   private void makeNodeFromElementStart (HTMLTag tag) {
     // Create a new node for this element
+
     TreeItem<TextData> nextNode = tree.createNode(tag.getName(), "");
     nextNode.getValue().setType (tag.getName());
     if (currentNode.getValue().isNakedText()) {
       TreeItem<TextData> parentNode = currentNode.getParent();
       currentNode = parentNode;
     }
-    currentNode.getChildren().add (nextNode);
+    currentNode.getValue().addChild (nextNode);
 
     // Harvest any attributes
     Enumeration attributes = tag.getAttributes();
@@ -280,11 +271,18 @@ public class TextIOhtml
       currentNode = nextNode;
     }
   } // end method
-  
-  public void characters (String more) {
+
+  /**
+   Process more text in the input stream.
+
+   @param more More text from the input stream.
+   */
+  private void characters (String more) {
+
+    TextData currentValue = currentNode.getValue();
     if (currentNode.getValue().hasChildTags()) {
       TreeItem<TextData> nextNode = tree.createNode(TextType.NAKED_TEXT, "");
-      currentNode.getChildren().add (nextNode);
+      currentNode.getValue().addChild(nextNode);
       currentNode = nextNode;
     }
     currentNode.getValue().characters (more, preformatted);

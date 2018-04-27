@@ -1,5 +1,5 @@
 /*
- * Copyright 1999 - 2017 Herb Bowie
+ * Copyright 1999 - 2018 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -907,8 +907,8 @@ public class TemplateUtil {
       includeFile = new FileLineReader (includeFileNameStr);
     } else {
       FileName templatePathFileName = new FileName(templateFilePath);
-      includeFile = new FileLineReader 
-          (templatePathFileName.resolveRelative(includeFileNameStr));
+      String resolved = templatePathFileName.resolveRelative(includeFileNameStr);
+      includeFile = new FileLineReader (resolved);
     }
     
     recordEvent (LogEvent.NORMAL, "Including file " + includeFile.toString(), false);
@@ -1006,11 +1006,11 @@ public class TemplateUtil {
         } 
         else 
         if (inType != null && outType != null) { 
-          // Use pspub routines for other conversions
-          TreeItem<TextData> root = new TreeItem(tree);
-          tree = new TextTree (root.getValue());
-          tree.getTextRoot().getValue().setType (TextType.LOCATION_FILE);
-          tree.getTextRoot().getValue().setText (includeFile.toString());
+          // Use pspub routines for other conversions, such as Textile to HTML
+          TextData rootData = new TextData();
+          rootData.setType (TextType.LOCATION_FILE);
+          rootData.setText (includeFile.toString());
+          tree = new TextTree (rootData);
           try {
             URL url = includeFileReader.toURL();
             converted = io.load (tree, url, inType, includeParm);

@@ -2515,10 +2515,10 @@ public class MarkupWriter
    Write out one of a series of items, where each item may have a link, 
    and where the entire list will take the form item1, item2 and item3.
    
-   @param The text that makes up this item.
-   @param The link that goes with this item, where blank means no link.
-   @param The position of this item in the series, where 0 indicates the first.
-   @param The number of items in the series.
+   @param text The text that makes up this item.
+   @param link The link that goes with this item, where blank means no link.
+   @param listPosition The position of this item in the series, where 0 indicates the first.
+   @param listLength The number of items in the series.
    */
   public void writeItemInFlatList (
       String text, 

@@ -6,11 +6,11 @@
 
  @author Herb Bowie
 
- @see com.powersurgepub.textblocs
+ @see com.powersurgepub.psutils2.txbmodel
  */
 
 /*
- * Copyright 1999 - 2017 Herb Bowie
+ * Copyright 1999 - 2018 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

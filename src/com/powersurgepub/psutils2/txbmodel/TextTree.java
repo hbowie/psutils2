@@ -21,9 +21,7 @@ package com.powersurgepub.psutils2.txbmodel;
   import javafx.scene.control.*;
 
 /**
- This class represents a tree of text nodes. The class extends 
- DefaultTreeModel and leverages its basic tree structure. It may also be  
- used as a tree model for a JTree interface.
+ This class represents a tree of text nodes. It uses the JavaFX TreeView to represent the tree.
 
  @author Herb Bowie
  */
@@ -43,15 +41,24 @@ public class TextTree {
   public TextTree (TextData rootData) {
     this.rootData = rootData;
     root = new TreeItem<>(rootData);
+    rootData.setNode(root);
     tree = new TreeView<>(root);
   }
   
   public TextTree() {
     rootData = new TextData();
     root = new TreeItem<>(rootData);
+    rootData.setNode(root);
     tree = new TreeView<>(root);
   }
-  
+
+  /**
+   Create a new Tree Item to be added to this tree.
+
+   @param type
+   @param text
+   @return The new Tree Item to be added.
+   */
   public TreeItem<TextData> createNode(String type, String text) {
     TextData nodeData;
     if (text == null) {
