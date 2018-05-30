@@ -63,7 +63,7 @@ public class PopUpList
   /**
    Set the model to be used for the JList. 
    
-   @param listModel Model to be used for the JList. 
+   @param valueList List of selectable values.
    */
   public void setModel (ValueList valueList) {
     this.list = valueList;

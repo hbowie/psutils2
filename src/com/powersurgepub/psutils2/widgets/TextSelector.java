@@ -45,6 +45,8 @@ public class TextSelector
     implements 
       DataWidget {
 
+  public static final String POPUP_CHAR = "\\";
+
   private boolean         handlesMultipleValues = false;
   
   private PopUpList       popUpList;
@@ -87,7 +89,6 @@ public class TextSelector
     textField.setOnKeyTyped(e -> textKeyTyped(e));
     this.add(textField, 1, 0, 1, 1);
     GridPane.setHgrow(textField, Priority.ALWAYS);
-
   }
 
   /**
@@ -111,7 +112,7 @@ public class TextSelector
     
     String typed = e.getCharacter();
     if (! typed.equals(KeyEvent.CHAR_UNDEFINED)) {
-      if (typed.equals("'")) {
+      if (typed.equals(POPUP_CHAR)) {
         showPopUp();
       }
     }
@@ -152,6 +153,8 @@ public class TextSelector
       text.append (value);
     }
     setText (text.toString());
+    textField.positionCaret(text.length());
+    textField.requestFocus();
   }
   
   private void checkText () {

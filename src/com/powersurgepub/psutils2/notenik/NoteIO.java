@@ -37,6 +37,12 @@ public class NoteIO
   public static final String              PARMS_TITLE         = "Collection Parms";
   
   public static final String              README_FILE_NAME    = "- README.txt";
+
+  public static final String              README_LINE_1       =
+          "This folder contains a collection of notes created by the Notenik application.";
+  public static final String              README_LINE_2       = " ";
+  public static final String              README_LINE_3       =
+        "Learn more at Notenik.net.";
   
   private static final TemplateFilter     templateFilter      = new TemplateFilter();
   
@@ -212,11 +218,9 @@ public class NoteIO
       if (! readMe.exists()) {
         FileMaker readMeWriter = new FileMaker(readMe);
         readMeWriter.openForOutput();
-        readMeWriter.writeLine
-          ("This folder contains a collection of notes created by the Notenik application.");
-        readMeWriter.writeLine (" ");
-        readMeWriter.writeLine
-          ("Learn more at Notenik.net.");
+        readMeWriter.writeLine (README_LINE_1);
+        readMeWriter.writeLine (README_LINE_2);
+        readMeWriter.writeLine (README_LINE_3);
         readMeWriter.close();
         Logger.getShared().recordEvent(LogEvent.NORMAL, 
             "README file created at " + readMe.toString(), false);

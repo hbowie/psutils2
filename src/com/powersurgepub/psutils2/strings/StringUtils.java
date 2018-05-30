@@ -1790,9 +1790,13 @@ public class StringUtils {
         out.append (c);
         whiteSpace = false;
       } 
-      else
-      if (c == ' ' 
-          || c == '_' 
+      else if (c == '.') {
+          out.append (c);
+          whiteSpace = false;
+      }
+      else if (c == ' '
+          || c == '_'
+          || c == '/'
           || Character.isWhitespace(c) 
           || c == FILE_NAME_WORD_SEPARATOR) {
         if (whiteSpace) {

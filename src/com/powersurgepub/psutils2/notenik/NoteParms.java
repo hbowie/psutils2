@@ -154,6 +154,9 @@ public class NoteParms {
   public static final String  AUTHOR_WIKIMEDIA_PAGE = "Author Wikimedia Page";
   public static final String  WORK_HTML_LINE    = "Work HTML Line";
   public static final String  WORK_RIGHTS_HTML_LINE = "Work Rights HTML Line";
+
+  public static final String BODY_AS_HTML_FIELD_NAME = "Body as HTML";
+  public static final String BODY_AS_HTML_COMMON_NAME = "bodyashtml";
   
   public static final int     UNKNOWN_FIELD_SEQ = 50;
   
