@@ -31,7 +31,8 @@ public class Work
   public static final String UNKNOWN = "unknown";
   public static final String LEFT_DOUBLE_QUOTE  = "&#8220;";
   public static final String RIGHT_DOUBLE_QUOTE = "&#8221;";
-  
+
+  public static final String AUTHOR_NAME    = "Author Name";
   public static final String SOURCE_LINK    = "Source Link";
   public static final String MINOR_TITLE    = "Minor Title";
   public static final String PUBLISHER      = "Publisher";
@@ -47,6 +48,8 @@ public class Work
   };
   
   private String name = UNKNOWN;
+
+  private String key = UNKNOWN;
   
 	/** Type of item. */
   private    	int          		sourceType = 0;
@@ -100,10 +103,12 @@ public class Work
       "Web Log",
       "Web Page"
   };
+
+  private String authorName = "";
   
   private String minorTitle = "";
   
-  private String link = "";
+  private     String          link = "";
   
   private     String          id = "";
   private     String          publisher = "";
@@ -136,11 +141,13 @@ public class Work
   
   /** Creates a new instance of Work */
   public Work() {
+
   }
   
   public Work(String name) {
     this.name = name;
     deriveFileName();
+    deriveKey();
   }
   
   /**
@@ -163,6 +170,7 @@ public class Work
       this.name = UNKNOWN;
     }
     deriveFileName();
+    deriveKey();
   }
   
   /**
@@ -185,6 +193,12 @@ public class Work
   public String getTitle () {
     return name;
   }
+
+  public void setAuthorName(String authorName) { this.authorName = authorName; }
+
+  public boolean hasAuthorName() { return (authorName != null && authorName.length() > 0); }
+
+  public String getAuthorName() { return authorName; }
   
   public void setMinorTitle (String minorTitle) {
     this.minorTitle = minorTitle;
@@ -248,7 +262,12 @@ public class Work
   }
   
   public void setLink (String link) {
+
     this.link = link;
+  }
+
+  public boolean hasLink() {
+    return (link != null && link.length() > 0);
   }
   
   public String getLink () {
@@ -337,11 +356,12 @@ public class Work
   }
 
   /**
-     Sets Status of item.
+     Sets Type of item.
  
-     @param  status Status of item.
+     @param  sourceType Type of item.
    */
   public void setType (int sourceType) {
+
     this.sourceType = sourceType;
   }
 
@@ -369,11 +389,11 @@ public class Work
   }
   
   /**
-    Returns a String with a label for the status value.
+    Returns a String with a label for the type value.
    
-    @return Status value.
+    @return Type value.
    
-    @param  status Status integer to be converted to a String label.
+    @param  sourceType Type integer to be converted to a String label.
    */
   public static String getTypeLabel (int sourceType) {
     if (sourceType < 0 || sourceType >= SOURCE_TYPE_LABEL.length) {
@@ -404,9 +424,9 @@ public class Work
   }
   
   /**
-     Sets the outcome or result for this item.
+     Sets the rights owner for this item.
  
-     @param  outcome The outcome for this item.
+     @param  rightsOwner The rights owner for this item.
    */
   public void setRightsOwner (String rightsOwner) {
     this.rightsOwner = rightsOwner;
@@ -454,6 +474,14 @@ public class Work
       setFileName (StringUtils.makeFileName (getName(), false));
     }
   }
+
+  public void deriveKey() {
+    if (isBlank()) {
+      key = UNKNOWN;
+    } else {
+      key = StringUtils.commonName(getName());
+    }
+  }
   
   public boolean isUnknown() {
     return (name.length() == 0 || name.equals (UNKNOWN));
@@ -470,6 +498,10 @@ public class Work
   public String getFileName () {
     return fileName;
   }
+
+  public String getKey() {
+    return key;
+  }
   
   public String merge (Work source2) {
     CommaList updatedFields = new CommaList();
@@ -478,6 +510,11 @@ public class Work
       if (source2.getLink().length() > getLink().length()) {
         setLink (source2.getLink());
         updatedFields.append (SOURCE_LINK);
+      }
+
+      if (source2.hasAuthorName() && source2.getAuthorName().length() > getAuthorName().length()) {
+        setAuthorName (source2.getAuthorName());
+        updatedFields.append(AUTHOR_NAME);
       }
 
       if (source2.getMinorTitle().length() > getMinorTitle().length()) {
@@ -523,18 +560,94 @@ public class Work
     
     return updatedFields.toString();
   }
+
+  /**
+   Update this work's values with latest values from the passed work. However, do not
+   overwrite a non-blank value with spaces.
+
+   @param source2 Another work object with updated values.
+
+   @return A list of updated fields.
+   */
+  public String mergeLatest (Work source2) {
+    CommaList updatedFields = new CommaList();
+
+    if (this.equals (source2)) {
+      if (source2.getLink().length() > 0
+          && (! source2.getLink().equals(getLink()))) {
+        setLink (source2.getLink());
+        updatedFields.append (SOURCE_LINK);
+      }
+
+      if (source2.hasAuthorName()
+          && (! source2.getAuthorName().equals(getAuthorName()))) {
+        setAuthorName(source2.getAuthorName());
+        updatedFields.append(AUTHOR_NAME);
+      }
+
+      if (source2.getMinorTitle().length() > 0
+          && (! source2.getMinorTitle().equals(getMinorTitle()))) {
+        setMinorTitle (source2.getMinorTitle());
+        updatedFields.append (MINOR_TITLE);
+      }
+
+      if (source2.getPublisher().length() > 0
+          && (! source2.getPublisher().equals(getPublisher()))) {
+        setPublisher (source2.getPublisher());
+        updatedFields.append (PUBLISHER);
+      }
+
+      if (source2.getCity().length() > 0
+          && (! source2.getCity().equals(getCity()))) {
+        setCity(source2.getCity());
+        updatedFields.append (PUBLISHER_CITY);
+      }
+
+      if (source2.getID().length() > 0
+          && (! source2.getID().equals(getID()))) {
+        setID (source2.getID());
+        updatedFields.append (SOURCE_ID);
+      }
+
+      if (source2.getRights().length() > 0
+          && (! source2.getRights().equals(getRights()))) {
+        setRights (source2.getRights());
+        updatedFields.append (RIGHTS);
+      }
+
+      if (source2.getRightsOwner().length() > 0
+          && (! source2.getRightsOwner().equals(getRightsOwner()))) {
+        setRightsOwner (source2.getRightsOwner());
+        updatedFields.append (RIGHTS_OWNER);
+      }
+
+      if (source2.getYear().length() > 0
+          && (! source2.getYear().equals(getYear()))) {
+        setYear (source2.getYear());
+        updatedFields.append (YEAR_PUBLISHED);
+      }
+
+      if (source2.getType() != getType()) {
+        setType (source2.getType());
+        updatedFields.append (SOURCE_TYPE);
+      }
+    }
+
+    return updatedFields.toString();
+  }
   
   public boolean equals (Work source2) {
-    return (getName().equals (source2.getName())
+    return (getKey().equals (source2.getKey())
         && (! isUnknown()));
   }
   
   public boolean equals (String source2Name) {
-    return (getName().equals (source2Name));
+    return (getKey().equals (StringUtils.commonName(source2Name)));
   }
   
   public void display () {
     System.out.println ("Title: " + getTitle());
+    System.out.println ("Author Name: " + getAuthorName());
     System.out.println ("Type: " + getTypeLabel());
     System.out.println ("Minor Title: " + getMinorTitle());
     System.out.println ("Link: " + getLink());

@@ -47,6 +47,8 @@ public class TextSelector
 
   public static final String POPUP_CHAR = "\\";
 
+  private String          fieldName = "";
+
   private boolean         handlesMultipleValues = false;
   
   private PopUpList       popUpList;
@@ -89,6 +91,14 @@ public class TextSelector
     textField.setOnKeyTyped(e -> textKeyTyped(e));
     this.add(textField, 1, 0, 1, 1);
     GridPane.setHgrow(textField, Priority.ALWAYS);
+  }
+
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  public String getFieldName() {
+    return fieldName;
   }
 
   /**
@@ -146,6 +156,7 @@ public class TextSelector
   }
   
   public void setListSelection (String value) {
+    System.out.println("TextSelector.setListSelection");
     checkText();
     if (start < text.length() || oneValueOnly()) {
       text.replace (start, text.length(), value);
@@ -153,6 +164,10 @@ public class TextSelector
       text.append (value);
     }
     setText (text.toString());
+    if (handler != null) {
+      System.out.println("  handler.textSelectionUpdated with field name of " + fieldName);
+      handler.textSelectionUpdated(fieldName);
+    }
     textField.positionCaret(text.length());
     textField.requestFocus();
   }

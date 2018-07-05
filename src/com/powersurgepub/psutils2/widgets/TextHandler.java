@@ -35,6 +35,6 @@ package com.powersurgepub.psutils2.widgets;
  */
 public interface TextHandler {
   
-  public void textSelectionComplete ();
+  public void textSelectionUpdated(String fieldName);
 
 }

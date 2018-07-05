@@ -666,6 +666,9 @@ public class Note
       storeField (recDef, authorField);
       authorAdded = true;
     }
+    if (workAdded) {
+      workValue.setAuthorName(author);
+    }
   }
   
   public void setAuthor(Author author) {
@@ -673,6 +676,9 @@ public class Note
     if (! authorAdded) {
       storeField (recDef, authorField);
       authorAdded = true;
+    }
+    if (workAdded) {
+      workValue.setAuthorName(author.toString());
     }
   }
   
@@ -705,6 +711,12 @@ public class Note
 	  if (! workAdded) {
 	    storeField(recDef, workField);
 	    workAdded = true;
+    }
+    if (dateAdded) {
+	    workValue.setYear(dateValue.getCommon());
+    }
+    if (authorAdded) {
+	    workValue.setAuthorName(authorValue.toString());
     }
   }
 
@@ -837,6 +849,10 @@ public class Note
   public void setDate(Date date) {
     setDate(dateFormat.format(date));
   }
+
+  public void setDate(StringDate date) {
+    setDate(date.toString());
+  }
   
   public void setDate(String date) {
 
@@ -845,13 +861,8 @@ public class Note
       storeField (recDef, dateField);
       dateAdded = true;
     }
-  }
-  
-  public void setDate(StringDate date) {
-    dateValue.set(date.toString());
-    if (! dateAdded) {
-      storeField (recDef, dateField);
-      dateAdded = true;
+    if (workAdded) {
+      workValue.setYear(dateValue.getCommon());
     }
   }
   

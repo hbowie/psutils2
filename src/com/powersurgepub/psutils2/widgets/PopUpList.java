@@ -135,8 +135,10 @@ public class PopUpList
    Let the text selector know that the user has selected something. 
   */
   public void announceSelection () {
+    System.out.println("\nPopUpList.announceSelection");
     if (textSelector != null) {
       textSelector.setListSelection (getSelectedValue());
+      System.out.println("  selection = " + getSelectedValue());
     }
   }
   
