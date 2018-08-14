@@ -50,6 +50,7 @@ public class WebPane {
   private Button        launchButton = null;
   
   public WebPane() {
+
     initPage();
     
     fxUtils = FXUtils.getShared();

@@ -78,6 +78,7 @@ public class ProgramVersion
   }
   
   private void readPadFile () {
+
     boolean ok = createParser();
     if (ok) {
       chars = new ArrayList();
@@ -102,6 +103,7 @@ public class ProgramVersion
               false);   
       } // end catch
     } // end if ok
+
   } // end method readPadFile
   
   /**

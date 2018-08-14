@@ -156,7 +156,6 @@ public class TextSelector
   }
   
   public void setListSelection (String value) {
-    System.out.println("TextSelector.setListSelection");
     checkText();
     if (start < text.length() || oneValueOnly()) {
       text.replace (start, text.length(), value);
@@ -165,7 +164,6 @@ public class TextSelector
     }
     setText (text.toString());
     if (handler != null) {
-      System.out.println("  handler.textSelectionUpdated with field name of " + fieldName);
       handler.textSelectionUpdated(fieldName);
     }
     textField.positionCaret(text.length());

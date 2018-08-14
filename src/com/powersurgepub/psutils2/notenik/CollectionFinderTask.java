@@ -35,6 +35,70 @@ public class CollectionFinderTask
   private ObservableList<File>      collectionsToAdd;
 
   /**
+   * See if the passed file object points to a folder containing a collection.
+   *
+   * @param  linkAsFile The File object to be tested.
+   * @return True if it is a collection, otherwise false.
+   */
+  public static boolean isThisACollection(File linkAsFile) {
+
+    if (linkAsFile == null) {
+      return false;
+    }
+    if (! linkAsFile.exists()) {
+      return false;
+    }
+    if (! linkAsFile.isDirectory()) {
+      return false;
+    }
+    if (linkAsFile.isHidden()) {
+      return false;
+    }
+    String linkToLower = linkAsFile.getName().toLowerCase();
+    if (linkToLower.contains("archive")
+        || linkToLower.contains("backup")
+        || linkToLower.equals("deploy")
+        || linkToLower.equals("dist")
+        || linkToLower.equals("icons")
+        || linkToLower.equals("jars")) {
+      return false;
+    }
+    String fileName = linkAsFile.getName();
+    if (fileName.equalsIgnoreCase("Library")
+        || fileName.equalsIgnoreCase("Music")
+        || fileName.equalsIgnoreCase("Pictures")
+        || fileName.equalsIgnoreCase("PSPub Omni Pack")
+        || fileName.endsWith(".app")) {
+      return false;
+    }
+
+    File readMeFile = new File(linkAsFile, NoteIO.README_FILE_NAME);
+    if ((! readMeFile.exists()) || (! readMeFile.canRead())) {
+      return false;
+    }
+
+    String line = "";
+    boolean notenikLineFound = false;
+    try {
+      FileReader fileReader = new FileReader(readMeFile);
+      BufferedReader reader = new BufferedReader(fileReader);
+      line = reader.readLine();
+      while (line != null && (! notenikLineFound)) {
+        int j = line.indexOf(NoteIO.README_LINE_1);
+        notenikLineFound = (j >= 0);
+        line = reader.readLine();
+      }
+    } catch(IOException e) {
+        // Ignore
+    }
+    if (! notenikLineFound) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Construct a new occurrence and pass in needed variables.
    *
    * @param startingFolder The folder in which to scan.
