@@ -1250,6 +1250,7 @@ public class TemplateUtil {
           boolean emailPunctuation = false;
           boolean digitToLetter = false;
           boolean linkedTags = false;
+          StringBuilder linkedTagsPath = new StringBuilder();
           boolean replaceAgain = false;
           boolean summary = false;
           boolean vary = false;
@@ -1272,7 +1273,9 @@ public class TemplateUtil {
             for (int i = startMods + 1; i < endDelim; i++) {
               char workChar = str.charAt (i);
               if (formatStringFound) {
-                formatStringBuf.append (workChar);
+                formatStringBuf.append(workChar);
+              } else if (linkedTags) {
+                linkedTagsPath.append(workChar);
               } else
               if (vary) {
                 if (varyDelim == ' ') {
@@ -1545,7 +1548,13 @@ public class TemplateUtil {
             }
             if (linkedTags) {
               Tags tags = new Tags(replaceData);
-              replaceData = tags.getLinkedTags("=$relative$=tags/");
+              if (linkedTagsPath.length() > 0
+                  && linkedTagsPath.charAt(linkedTagsPath.length() - 1) != '/') {
+                linkedTagsPath.append('/');
+              }
+              StringBuilder parent = new StringBuilder("=$relative$=");
+              parent.append(linkedTagsPath);
+              replaceData = tags.getLinkedTags(parent.toString());
               replaceAgain = true;
             }
           } // end if replaceData non-blank

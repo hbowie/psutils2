@@ -38,7 +38,7 @@ public class NoteCollectionList {
   /**
    Add a new note to the end of the list. 
   
-   @param note The note to be added. 
+   @param newNote The note to be added.
   
    @return The position of the new note within the list. 
   */

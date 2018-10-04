@@ -125,6 +125,8 @@ public class Note
   private boolean             bodyAdded = false;
   
   public static final String    UP_ONE_FOLDER   = "../";
+
+  public ArrayList<NoteAttachment> attachments = new ArrayList<NoteAttachment>();
   
   private    SimpleDateFormat   dateFormat 
       = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss zzz");
@@ -1611,6 +1613,107 @@ public class Note
   */
   public boolean isDeleted() {
     return deleted;
+  }
+
+  /**
+   * Add an attachment to this note.
+   *
+   * @param newAttachment The attachment to be added.
+   *
+   * @return The resulting index of the new attachment, if added, or a negative number
+   *         if this attachment already existed within the attachments list for this note.
+   */
+  public int addAttachment(NoteAttachment newAttachment) {
+    boolean ok = true;
+    int i = 0;
+    int result = -1;
+    while (i < attachments.size() && ok) {
+      if (newAttachment.getSuffixAndExtension().equalsIgnoreCase(attachments.get(i).getSuffixAndExtension())) {
+        ok = false;
+      } else {
+        i++;
+      }
+    }
+    if (ok) {
+      result = attachments.size();
+      attachments.add(newAttachment);
+    }
+    return result;
+  }
+
+  /**
+   * Does this note have any attachments?
+   *
+   * @return True if yes, false otherwise.
+   */
+  public boolean hasAttachments() {
+    return (attachments.size() > 0);
+  }
+
+  /**
+   * How many attachments does this note have?
+   *
+   * @return The number of attachments for this note.
+   */
+  public int getNumberOfAttachments() {
+    return attachments.size();
+  }
+
+  /**
+   * Get the attachment object stored at this position in the list.
+   *
+   * @param i The index position of the desired attachment.
+   * @return The indicated attachment, or null if an invalid index.
+   */
+  public NoteAttachment getAttachment(int i) {
+    if (i < 0 || i >= attachments.size()) {
+      return null;
+    } else {
+      return attachments.get(i);
+    }
+  }
+
+  /**
+   * Get the index of the attachment whose file name or suffix and extension match the passed string.
+   *
+   * @param searchStr The string identifying the attachment we're looking for.
+   *
+   * @return The index of the matching attachment, or -1 if no match.
+   */
+  public int getAttachmentIndex(String searchStr) {
+    int i = 0;
+    boolean found = false;
+    while (i < attachments.size() && (! found)) {
+      NoteAttachment nextAttachment = attachments.get(i);
+      if (searchStr.equalsIgnoreCase(nextAttachment.getFileName())
+          || searchStr.equalsIgnoreCase(nextAttachment.getSuffixAndExtension())) {
+        found = true;
+      } else {
+        i++;
+      }
+    } // end while looking for a match
+    if (found) {
+      return i;
+    } else {
+      return -1;
+    }
+  } // end method getAttachmentIndex
+
+  /**
+   * Delete the indicated attachment.
+   *
+   * @param i An index indicating which attachment is to be removed.
+   *
+   * @return The Note Attachment removed, if a valid index, otherwise null.
+   */
+  public NoteAttachment deleteAttachment(int i) {
+    if (i < 0 || i >= attachments.size()) {
+      return null;
+    } else {
+      NoteAttachment removed = attachments.get(i);
+      attachments.remove(i);
+      return removed;
+    }
   }
 
 }

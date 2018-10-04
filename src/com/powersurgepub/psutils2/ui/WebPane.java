@@ -36,6 +36,7 @@ public class WebPane {
   
   private StringBuilder page;
 
+  private AttachmentHandler attachmentHandler = null;
   private WebLauncher   launcher = null;
   
   private MdToHTML      mdToHTML;
@@ -48,6 +49,7 @@ public class WebPane {
   private WebEngine     webEngine;
   private Button        reloadButton;
   private Button        launchButton = null;
+  private ComboBox      attachmentComboBox = null;
   
   public WebPane() {
 
@@ -60,7 +62,7 @@ public class WebPane {
     webEngine = webView.getEngine();
     webPane = new GridPane();
     fxUtils.applyStyle(webPane);
-    webPane.add(webView, 0, 0, 2, 1);
+    webPane.add(webView, 0, 0, 3, 1);
     GridPane.setVgrow(webView, Priority.ALWAYS);
     GridPane.setHgrow(webView, Priority.ALWAYS);
 
@@ -76,6 +78,11 @@ public class WebPane {
     launchButton = new Button("Launch Link");
     launchButton.setDisable(true);
     webPane.add(launchButton, 1, 1, 1, 1);
+
+    attachmentComboBox = new ComboBox();
+    attachmentComboBox.setOnAction(e -> attachmentSelected());
+    webPane.add(attachmentComboBox, 2, 1, 1, 1);
+    attachmentComboBox.setDisable(true);
   }
   
   public void setLaunchLink(String link) {
@@ -135,6 +142,40 @@ public class WebPane {
         }
       });
     }
+  }
+
+  /**
+   * Provide a handler for optional attachments.
+   *
+   * @param attachmentHandler An object capabable of handling attachments.
+   */
+  public void setAttachmentHandler(AttachmentHandler attachmentHandler) {
+    this.attachmentHandler = attachmentHandler;
+    attachmentComboBox.getItems().remove(0, attachmentComboBox.getItems().size());
+    attachmentHandler.populateAttachmentComboBox(attachmentComboBox);
+    attachmentComboBox.setPromptText("Select an attachment to be opened");
+    attachmentComboBox.setDisable(false);
+
+  }
+
+  /**
+   * Indicate that we have no attachments for this item.
+   */
+  public void noAttachments() {
+    this.attachmentHandler = null;
+    attachmentComboBox.getItems().remove(0, attachmentComboBox.getItems().size());
+    attachmentComboBox.setPromptText("No attachments");
+    attachmentComboBox.setDisable(true);
+  }
+
+  private void attachmentSelected() {
+
+      Object attachment = attachmentComboBox.getSelectionModel().getSelectedItem();
+      if (attachment != null) {
+        attachmentHandler.attachmentSelected(attachment);
+        // attachmentComboBox.getSelectionModel().clearSelection();
+      }
+
   }
   
   public void initPage() {

@@ -43,6 +43,8 @@ public class NoteIO
   public static final String              README_LINE_2       = " ";
   public static final String              README_LINE_3       =
         "Learn more at Notenik.net.";
+
+  public static final String              FILES_FOLDER_NAME = "files";
   
   private static final TemplateFilter     templateFilter      = new TemplateFilter();
   
@@ -286,6 +288,49 @@ public class NoteIO
 
     Logger.getShared().recordEvent(LogEvent.NORMAL, 
         String.valueOf(notesLoaded) + taggedMsg + " Notes loaded", false);
+
+    loadAttachments(model);
+  }
+
+    /**
+     * Look for a files folder within the collection and, if found, try to match the file names within
+     * to the file names of the notes for the collection.
+     *
+     * @param model The model for this collection.
+     */
+  public void loadAttachments(NoteCollectionModel model) {
+
+    File attachmentsFolder = model.getAttachmentsFolder();
+    if (attachmentsFolder.exists()
+        && attachmentsFolder.isDirectory()
+        && attachmentsFolder.canRead()
+        && attachmentsFolder.canWrite()) {
+      String[] attachments = attachmentsFolder.list();
+      NoteCollectionList notes = model.getNoteList();
+      for (int i = 0; i < notes.size(); i++ ) {
+        Note nextNote = notes.get(i);
+        if (nextNote == null) {
+          // System.out.println("Next Note is null");
+        } else {
+          String noteFileName = nextNote.getFileName();
+          for (int j = 0; j < attachments.length; j++) {
+            String attachmentName = attachments[j];
+            if (attachmentName.startsWith(noteFileName)) {
+              NoteAttachment attachment = new NoteAttachment();
+              attachment.setParentNote(nextNote);
+              File attachmentFile = new File(attachmentsFolder, attachmentName);
+              FileName attachmentFileName = new FileName(attachmentFile);
+              String attachmentBaseName = attachmentFileName.getBase();
+              String attachmentExt = attachmentFileName.getExt();
+              String attachmentSuffix = attachmentBaseName.substring(noteFileName.length());
+              attachment.setFileNameSuffix(attachmentSuffix);
+              attachment.setFileNameExtension(attachmentExt);
+              nextNote.addAttachment(attachment);
+            }
+          }
+        }
+      }
+    }
   }
   
   public int getNotesLoaded() {
@@ -862,7 +907,7 @@ public class NoteIO
    Does the given Note already exist on disk?
  
    @param folder    The folder in which the item is to be stored.
-   @param Note      The Note to be stored.
+   @param note      The Note to be stored.
  
    @return True if a disk file with the same path already exists,
            false if not.
@@ -941,7 +986,7 @@ public class NoteIO
    Return a standard File object representing the note's stored location on disk.
  
    @param folder  The folder in which the item is to be stored.
-   @param Note    The Note to be stored.
+   @param note    The Note to be stored.
  
    @return The File pointing to the intended disk location for the given note.
    */

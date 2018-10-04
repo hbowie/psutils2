@@ -27,6 +27,7 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.values.*;
 
   import java.io.*;
+  import java.nio.file.*;
   import java.util.*;
   import javafx.scene.control.*;
 
@@ -387,6 +388,17 @@ public class NoteCollectionModel {
       return null;
     }
   }
+
+  /**
+   * Get the disk location containing the file attachments.
+   *
+   * @return The Note Attachments folder for this collection.
+   */
+  public File getAttachmentsFolder() {
+    File notesFolder = getFileSpec().getFolder();
+    File attachmentsFolder = new File(notesFolder, NoteIO.FILES_FOLDER_NAME);
+    return attachmentsFolder;
+  }
   
   /**
    Close the last opened collection.
@@ -551,6 +563,8 @@ public class NoteCollectionModel {
         }
         noteFromDisk = noteIO.readNextNote();
       }
+      noteIO.loadAttachments(this);
+
       noteIO.close();
 
       Logger.getShared().recordEvent(LogEvent.NORMAL, 
@@ -740,6 +754,15 @@ public class NoteCollectionModel {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Return the pointer to the entire note list.
+   *
+   * @return The note list.
+   */
+  public NoteCollectionList getNoteList() {
+    return list;
   }
   
   public Note getSorted(int i) {
@@ -1207,21 +1230,48 @@ public class NoteCollectionModel {
    @param noteToSave The note to be saved.
   */
   public void saveNoteAndDeleteOnRename(Note noteToSave, String oldTitle) {
+
     String oldDiskLocation = noteToSave.getDiskLocation();
     saveNote(noteToSave);
     String newDiskLocation = noteToSave.getDiskLocation();
+
     if (! newDiskLocation.equals(oldDiskLocation)) {
+
       File oldDiskFile = new File (oldDiskLocation);
       oldDiskFile.delete();
+
+      if (noteToSave.hasAttachments()) {
+        File attachmentsFolder = getAttachmentsFolder();
+        String oldNoteFileName = StringUtils.makeReadableFileName(oldTitle);
+        String newNoteFileName = noteToSave.getFileName();
+        for (int i = 0; i < noteToSave.getNumberOfAttachments(); i++) {
+          NoteAttachment attachment = noteToSave.getAttachment(i);
+          String oldAttachmentName = oldNoteFileName + attachment.getSuffixAndExtension();
+          File oldAttachmentFile = new File(attachmentsFolder, oldAttachmentName);
+          String newAttachmentName = attachment.getFileName();
+          File newAttachmentFile = new File(attachmentsFolder, newAttachmentName);
+          boolean renameSuccessful = oldAttachmentFile.renameTo(newAttachmentFile);
+          if (! renameSuccessful) {
+            logger.recordEvent (LogEvent.MEDIUM,
+                "Could not rename attachment '"
+                + oldAttachmentFile.toString()
+                + "' to '"
+                + newAttachmentFile.toString()
+                + "'",
+                false);
+          }  // end if not rename successful
+        } // end for each attachment
+      } // end if we have any attachments
+
       if (syncPrefs.getSync()) {
         File oldSyncFile = noteIO.getSyncFile(
             syncPrefs.getSyncFolder(), 
             syncPrefs.getSyncPrefix(), 
             oldTitle);
         oldSyncFile.delete();
-      }
-    }
-  }
+      } // End if sync folder needs updating
+    } // end if disk location changed
+  } // end method saveNoteAndDeleteOnRename
   
   /**
    Saves a newNote in its primary location and in its sync folder, if specified. 
