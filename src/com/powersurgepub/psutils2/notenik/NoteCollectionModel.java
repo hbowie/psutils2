@@ -27,7 +27,6 @@ package com.powersurgepub.psutils2.notenik;
   import com.powersurgepub.psutils2.values.*;
 
   import java.io.*;
-  import java.nio.file.*;
   import java.util.*;
   import javafx.scene.control.*;
 
@@ -311,6 +310,18 @@ public class NoteCollectionModel {
   
   public NoteCollectionTemplate getTemplate() {
     return template;
+  }
+
+  /**
+   * Return the template file found, if any.
+   * @return The template file found, or null if no template file found.
+   */
+  public File getTemplateFile() {
+    if (template == null) {
+      return null;
+    } else {
+      return template.getTemplateFile();
+    }
   }
   
   /**

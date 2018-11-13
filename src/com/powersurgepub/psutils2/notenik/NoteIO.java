@@ -510,6 +510,7 @@ public class NoteIO
             || nextDirEntry.equalsIgnoreCase("reports")
             || nextDirEntry.equalsIgnoreCase("files")
             || nextDirEntry.equalsIgnoreCase("images")
+            || nextDirEntry.equalsIgnoreCase("lists")
             || currDirDepth >= maxDepth) {
           // skip
         } else {

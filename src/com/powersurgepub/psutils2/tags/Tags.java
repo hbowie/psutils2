@@ -640,7 +640,7 @@ public class Tags
    @param parent The parent path to be prepended to the link.
    @return       The resulting string.
   */
-  public String getLinkedTags (String parent) {
+  public String  getLinkedTags (String parent) {
     StringBuilder linkedTags = new StringBuilder();
     int i = 0;
     int s = getTagStart(i);

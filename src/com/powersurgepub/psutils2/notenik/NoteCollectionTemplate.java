@@ -40,9 +40,10 @@ package com.powersurgepub.psutils2.notenik;
  */
 public class NoteCollectionTemplate 
     implements 
-      WindowToManage{
+      WindowToManage {
   
   private     File                collectionFolder;
+  private     File                templateFile = null;
   
   private     FXUtils             fxUtils;
   private     Stage               templateStage;
@@ -150,6 +151,7 @@ public class NoteCollectionTemplate
   */
   private void checkForTemplate() {
     templateFound = false;
+    templateFile = null;
     boolean ok = true;
     templateParms = null;
     if (collectionFolder == null) {
@@ -169,7 +171,7 @@ public class NoteCollectionTemplate
         ok = false;
       }
     }
-    File templateFile = null;
+    templateFile = null;
     FileName templateFileName = null;
     
     if (ok) {
@@ -257,6 +259,18 @@ public class NoteCollectionTemplate
       logNormal("Template file not found");
       tagsField.setSelected(true);
       linkField.setSelected(true);
+    }
+  }
+
+  /**
+   * Return the template file found, if any.
+   * @return The template file found, or null if no template file found.
+   */
+  public File getTemplateFile() {
+    if (templateFound) {
+      return templateFile;
+    } else {
+      return null;
     }
   }
   

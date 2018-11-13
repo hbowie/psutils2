@@ -88,7 +88,14 @@ public class FileUtils {
     } // end if ok
     return ok;
   } // end copyFolder method
-  
+
+  /**
+   * Copy a file from one location to another.
+   *
+   * @param fromFile The from location.
+   * @param toFile The to location.
+   * @return True if copy successful.
+   */
   public static boolean copyFile (File fromFile, File toFile) {
     boolean ok = true;
     try {

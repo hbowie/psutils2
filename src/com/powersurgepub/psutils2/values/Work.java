@@ -57,31 +57,33 @@ public class Work
   public  final static int      ARTICLE         = 1;
   public  final static int      BOOK            = 2;
   public  final static int      CD              = 3;
-  public  final static int      ESSAY           = 4;
-  public  final static int      FILM            = 5;
-  public  final static int      INTERVIEW       = 6;
-  public  final static int      LECTURE         = 7;
-  public  final static int      LETTER          = 8;
-  public  final static int      PAPER           = 9;
-  public  final static int      PLAY            = 10;
-  public  final static int      POEM            = 11;
-  public  final static int      PREFACE         = 12;
-  public  final static int      PRESENTATION    = 13;
-  public  final static int      REMARKS         = 14;
-  public  final static int      SERMON          = 15;
-  public  final static int      SONG            = 16;
-  public  final static int      SPEECH          = 17;
-  public  final static int      STORY           = 18;
-  public  final static int      TV_SHOW         = 19;
-  public  final static int      WEBLOG          = 20;
-  public  final static int      WEBPAGE         = 21;
-  public  final static int      SOURCE_TYPE_MAX = 21;
+  public  final static int      COMMENT         = 4;
+  public  final static int      ESSAY           = 5;
+  public  final static int      FILM            = 6;
+  public  final static int      INTERVIEW       = 7;
+  public  final static int      LECTURE         = 8;
+  public  final static int      LETTER          = 9;
+  public  final static int      PAPER           = 10;
+  public  final static int      PLAY            = 11;
+  public  final static int      POEM            = 12;
+  public  final static int      PREFACE         = 13;
+  public  final static int      PRESENTATION    = 14;
+  public  final static int      REMARKS         = 15;
+  public  final static int      SERMON          = 16;
+  public  final static int      SONG            = 17;
+  public  final static int      SPEECH          = 18;
+  public  final static int      STORY           = 19;
+  public  final static int      TV_SHOW         = 20;
+  public  final static int      WEBLOG          = 21;
+  public  final static int      WEBPAGE         = 22;
+  public  final static int      SOURCE_TYPE_MAX = 22;
 
   public  final static String[] SOURCE_TYPE_LABEL = {
       "unknown",
       "Article",
       "Book",
       "CD",
+      "Comment",
       "Conference",
       "Essay",
       "Film",
