@@ -117,7 +117,7 @@ public class RecursWord {
   /**
    Process another character in the input string. 
   
-   @param anotherChar The next character to be evaluated. . 
+   @param c The next character to be evaluated. .
   */
   private void anotherChar(char c) {
     if (Character.isDigit(c)) {

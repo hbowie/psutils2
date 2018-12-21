@@ -604,6 +604,9 @@ public class NoteIO
     if (candidate.getName().contains(PARMS_TITLE)) {
       return false;
     }
+    else if (candidate.getName().equals(CollectionInfo.COLLECTION_INFO_FILE_NAME)) {
+        return false;
+    }
     else
     if (templateFilter.accept(parent, name)) {
       return false;
@@ -749,14 +752,15 @@ public class NoteIO
     save (note, file, primaryLocation);
   }
   
-  public void save(Note note, File file, boolean primaryLocation) {
+  public boolean save(Note note, File file, boolean primaryLocation) {
     openOutput (file);
     String oldDiskLocation = note.getDiskLocation();
-    saveOneItem (note);
+    boolean ok = saveOneItem (note);
     if (primaryLocation) {
       note.setDiskLocation (file);
     }
     closeOutput();
+    return ok;
   }
   
   /**

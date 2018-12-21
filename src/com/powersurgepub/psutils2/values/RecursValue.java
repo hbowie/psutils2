@@ -65,7 +65,7 @@ public class RecursValue
   /**
    Constructor with initial value. 
   
-   @param recurs String describing how the date is to recur. 
+   @param str String describing how the date is to recur.
   */
   public RecursValue(String str) {
     set(str);
@@ -74,7 +74,7 @@ public class RecursValue
   /**
    Parse the recurs string and extract the relevant values. 
   
-   @param recurs String describing how the date is to recur. 
+   @param str String describing how the date is to recur.
   */
   public void set (String str) {
 

@@ -40,6 +40,8 @@ package com.powersurgepub.psutils2.notenik;
  @author Herb Bowie
  */
 public class NoteCollectionModel {
+
+  private             CollectionInfo          collectionInfo = null;
   
   private             NoteCollectionTemplate  template = null;
   
@@ -116,6 +118,7 @@ public class NoteCollectionModel {
 
     deselect();
     title     = "Notes";
+    collectionInfo = new CollectionInfo();
     noteIO    = new NoteIO();
     loadTaggedOnly = false;
     
@@ -252,8 +255,11 @@ public class NoteCollectionModel {
     }
     
     logNormal("Opening folder " + fileSpec.getFile().toString());
+    collectionInfo.setFolder(fileSpec.getFile());
+    boolean infoFound = collectionInfo.readFromDisk();
+    collectionInfo.setTitle(fileSpec.getCollectionTitle());
+    collectionInfo.setNoteSortParm(fileSpec.getNoteSortParm());
     noteIO = new NoteIO(fileSpec.getFile(), NoteParms.NOTES_ONLY_TYPE);
-    
     template = new NoteCollectionTemplate(fileSpec.getFile());
     quoteCollection = template.isQuoteTemplate();
   }
@@ -287,7 +293,8 @@ public class NoteCollectionModel {
     
     addFirstNoteIfListEmpty();
 
-    String lastTitle = fileSpec.getLastTitle();
+    String lastTitle = collectionInfo.getLastKey();
+    lastTitle = fileSpec.getLastTitle();
     if (lastTitle != null && lastTitle.length() > 0) {
       Note lastNote = map.getFromTitle(lastTitle);
       if (lastNote != null) {
@@ -423,6 +430,8 @@ public class NoteCollectionModel {
       if (filePrefs != null) {
         filePrefs.handleClose();
       }
+      collectionInfo.setNoteSortParm(sortParm.getParm());
+      boolean infoWritten = collectionInfo.writeToDisk();
     }
     deselect();
     open = false;
@@ -516,6 +525,7 @@ public class NoteCollectionModel {
     }
     view.newViews();
     fileSpec.setNoteSortParm(sortParm.getParm());
+    collectionInfo.setNoteSortParm(sortParm.getParm());
   }
   
   /**
@@ -1049,6 +1059,7 @@ public class NoteCollectionModel {
     
     if (selectedNote.hasTitle() && isOpen()) {
       fileSpec.setLastTitle(selectedNote.getTitle());
+      collectionInfo.setLastKey(selectedNote.getTitle());
     }
   }
   
@@ -1071,7 +1082,15 @@ public class NoteCollectionModel {
     }
 
     if (editingMasterCollection) {
-      master.modRecentFile(selectedTitle, selectedNote.getTitle());
+      master.modRecentFile(selectedTitle, selectedNote.getTitle(), selectedNote.getSeq());
+      CollectionInfo collectionInfo = new CollectionInfo();
+      collectionInfo.setFolder(selectedNote.getLinkAsFile());
+      collectionInfo.readFromDisk();
+      collectionInfo.setTitle(selectedNote.getTitle());
+      collectionInfo.setTags(selectedNote.getTagsAsString());
+      collectionInfo.setSeq(selectedNote.getSeq());
+      collectionInfo.setBody(selectedNote.getBody());
+      collectionInfo.writeToDisk();
     }
     return saveOK;
   }
@@ -1122,7 +1141,7 @@ public class NoteCollectionModel {
     }
     workList.modify(note);
     if (editingMasterCollection) {
-      master.modRecentFile(priorTitle, note.getTitle());
+      master.modRecentFile(priorTitle, note.getTitle(), note.getSeq());
     }
     return saveOK;
   }

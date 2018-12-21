@@ -356,7 +356,7 @@ public class RecentFiles {
    @param oldTitle The title before the modification. 
    @param newTitle The title after the modification. 
   */
-  public void modRecentFile(String oldTitle, String newTitle) {
+  public void modRecentFile(String oldTitle, String newTitle, String newSeq) {
 
     boolean found = false;
     int i = 0;
@@ -365,6 +365,7 @@ public class RecentFiles {
       if (fs != null && fs.getCollectionTitle().equalsIgnoreCase(oldTitle)) {
         found = true;
         fs.setCollectionTitle(newTitle);
+        fs.setShortcut(newSeq);
       }
       i++;
     }

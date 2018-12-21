@@ -48,6 +48,7 @@ public class FileSpec {
   public static final String SYNC_PREFIX      = "sync-prefix";
   public static final String LAST_TITLE       = "last-title";
   public static final String NOTE_SORT_PARM   = "note-sort-parm";
+  public static final String SHORTCUT         = "shortcut";
 
   public static final String RECENT_FILE            = "recent-file";
   public static final String RECENT_FILE_TYPE       = "recent-file-type";
@@ -77,6 +78,7 @@ public class FileSpec {
   private             String lastTitle = "";
   private             int    noteSortParm = 0;
   private             boolean masterNoteMatched = false;
+  private             String shortcut = "";
 
   /**
    Construct a FileSpec without any data.
@@ -281,6 +283,9 @@ public class FileSpec {
     if (name.equalsIgnoreCase(NOTE_SORT_PARM)) {
       setNoteSortParm(data);
     }
+    else if (name.equalsIgnoreCase(SHORTCUT)) {
+      setShortcut(data);
+    }
   }
   
   public String getFileInfo() {
@@ -301,6 +306,7 @@ public class FileSpec {
     addAttribute(str, SYNC_PREFIX, getSyncPrefix());
     addAttribute(str, LAST_TITLE, getLastTitle());
     addAttribute(str, NOTE_SORT_PARM, getNoteSortParmAsString());
+    addAttribute(str, SHORTCUT, getShortcut());
     return str.toString();
   }
   
@@ -331,6 +337,7 @@ public class FileSpec {
     setLastTitle(file2.getLastTitle());
     setNoteSortParm(file2.getNoteSortParm());
     setCollectionTitle(file2.getCollectionTitle());
+    setShortcut(file2.getShortcut());
   }
   
   public void setFile (File file) {
@@ -840,6 +847,18 @@ public class FileSpec {
 
   public boolean isMasterNoteMatched() {
     return masterNoteMatched;
+  }
+
+  public void setShortcut(String shortcut) {
+    this.shortcut = shortcut;
+  }
+
+  public boolean hasShortcut() {
+    return (shortcut.length() > 0);
+  }
+
+  public String getShortcut() {
+    return shortcut;
   }
   
   public String toString() {

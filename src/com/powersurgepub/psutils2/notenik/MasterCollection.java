@@ -64,6 +64,7 @@ public class MasterCollection {
     masterDef.addColumn(NoteParms.TAGS_DEF);
     masterDef.addColumn(NoteParms.LINK_DEF);
     masterDef.addColumn(NoteParms.DATE_DEF);
+    masterDef.addColumn(NoteParms.SEQ_DEF);
     masterDef.addColumn(NoteParms.BODY_DEF);
     masterParms.setRecDef(masterDef);
     dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
@@ -95,7 +96,6 @@ public class MasterCollection {
   public void load(boolean purgeRecentFilesAtStartup) {
 
     recentFiles.loadFromPrefs(purgeRecentFilesAtStartup);
-    
     if (hasMasterCollection()) {
       try {
         masterIO.openForInput();
@@ -108,17 +108,51 @@ public class MasterCollection {
               noteFile.delete();
             } else {
               FileSpec spec = recentFiles.get(note.getLinkAsFile());
+              boolean specAndNoteMatched = false;
               if (spec == null) {
                 spec = new FileSpec(note.getLinkAsFile());
                 spec.setCollectionTitle(note.getTitle());
                 spec.setMasterNoteMatched(true);
                 recentFiles.addNotSoRecentFile(spec);
+                specAndNoteMatched = true;
               } else if (spec.isMasterNoteMatched()) {
+                // Delete duplicates
                 File noteFile = new File(note.getDiskLocation());
                 noteFile.delete();
+                specAndNoteMatched = false;
               } else {
                 spec.setMasterNoteMatched(true);
                 recentFiles.modRecentFile(noteLinkFile, note.getTitle());
+                specAndNoteMatched = true;
+              }
+              if (specAndNoteMatched
+                  && noteLinkFile.exists()
+                  && noteLinkFile.isDirectory()
+                  && noteLinkFile.canRead()
+                  && noteLinkFile.canWrite()) {
+                CollectionInfo collectionInfo = new CollectionInfo();
+                collectionInfo.setFolder(spec.getFile());
+                boolean infoExists = collectionInfo.readFromDisk();
+                if (! infoExists) {
+                  collectionInfo.setTitle(note.getTitle());
+                  collectionInfo.setTags(note.getTagsAsString());
+                  collectionInfo.setSeq(note.getSeq());
+                  collectionInfo.setNoteSortParm(spec.getNoteSortParm());
+                  collectionInfo.setLastKey(spec.getLastTitle());
+                  collectionInfo.setBody(note.getBody());
+                  collectionInfo.writeToDisk();
+                } else {
+                  if (collectionInfo.getTitle().length() > 0) {
+                    spec.setCollectionTitle(collectionInfo.getTitle());
+                    note.setTitle(collectionInfo.getTitle());
+                    note.setTags(collectionInfo.getTags());
+                    spec.setShortcut(collectionInfo.getSeq());
+                    note.setSeq(collectionInfo.getSeq());
+                    spec.setNoteSortParm(collectionInfo.getNoteSortParm());
+                    spec.setLastTitle(collectionInfo.getLastKey());
+                    note.setBody(collectionInfo.getBody());
+                  }
+                }
               }
             }
           }
@@ -289,11 +323,10 @@ public class MasterCollection {
    @param oldTitle The title before the modification. 
    @param newTitle The title after the modification. 
   */
-  public void modRecentFile(String oldTitle, String newTitle) {
+  public void modRecentFile(String oldTitle, String newTitle, String newSeq) {
 
-    if (! oldTitle.equals(newTitle)) {
-      recentFiles.modRecentFile(oldTitle, newTitle);
-    }
+    recentFiles.modRecentFile(oldTitle, newTitle, newSeq);
+
   }
   
   public void removeRecentFile(String oldTitle) {
