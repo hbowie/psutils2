@@ -482,7 +482,7 @@ public class StringDate
         // Number too large to be part of a date
       }
     }
-    if (number > 2000) {
+    if (number > 1000) {
       yyyy = word.toString();
     }
     else
